@@ -1,5 +1,6 @@
 package org.example.service.st;
 
+import org.example.controller.st.review.vo.ReviewCaseExecuteVO;
 import org.example.controller.st.review.vo.ReviewCaseQueryReqVO;
 import org.example.dal.dataobject.st.ReviewCase;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -10,9 +11,11 @@ public interface ReviewCaseService {
 
     PageResult<ReviewCase> getPage(ReviewCaseQueryReqVO req);
 
+    ReviewCase get(Long id);
+
     List<ReviewCase> getList(Long reviewId);
 
-    List<ReviewCase> getListGtId(Long id);
+    List<ReviewCase> getListGtId(String opt, Long reviewId, Long id);
 
     void add(List<ReviewCase> data);
 
@@ -21,4 +24,6 @@ public interface ReviewCaseService {
     void remove(Long id);
 
     void remove(List<Long> ids);
+
+    void reviewed(ReviewCaseExecuteVO execute);
 }

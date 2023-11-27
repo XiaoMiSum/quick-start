@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ProjectInfo, ProjectLink, ProjectEnv } from './components'
+import { ProjectEnv, ProjectInfo, ProjectLink } from './components'
 </script>
 
 <style scoped></style>

@@ -12,6 +12,7 @@ const propTypes = createTypes({
   string: undefined,
   number: undefined,
   object: undefined,
+  array: undefined,
   integer: undefined
 }) as PropTypes
 

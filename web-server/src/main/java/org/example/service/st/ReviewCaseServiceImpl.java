@@ -2,13 +2,16 @@ package org.example.service.st;
 
 import cn.hutool.core.collection.CollectionUtil;
 import jakarta.annotation.Resource;
+import org.example.controller.st.review.vo.ReviewCaseExecuteVO;
 import org.example.controller.st.review.vo.ReviewCaseQueryReqVO;
 import org.example.dal.dataobject.st.ReviewCase;
 import org.example.dal.mapper.st.ReviewCaseMapper;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReviewCaseServiceImpl implements ReviewCaseService {
@@ -22,15 +25,21 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     }
 
     @Override
+    public ReviewCase get(Long id) {
+        return mapper.selectById(id);
+    }
+
+    @Override
     public List<ReviewCase> getList(Long reviewId) {
         return mapper.selectList(reviewId);
     }
 
     @Override
-    public ReviewCase get(Long id) {
-        return mapper.selectById(id);
+    public List<ReviewCase> getListGtId(String opt, Long reviewId, Long id) {
+        return (Objects.equals(opt, "next")) ?
+                mapper.selectListByGtId(reviewId, id) : mapper.selectListByLtId(reviewId, id);
     }
-
+    
     @Override
     public void add(List<ReviewCase> list) {
         // 过滤已添加的
@@ -52,5 +61,15 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     @Override
     public void remove(List<Long> ids) {
         mapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    public void reviewed(ReviewCaseExecuteVO execute) {
+        ReviewCase reviewCase = new ReviewCase()
+                .setId(execute.getId())
+                .setReviewer(execute.getReviewer())
+                .setReviewTime(new Date())
+                .setReviewResult(execute.getResult());
+        mapper.updateById(reviewCase);
     }
 }

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { propTypes } from '@/utils/propTypes'
 import { isNumber } from '@/utils/is'
+import { RESULT_ENUMS } from '@/utils/enums'
 
 defineOptions({ name: 'Dialog' })
 
@@ -12,7 +13,9 @@ const props = defineProps({
   fullscreen: propTypes.bool.def(true),
   width: propTypes.oneOfType([String, Number]).def('40%'),
   scroll: propTypes.bool.def(false), // 是否开启滚动条。如果是的话，按照 maxHeight 设置最大高度
-  maxHeight: propTypes.oneOfType([String, Number]).def('400px')
+  maxHeight: propTypes.oneOfType([String, Number]).def('400px'),
+  enums: propTypes.array.def(RESULT_ENUMS),
+  tag: propTypes.string.def('')
 })
 
 const getBindValue = computed(() => {
@@ -73,7 +76,10 @@ const dialogStyle = computed(() => {
     <template #header="{ close }">
       <div class="relative h-54px flex items-center justify-between pl-15px pr-15px">
         <slot name="title">
-          {{ title }}
+          <div class="flex">
+            {{ title }}
+            <EnumTag v-if="tag" :enums="RESULT_ENUMS" :value="tag" class="ml-50px" />
+          </div>
         </slot>
         <div
           class="absolute right-15px top-[50%] h-54px flex translate-y-[-50%] items-center justify-between"

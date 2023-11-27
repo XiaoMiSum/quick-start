@@ -21,10 +21,10 @@ import * as TAG from '@/api/project/tag'
 import * as USER from '@/api/system/user'
 
 import { useUserStoreWithOut } from '@/store/modules/user'
+import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 
 const userStore = useUserStoreWithOut()
 
-import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 const { params, query } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 
 const { push } = useRouter()

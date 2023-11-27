@@ -10,12 +10,18 @@ import java.util.List;
 @Data
 public class ReviewCaseRespVO extends ReviewCaseBaseVO {
 
+    private Long id;
+
     private String path;
+
+    private String chargeUser;
 
     private List<String> tags;
 
     private String precondition;
 
     private List<TestcaseStep> steps;
+
+    private String reviewResult;
 
 }

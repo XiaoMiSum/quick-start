@@ -55,7 +55,7 @@ public interface ReviewConvert {
                 .setProjectId(bean.getProjectId());
     }
 
-    ReviewCasePageRespVO convert(ReviewCase bean);
+    ReviewCaseRespVO convert(ReviewCase bean);
 
     default List<ReviewCasePageRespVO> convert2(List<Testcase> beans) {
         List<ReviewCasePageRespVO> result = Lists.newArrayList();

@@ -105,12 +105,16 @@
             />
             <el-table-column :width="150" align="center" fixed="right" label="操作">
               <template #default="scope">
-                <el-button circle plain type="primary" @click="handleReviewCase(scope.row.caseId)">
-                  <Icon icon="ep:checked" />
-                </el-button>
-                <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
-                  <Icon icon="ep:unlock" />
-                </el-button>
+                <el-tooltip content="评审" placement="top">
+                  <el-button circle plain type="primary" @click="handleReviewCase(scope.row)">
+                    <Icon icon="ep:checked" />
+                  </el-button>
+                </el-tooltip>
+                <el-tooltip content="移除" placement="top">
+                  <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
+                    <Icon icon="ep:unlock" />
+                  </el-button>
+                </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
@@ -125,12 +129,14 @@
       </el-col>
     </el-row>
   </ContentWrap>
+
   <CaseAssociated
     ref="caseAssociated"
     :data-id="currentReviewId"
     source="review"
     @close="handleQuery"
   />
+
   <CaseViewer ref="caseViewer" source="review" @close="handleQuery" />
 </template>
 
@@ -147,7 +153,6 @@ import * as HTTP from '@/api/st/review'
 import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 const { params } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 
-const { push } = useRouter() // 路由
 const message = useMessage() // 消息弹窗
 
 defineOptions({ name: 'ReviewAssociated' })
@@ -206,7 +211,10 @@ const handleAssociCase = async () => {
   caseAssociated.value.open()
 }
 
-const handleReviewCase = async (id?: number) => {}
+const caseViewer = ref()
+const handleReviewCase = async (data?: any) => {
+  caseViewer.value.open({ id: data.id, reviewId: data.reviewId })
+}
 
 const handleNodeClick = async (row: any) => {
   queryParams.value.moduleId = row.id === 0 ? null : row.id

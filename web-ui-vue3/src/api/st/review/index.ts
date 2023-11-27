@@ -43,6 +43,34 @@ export const getReviewCase = (params: any) => {
   })
 }
 
+export const getReviewCaseExecute = (params: any) => {
+  return request.get({
+    url: url + '/case/execute',
+    params
+  })
+}
+
+export const reviewCase = (data: any) => {
+  return request.post({
+    url: url + '/case/execute',
+    data
+  })
+}
+
+export const getLastCase = (params: any) => {
+  return request.get({
+    url: url + '/case/last',
+    params
+  })
+}
+
+export const getNextCase = (params: any) => {
+  return request.get({
+    url: url + '/case/next',
+    params
+  })
+}
+
 export const getUnAssociCase = (params: any) => {
   return request.get({
     url: url + '/case/unassociated',

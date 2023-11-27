@@ -53,7 +53,6 @@
 </template>
 
 <script lang="ts" setup>
-import { dateFormatter } from '@/utils/formatTime'
 import { handleTree } from '@/utils/tree'
 import * as HTTP from '@/api/project/module'
 import { ModuleForm } from '../components'

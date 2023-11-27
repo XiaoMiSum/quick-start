@@ -17,18 +17,44 @@ public interface ReviewCaseMapper extends BaseMapperX<ReviewCase> {
                 .eq(ReviewCase::getReviewId, req.getReviewId())
                 .eqIfPresent(ReviewCase::getModuleId, req.getModuleId())
                 .likeIfPresent(ReviewCase::getName, req.getCaseName())
+                .orderByAsc(ReviewCase::getCaseId)
         );
     }
 
     default List<ReviewCase> selectList(Long reviewId) {
-        return selectList(new LambdaQueryWrapperX<ReviewCase>().eq(ReviewCase::getReviewId, reviewId));
+        return selectList(new LambdaQueryWrapperX<ReviewCase>()
+                .eq(ReviewCase::getReviewId, reviewId)
+                .orderByAsc(ReviewCase::getCaseId));
     }
 
     default List<ReviewCase> selectList(Long reviewId, Long caseId) {
         return selectList(new LambdaQueryWrapperX<ReviewCase>()
                 .eq(ReviewCase::getReviewId, reviewId)
                 .eq(ReviewCase::getCaseId, caseId)
+                .orderByAsc(ReviewCase::getCaseId)
         );
     }
 
+    default List<ReviewCase> selectListByGtId(Long reviewId, Long id) {
+        return selectList(new LambdaQueryWrapperX<ReviewCase>()
+                .eq(ReviewCase::getReviewId, reviewId)
+                .gt(ReviewCase::getId, id)
+                .orderByAsc(ReviewCase::getCaseId)
+        );
+    }
+
+    default List<ReviewCase> selectListByLtId(Long reviewId, Long id) {
+        return selectList(new LambdaQueryWrapperX<ReviewCase>()
+                .eq(ReviewCase::getReviewId, reviewId)
+                .lt(ReviewCase::getId, id)
+                .orderByAsc(ReviewCase::getCaseId)
+        );
+    }
+
+    default ReviewCase selectOne(Long reviewId, Long id) {
+        return selectOne(new LambdaQueryWrapperX<ReviewCase>()
+                .eq(ReviewCase::getReviewId, reviewId)
+                .eq(ReviewCase::getId, id)
+        );
+    }
 }

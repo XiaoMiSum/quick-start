@@ -47,9 +47,7 @@ CREATE TABLE `infra_error_log`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '接口异常表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '接口异常表';
 
 -- ----------------------------
 -- Table structure for mg_project
@@ -72,9 +70,7 @@ CREATE TABLE `mg_project`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目信息表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '项目信息表';
 
 -- ----------------------------
 -- Table structure for mg_project_env
@@ -97,9 +93,7 @@ CREATE TABLE `mg_project_env`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目环境表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '项目环境表';
 
 -- ----------------------------
 -- Table structure for mg_project_link
@@ -120,9 +114,7 @@ CREATE TABLE `mg_project_link`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目链接表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '项目链接表';
 
 -- ----------------------------
 -- Table structure for mg_project_member
@@ -141,9 +133,7 @@ CREATE TABLE `mg_project_member`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目成员表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '项目成员表';
 
 -- ----------------------------
 -- Table structure for mg_project_module
@@ -165,9 +155,7 @@ CREATE TABLE `mg_project_module`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目模块表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '项目模块表';
 
 -- ----------------------------
 -- Table structure for mg_project_tag
@@ -187,9 +175,7 @@ CREATE TABLE `mg_project_tag`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目标签表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '项目标签表';
 
 -- ----------------------------
 -- Table structure for mg_st_plan
@@ -213,9 +199,7 @@ CREATE TABLE `mg_st_plan`
     `update_time`         datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '测试计划表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '测试计划表';
 
 -- ----------------------------
 -- Table structure for mg_st_plan_case
@@ -236,7 +220,7 @@ CREATE TABLE `mg_st_plan_case`
     `charge_user_id`  bigint       NULL     DEFAULT NULL COMMENT '负责人',
     `execute_time`    datetime     NULL     DEFAULT NULL COMMENT '执行时间',
     `executor`        datetime     NULL     DEFAULT NULL COMMENT '执行人',
-    `execute_result`  varchar(32)  NULL     DEFAULT NULL COMMENT '测试结果',
+    `execute_result`  varchar(32)  NULL     DEFAULT 'NOTSTART' COMMENT '测试结果',
     `execute_comment` longtext     NULL COMMENT '测试评论',
     `deleted`         bit(1)       NOT NULL DEFAULT b'0',
     `creator`         varchar(64)  NOT NULL,
@@ -245,9 +229,7 @@ CREATE TABLE `mg_st_plan_case`
     `update_time`     datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '计划用例表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '计划用例表';
 
 -- ----------------------------
 -- Table structure for mg_st_review
@@ -273,10 +255,7 @@ CREATE TABLE `mg_st_review`
     `update_time`         datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '测试评审表'
-  ROW_FORMAT = Dynamic;
+  AUTO_INCREMENT = 1 COMMENT = '测试评审表';
 
 -- ----------------------------
 -- Table structure for mg_st_review_case
@@ -297,7 +276,7 @@ CREATE TABLE `mg_st_review_case`
     `charge_user_id` bigint       NULL     DEFAULT NULL,
     `review_time`    datetime     NULL     DEFAULT NULL COMMENT '评审时间',
     `reviewer`       datetime     NULL     DEFAULT NULL COMMENT '评审人',
-    `review_result`  varchar(32)  NULL     DEFAULT NULL COMMENT '评审结果',
+    `review_result`  varchar(32)  NULL     DEFAULT 'UNREVIEWED' COMMENT '评审结果',
     `review_comment` longtext     NULL,
     `deleted`        bit(1)       NOT NULL DEFAULT b'0',
     `creator`        varchar(64)  NOT NULL,
@@ -306,9 +285,7 @@ CREATE TABLE `mg_st_review_case`
     `update_time`    datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '评审用例表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '评审用例表';
 
 -- ----------------------------
 -- Table structure for mg_st_testcase
@@ -334,9 +311,7 @@ CREATE TABLE `mg_st_testcase`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '测试用例表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '测试用例表';
 
 -- ----------------------------
 -- Table structure for mg_st_testcase_history
@@ -358,9 +333,7 @@ CREATE TABLE `mg_st_testcase_history`
     `update_time`  datetime    NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目归档表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '项目归档表';
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -383,9 +356,7 @@ CREATE TABLE `sys_dept`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '部门信息表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '部门信息表';
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -416,9 +387,7 @@ CREATE TABLE `sys_menu`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单权限表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '菜单权限表';
 
 -- ----------------------------
 -- Table structure for sys_post
@@ -426,23 +395,21 @@ CREATE TABLE `sys_menu`
 DROP TABLE IF EXISTS `sys_post`;
 CREATE TABLE `sys_post`
 (
-    `id`          bigint                                                        NOT NULL AUTO_INCREMENT,
-    `name`        varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '岗位名称',
-    `code`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位编码',
-    `sort`        int                                                           NOT NULL COMMENT '排序',
-    `status`      tinyint(1)                                                    NOT NULL DEFAULT 1 COMMENT '状态：1正常；0停用',
-    `remark`      varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
-    `deleted`     tinyint(1)                                                    NOT NULL DEFAULT 0,
-    `creator`     varchar(64)                                                   NULL     DEFAULT NULL,
-    `create_time` datetime                                                      NULL     DEFAULT NULL,
-    `updater`     varchar(64)                                                   NULL     DEFAULT NULL,
-    `update_time` datetime                                                      NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `id`          bigint       NOT NULL AUTO_INCREMENT,
+    `name`        varchar(12)  NOT NULL COMMENT '岗位名称',
+    `code`        varchar(255) NOT NULL COMMENT '岗位编码',
+    `sort`        int          NOT NULL COMMENT '排序',
+    `status`      tinyint(1)   NOT NULL DEFAULT 1 COMMENT '状态：1正常；0停用',
+    `remark`      varchar(512) NULL     DEFAULT NULL,
+    `deleted`     tinyint(1)   NOT NULL DEFAULT 0,
+    `creator`     varchar(64)  NULL     DEFAULT NULL,
+    `create_time` datetime     NULL     DEFAULT NULL,
+    `updater`     varchar(64)  NULL     DEFAULT NULL,
+    `update_time` datetime     NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '岗位信息表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '岗位信息表';
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -450,24 +417,22 @@ CREATE TABLE `sys_post`
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role`
 (
-    `id`          bigint                                                        NOT NULL AUTO_INCREMENT,
-    `name`        varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '角色名称',
-    `code`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色编码',
-    `sort`        int                                                           NOT NULL COMMENT '排序',
-    `status`      tinyint(1)                                                    NOT NULL DEFAULT 1 COMMENT '状态：1正常；0停用',
-    `type`        int                                                           NOT NULL COMMENT '角色类型',
-    `remark`      varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
-    `deleted`     tinyint(1)                                                    NOT NULL DEFAULT 0,
-    `creator`     varchar(64)                                                   NULL     DEFAULT NULL,
-    `create_time` datetime                                                      NULL     DEFAULT NULL,
-    `updater`     varchar(64)                                                   NULL     DEFAULT NULL,
-    `update_time` datetime                                                      NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `id`          bigint       NOT NULL AUTO_INCREMENT,
+    `name`        varchar(12)  NOT NULL COMMENT '角色名称',
+    `code`        varchar(255) NOT NULL COMMENT '角色编码',
+    `sort`        int          NOT NULL COMMENT '排序',
+    `status`      tinyint(1)   NOT NULL DEFAULT 1 COMMENT '状态：1正常；0停用',
+    `type`        int          NOT NULL COMMENT '角色类型',
+    `remark`      varchar(512) NULL     DEFAULT NULL,
+    `deleted`     tinyint(1)   NOT NULL DEFAULT 0,
+    `creator`     varchar(64)  NULL     DEFAULT NULL,
+    `create_time` datetime     NULL     DEFAULT NULL,
+    `updater`     varchar(64)  NULL     DEFAULT NULL,
+    `update_time` datetime     NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色信息表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '角色信息表';
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -486,9 +451,7 @@ CREATE TABLE `sys_role_menu`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色菜单表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '角色菜单表';
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -496,27 +459,25 @@ CREATE TABLE `sys_role_menu`
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`
 (
-    `id`          bigint                                                        NOT NULL AUTO_INCREMENT,
-    `phone`       varchar(12)                                                   NOT NULL COMMENT '用户手机号，登录名',
-    `password`    varchar(255)                                                  NOT NULL COMMENT '密码',
-    `name`        varchar(255)                                                  NOT NULL COMMENT '真实姓名',
-    `avatar`      varchar(512)                                                  NULL     DEFAULT NULL COMMENT '头像',
-    `status`      tinyint                                                       NOT NULL DEFAULT 1 COMMENT '状态0禁用、1启用',
-    `gender`      tinyint                                                       NULL     DEFAULT NULL COMMENT '性别 1男 2女',
-    `dept_id`     bigint                                                        NULL     DEFAULT NULL COMMENT '部门编号',
-    `post_ids`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '岗位编号',
-    `email`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '邮箱地址',
-    `deleted`     tinyint(1)                                                    NOT NULL DEFAULT 0,
-    `creator`     varchar(64)                                                   NULL     DEFAULT NULL,
-    `create_time` datetime                                                      NULL     DEFAULT NULL,
-    `updater`     varchar(64)                                                   NULL     DEFAULT NULL,
-    `update_time` datetime                                                      NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `id`          bigint       NOT NULL AUTO_INCREMENT,
+    `phone`       varchar(12)  NOT NULL COMMENT '用户手机号，登录名',
+    `password`    varchar(255) NOT NULL COMMENT '密码',
+    `name`        varchar(255) NOT NULL COMMENT '真实姓名',
+    `avatar`      varchar(512) NULL     DEFAULT NULL COMMENT '头像',
+    `status`      tinyint      NOT NULL DEFAULT 1 COMMENT '状态0禁用、1启用',
+    `gender`      tinyint      NULL     DEFAULT NULL COMMENT '性别 1男 2女',
+    `dept_id`     bigint       NULL     DEFAULT NULL COMMENT '部门编号',
+    `post_ids`    varchar(255) NULL     DEFAULT NULL COMMENT '岗位编号',
+    `email`       varchar(255) NULL     DEFAULT NULL COMMENT '邮箱地址',
+    `deleted`     tinyint(1)   NOT NULL DEFAULT 0,
+    `creator`     varchar(64)  NULL     DEFAULT NULL,
+    `create_time` datetime     NULL     DEFAULT NULL,
+    `updater`     varchar(64)  NULL     DEFAULT NULL,
+    `update_time` datetime     NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '用户信息表';
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -524,19 +485,17 @@ CREATE TABLE `sys_user`
 DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role`
 (
-    `id`          bigint                                                       NOT NULL AUTO_INCREMENT,
-    `user_id`     bigint                                                       NOT NULL COMMENT '用户id',
-    `role_id`     bigint                                                       NOT NULL COMMENT '角色id',
-    `deleted`     tinyint(1)                                                   NOT NULL DEFAULT 0,
-    `creator`     varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
-    `create_time` datetime                                                     NULL     DEFAULT NULL,
-    `updater`     varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
-    `update_time` datetime                                                     NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `id`          bigint      NOT NULL AUTO_INCREMENT,
+    `user_id`     bigint      NOT NULL COMMENT '用户id',
+    `role_id`     bigint      NOT NULL COMMENT '角色id',
+    `deleted`     tinyint(1)  NOT NULL DEFAULT 0,
+    `creator`     varchar(64) NULL     DEFAULT NULL,
+    `create_time` datetime    NULL     DEFAULT NULL,
+    `updater`     varchar(64) NULL     DEFAULT NULL,
+    `update_time` datetime    NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户角色表'
-  ROW_FORMAT = Dynamic;
+    COMMENT = '用户角色表';
 
 SET FOREIGN_KEY_CHECKS = 1;

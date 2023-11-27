@@ -16,6 +16,8 @@ import org.example.service.sys.user.UserService;
 import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
+import xyz.migoo.framework.security.core.LoginUser;
+import xyz.migoo.framework.security.core.annotation.CurrentUser;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +25,6 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/st/review")
 public class ReviewController {
-
 
     @Resource
     private ReviewService service;
@@ -92,12 +93,38 @@ public class ReviewController {
         return Result.getSuccessful(result);
     }
 
-    @GetMapping("/case/reviewId")
+    @GetMapping("/case/execute")
     public Result<?> getReviewCase(Long id) {
-        List<ReviewCase> result = caseService.getListGtId(id);
+        ReviewCaseRespVO result = ReviewConvert.INSTANCE.convert(caseService.get(id));
+        if (Objects.nonNull(result)) {
+            if (result.getModuleId() > 0) {
+                result.setPath(moduleService.get(result.getProjectId(), result.getModuleId()).getPath());
+            }
+            result.setChargeUser(userService.get(result.getChargeUserId()).getName());
+        }
+        return Result.getSuccessful(result);
+    }
+
+    @PostMapping("/case/execute")
+    public Result<?> reviewCase(@CurrentUser LoginUser user, @RequestBody ReviewCaseExecuteVO execute) {
+        execute.setReviewer(user.getId());
+        caseService.reviewed(execute);
+        return Result.getSuccessful(ReviewConvert.INSTANCE.convert(caseService.get(execute.getId())));
+    }
+
+    @GetMapping("/case/{opt}")
+    public Result<?> getReviewCase(Long reviewId, Long id, @PathVariable String opt) {
         // todo 1、从头开始获取评审下的第一条用例 用于开始评审按钮
-        //      2、获取大于或小于指定 id 的数据   用于评审窗口的上一条 下一条
-        return Result.getSuccessful(result.isEmpty() ? null : ReviewConvert.INSTANCE.convert(result.get(0)));
+        List<ReviewCase> results = caseService.getListGtId(opt, reviewId, id);
+        if (results.isEmpty()) {
+            return Result.getSuccessful(null);
+        }
+        ReviewCaseRespVO result = ReviewConvert.INSTANCE.convert(results.get(0));
+        if (result.getModuleId() > 0) {
+            result.setPath(moduleService.get(result.getProjectId(), result.getModuleId()).getPath());
+        }
+        result.setChargeUser(userService.get(result.getChargeUserId()).getName());
+        return Result.getSuccessful(result);
     }
 
     @GetMapping("/case/unassociated")

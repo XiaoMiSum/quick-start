@@ -9,6 +9,8 @@ import java.util.Date;
 @Data
 public class ReviewCasePageRespVO extends ReviewCaseBaseVO {
 
+    private Long id;
+
     private String path;
 
     private String chargeUser;
