@@ -143,4 +143,4 @@ service.interceptors.response.use(
   }
 )
 
-export {service}
+export { service }

@@ -1,5 +1,5 @@
-import {createTypes, VueTypesInterface, VueTypeValidableDef} from 'vue-types'
-import {CSSProperties} from 'vue'
+import { createTypes, VueTypesInterface, VueTypeValidableDef } from 'vue-types'
+import { CSSProperties } from 'vue'
 
 // 自定义扩展vue-types
 type PropTypes = VueTypesInterface & {
@@ -26,4 +26,4 @@ const propTypes = createTypes({
 //     default: undefined
 //   }
 // ])
-export {propTypes}
+export { propTypes }
