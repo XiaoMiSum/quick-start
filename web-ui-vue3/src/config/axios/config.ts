@@ -24,4 +24,4 @@ const config: {
   default_headers: 'application/json'
 }
 
-export {config}
+export { config }

@@ -54,14 +54,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path: '/login',
     name: 'Login',
     component: () => import('@/views/Login/Login.vue'),
-    meta: {hidden: true}
+    meta: { hidden: true }
   },
 
   {
     path: '/404',
     name: 'Error404',
     component: () => import('@/views/404.vue'),
-    meta: {hidden: true}
+    meta: { hidden: true }
   }
 ]
 
