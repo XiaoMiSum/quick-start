@@ -43,6 +43,41 @@ export const getPlanCase = (params: any) => {
   })
 }
 
+export const getFirstReviewCase = (params: any) => {
+  return request.get({
+    url: url + '/case/first',
+    params
+  })
+}
+
+export const getPlanCaseExecute = (params: any) => {
+  return request.get({
+    url: url + '/case/execute',
+    params
+  })
+}
+
+export const executeCase = (data: any) => {
+  return request.post({
+    url: url + '/case/execute',
+    data
+  })
+}
+
+export const getLastCase = (params: any) => {
+  return request.get({
+    url: url + '/case/last',
+    params
+  })
+}
+
+export const getNextCase = (params: any) => {
+  return request.get({
+    url: url + '/case/next',
+    params
+  })
+}
+
 export const getUnAssociCase = (params: any) => {
   return request.get({
     url: url + '/case/unassociated',
@@ -60,5 +95,11 @@ export const addAssociCase = (data: any) => {
 export const removeAssociCase = (id: number) => {
   return request.delete({
     url: url + '/case/' + id
+  })
+}
+
+export const batchRemoveAssociCase = (ids: number) => {
+  return request.delete({
+    url: url + '/case?ids=' + ids
   })
 }

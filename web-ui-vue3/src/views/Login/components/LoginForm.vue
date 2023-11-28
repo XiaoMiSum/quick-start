@@ -42,6 +42,21 @@
         <el-form-item>
           <el-row justify="space-between" style="width: 100%">
             <el-col :span="6" />
+            <el-col :offset="6" :span="12">
+              <el-link style="float: right" type="primary" :underline="false" href="/register">{{
+                t('login.hasNotUser')
+              }}</el-link>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-col>
+      <el-col
+        :span="24"
+        style="padding-right: 10px; padding-left: 10px; margin-top: -20px; margin-bottom: -20px"
+      >
+        <el-form-item>
+          <el-row justify="space-between" style="width: 100%">
+            <el-col :span="6" />
             <el-col :offset="6" :span="12" />
           </el-row>
         </el-form-item>

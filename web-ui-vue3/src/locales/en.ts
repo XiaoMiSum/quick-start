@@ -118,6 +118,7 @@ export default {
     remember: 'Remember me',
     hasUser: 'Existing account? Go to login',
     forgetPassword: 'Forget password?',
+    hasNotUser: 'Not exist account? Go to register',
     tenantNamePlaceholder: 'Please Enter Tenant Name',
     usernamePlaceholder: 'Please Enter Username',
     passwordPlaceholder: 'Please Enter Password',
@@ -371,6 +372,7 @@ export default {
       registerButton: 'Sign up',
       rememberMe: 'Remember me',
       forgetPassword: 'Forget Password?',
+      hasNotUser: 'Not exist account? Go to register',
       otherSignIn: 'Sign in with',
 
       // notify

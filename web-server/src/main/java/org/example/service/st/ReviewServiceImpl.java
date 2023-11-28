@@ -7,6 +7,7 @@ import org.example.dal.mapper.st.ReviewMapper;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,5 +45,15 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void remove(Long id) {
         mapper.deleteById(id);
+    }
+
+    @Override
+    public void setStartTime(Long reviewId) {
+        mapper.updateById(new Review().setId(reviewId).setActualStartTime(new Date()));
+    }
+
+    @Override
+    public void setEndTime(Long reviewId) {
+        mapper.updateById(new Review().setId(reviewId).setActualEndTime(new Date()));
     }
 }

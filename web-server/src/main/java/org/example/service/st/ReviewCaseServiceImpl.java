@@ -6,6 +6,8 @@ import org.example.controller.st.review.vo.ReviewCaseExecuteVO;
 import org.example.controller.st.review.vo.ReviewCaseQueryReqVO;
 import org.example.dal.dataobject.st.ReviewCase;
 import org.example.dal.mapper.st.ReviewCaseMapper;
+import org.example.enums.ResultEnum;
+import org.example.model.dto.Statistics;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
 
@@ -35,11 +37,16 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     }
 
     @Override
+    public List<ReviewCase> getList(Long reviewId, ResultEnum result) {
+        return mapper.selectList(reviewId, result);
+    }
+
+    @Override
     public List<ReviewCase> getListGtId(String opt, Long reviewId, Long id) {
         return (Objects.equals(opt, "next")) ?
                 mapper.selectListByGtId(reviewId, id) : mapper.selectListByLtId(reviewId, id);
     }
-    
+
     @Override
     public void add(List<ReviewCase> list) {
         // 过滤已添加的
@@ -71,5 +78,10 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
                 .setReviewTime(new Date())
                 .setReviewResult(execute.getResult());
         mapper.updateById(reviewCase);
+    }
+
+    @Override
+    public Statistics statistics(Long reviewId) {
+        return mapper.statistics(reviewId);
     }
 }

@@ -10,7 +10,8 @@ const prefixCls = getPrefixCls('content-wrap')
 
 defineProps({
   title: propTypes.string.def(''),
-  message: propTypes.string.def('')
+  message: propTypes.string.def(''),
+  statistics: propTypes.object.def()
 })
 </script>
 
@@ -25,6 +26,33 @@ defineProps({
           </template>
           <Icon :size="14" class="ml-5px" icon="ep:question-filled" />
         </ElTooltip>
+        <div v-if="statistics" class="ml-50px">
+          <el-button link type="info">
+            {{ statistics.name }}
+          </el-button>
+          <el-tooltip content="通过数" placement="top">
+            <el-button link type="success">
+              {{ statistics.passed }}
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="不通过数" placement="top">
+            <el-button link type="danger">
+              {{
+                statistics.total - statistics.passed - statistics.notstarted - statistics.skipped
+              }}
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="跳过数" placement="top">
+            <el-button link type="info">
+              {{ statistics.skipped }}
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="未开始数" placement="top">
+            <el-button link type="warning">
+              {{ statistics.notstarted }}
+            </el-button>
+          </el-tooltip>
+        </div>
       </div>
     </template>
     <div>

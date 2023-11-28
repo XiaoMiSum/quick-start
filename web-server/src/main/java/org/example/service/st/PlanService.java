@@ -19,4 +19,8 @@ public interface PlanService {
     void update(Plan plan);
 
     void remove(Long id);
+
+    void setStartTime(Long planId);
+
+    void setEndTime(Long planId);
 }

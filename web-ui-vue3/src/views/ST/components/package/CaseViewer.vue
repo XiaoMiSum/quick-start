@@ -2,7 +2,7 @@
   <Dialog v-model="visible" :tag="status" :title="data.name" width="80%" @close="close">
     <ContentWrap>
       <!-- 搜索工作栏 -->
-      <el-form label-width="90px">
+      <el-form label-width="90px" v-loading="loading">
         <el-row>
           <el-col :span="8">
             <el-form-item label="所属模块：">
@@ -62,6 +62,13 @@
                     </el-form-item>
                   </template>
                 </el-table-column>
+                <el-table-column v-show="source === 'plan'">
+                  <template #default="scope">
+                    <el-form-item>
+                      <el-input v-model="scope.row.actual" type="textarea" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
               </el-table>
             </el-form-item>
           </el-col>
@@ -83,6 +90,10 @@
         <Icon class="mr-5px" icon="ep:chat-dot-square" />
         评论
       </el-button>
+      <el-divider direction="vertical" />
+      <el-button :loading="loading" plain type="warning" @click="handleReviewCase('SKIPPED')">
+        跳过
+      </el-button>
       <el-button :loading="loading" plain type="danger" @click="handleReviewCase('NOPASSED')">
         不通过
       </el-button>
@@ -97,6 +108,7 @@
 import { CASE_LEVEL_ENUMS } from '@/utils/enums'
 
 import * as REVIEW from '@/api/st/review'
+import * as PLAN from '@/api/st/plan'
 
 const message = useMessage() // 消息弹窗
 
@@ -115,39 +127,88 @@ const status = ref('')
 
 /** 打开弹窗 */
 const open = async (obj: any) => {
+  loading.value = true
   visible.value = true
-  data.value = await REVIEW.getReviewCaseExecute(obj)
-  status.value = data.value.reviewResult
+  if (source.value === 'review') {
+    await handleSetReviewCase(obj)
+  } else if (source.value === 'plan') {
+    await handleSetPlanCase(obj)
+  }
+  loading.value = false
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
-const handleLastClick = async () => {
-  const params = data.value
-  const rx = await REVIEW.getLastCase({ id: params.id, reviewId: params.reviewId })
-  if (rx === null) {
-    message.error('已经是最后一条了')
-    return
-  }
-  data.value = rx
+const handleSetReviewCase = async (obj: any) => {
+  data.value = await REVIEW.getReviewCaseExecute(obj)
   status.value = data.value.reviewResult
 }
-const handleNextClick = async () => {
+const handleSetPlanCase = async (obj: any) => {
+  data.value = await PLAN.getPlanCaseExecute(obj)
+  status.value = data.value.executeResult
+}
+
+const handleLastClick = async () => {
+  loading.value = true
+  let resp = null
   const params = data.value
-  const rx = await REVIEW.getNextCase({ id: params.id, reviewId: params.reviewId })
-  if (rx === null) {
-    message.error('已经是最后一条了')
-    return 1
+  if (source.value === 'review') {
+    resp = await REVIEW.getLastCase({ id: params.id, reviewId: params.reviewId })
+  } else if (source.value === 'plan') {
+    resp = await PLAN.getLastCase({ id: params.id, planId: params.planId })
   }
-  data.value = rx
-  status.value = data.value.reviewResult
+  loading.value = false
+  if (resp === null) {
+    message.error('已经是第一条了')
+  } else {
+    data.value = resp
+    status.value = source.value === 'review' ? data.value.reviewResult : data.value.executeResult
+  }
+}
+
+const handleNextClick = async () => {
+  loading.value = true
+  let resp = null
+  const params = data.value
+  if (source.value === 'review') {
+    resp = await REVIEW.getNextCase({ id: params.id, reviewId: params.reviewId })
+  } else if (source.value === 'plan') {
+    resp = await PLAN.getNextCase({ id: params.id, planId: params.planId })
+  }
+  loading.value = false
+  if (resp === null) {
+    message.error('已经是最后一条了')
+    return false
+  } else {
+    data.value = resp
+    status.value = source.value === 'review' ? data.value.reviewResult : data.value.executeResult
+    return true
+  }
 }
 
 const handleReviewCase = async (result: string) => {
-  const rx = await REVIEW.reviewCase({ id: data.value.id, result: result })
-  status.value = rx.reviewResult
+  loading.value = true
+  if (source.value === 'review') {
+    await REVIEW.reviewCase({
+      id: data.value.id,
+      caseId: data.value.caseId,
+      reviewId: data.value.reviewId,
+      result: result
+    })
+  } else if (source.value === 'plan') {
+    await PLAN.executeCase({
+      id: data.value.id,
+      caseId: data.value.caseId,
+      planId: data.value.planId,
+      steps: data.value.steps,
+      result: result
+    })
+  }
+  status.value = result
   const b = await handleNextClick()
-  if (!b) {
-    message.success('评审成功，进入下一条！')
+  if (b) {
+    message.success('评审成功，获取下一条！')
+  } else {
+    visible.value = false
   }
 }
 

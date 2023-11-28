@@ -7,6 +7,7 @@ import org.example.dal.mapper.st.PlanMapper;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,5 +45,15 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public void remove(Long id) {
 
+    }
+
+    @Override
+    public void setStartTime(Long planId) {
+        mapper.updateById(new Plan().setId(planId).setActualStartTime(new Date()));
+    }
+
+    @Override
+    public void setEndTime(Long planId) {
+        mapper.updateById(new Plan().setId(planId).setActualEndTime(new Date()));
     }
 }

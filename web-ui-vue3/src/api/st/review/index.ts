@@ -43,6 +43,13 @@ export const getReviewCase = (params: any) => {
   })
 }
 
+export const getFirstReviewCase = (params: any) => {
+  return request.get({
+    url: url + '/case/first',
+    params
+  })
+}
+
 export const getReviewCaseExecute = (params: any) => {
   return request.get({
     url: url + '/case/execute',

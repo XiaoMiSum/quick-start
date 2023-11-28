@@ -118,6 +118,7 @@ export default {
     remember: '记住我',
     hasUser: '已有账号？去登录',
     forgetPassword: '忘记密码?',
+    hasNotUser: '没有账号？去注册',
     tenantNamePlaceholder: '请输入租户名称',
     usernamePlaceholder: '请输入用户名',
     passwordPlaceholder: '请输入密码',
@@ -366,6 +367,7 @@ export default {
       registerButton: '注册',
       rememberMe: '记住我',
       forgetPassword: '忘记密码?',
+      hasNotUser: '没有账号？去注册',
       otherSignIn: '其他登录方式',
       // notify
       loginSuccessTitle: '登录成功',

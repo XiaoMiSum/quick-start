@@ -19,4 +19,8 @@ public interface ReviewService {
     void update(Review review);
 
     void remove(Long id);
+
+    void setStartTime(Long reviewId);
+
+    void setEndTime(Long reviewId);
 }

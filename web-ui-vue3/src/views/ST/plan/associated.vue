@@ -38,16 +38,38 @@
                 <Icon class="mr-5px" icon="ep:link" />
                 关联用例
               </el-button>
+              <el-button
+                :disabled="!checked || checked.length < 1"
+                plain
+                type="danger"
+                @click="handleBatchUnlinkCase"
+              >
+                <Icon class="mr-5px" icon="fa-solid:unlink" />
+                取消关联
+              </el-button>
+              <el-button plain type="primary" @click="handleAssociCase()">
+                <Icon class="mr-5px" icon="ep:caret-right" />
+                开始执行
+              </el-button>
             </el-col>
           </el-row>
         </ContentWrap>
 
         <!-- 列表 -->
         <ContentWrap>
-          <el-table v-loading="loading" :data="list" highlight-current-row width="100%">
+          <el-table
+            ref="multipleTableRef"
+            v-loading="loading"
+            :data="list"
+            :row-key="(row) => row.id"
+            highlight-current-row
+            width="100%"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column :reserve-selection="true" type="selection" width="35" />
             <el-table-column align="center" label="编号" prop="id" width="60" />
-            <el-table-column label="用例名称" prop="name" show-overflow-tooltip width="300" />
-            <el-table-column label="所属模块" prop="moduleId" show-overflow-tooltip width="100" />
+            <el-table-column label="用例名称" prop="name" show-overflow-tooltip width="200" />
+            <el-table-column label="所属模块" prop="path" show-overflow-tooltip width="200" />
             <el-table-column align="center" label="用例等级" prop="level">
               <template #default="scope">
                 <EnumTag :enums="CASE_LEVEL_ENUMS" :value="scope.row.level" />
@@ -58,33 +80,37 @@
                 <el-tag v-for="item in scope.row.tags" :key="item"> {{ item }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="评审结果" prop="reviewed">
+            <el-table-column align="center" label="执行结果" prop="executeResult">
               <template #default="scope">
-                <EnumTag :enums="RESULT_ENUMS" :value="scope.row.reviewed" />
+                <EnumTag :enums="RESULT_ENUMS" :value="scope.row.executeResult" />
               </template>
             </el-table-column>
             <el-table-column
               align="center"
-              label="负责人"
-              prop="chargeUserId"
+              label="执行人"
+              prop="executorUser"
               show-overflow-tooltip
             />
 
             <el-table-column
               :formatter="dateFormatter"
               align="center"
-              label="更新时间"
-              prop="updateTime"
+              label="执行时间"
+              prop="executeTime"
               width="170"
             />
             <el-table-column :width="150" align="center" fixed="right" label="操作">
               <template #default="scope">
-                <el-button circle plain type="primary" @click="handleEditCase(scope.row.id)">
-                  <Icon icon="ep:checked" />
-                </el-button>
-                <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
-                  <Icon icon="ep:unlock" />
-                </el-button>
+                <el-tooltip content="执行" placement="top">
+                  <el-button circle plain type="primary" @click="handleExecuteCase(scope.row)">
+                    <Icon icon="ep:checked" />
+                  </el-button>
+                </el-tooltip>
+                <el-tooltip content="移除" placement="top">
+                  <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
+                    <Icon icon="ep:unlock" />
+                  </el-button>
+                </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
@@ -99,17 +125,19 @@
       </el-col>
     </el-row>
   </ContentWrap>
+
   <CaseAssociated
     ref="caseAssociated"
     :data-id="currentPlanId"
     source="plan"
     @close="handleQuery"
   />
+  <CaseViewer ref="caseViewer" source="plan" @close="handleQuery" />
 </template>
 
 <script lang="ts" setup>
 import { ModuleTree } from '@/views/Project/components/index'
-import { CaseAssociated } from '../components'
+import { CaseAssociated, CaseViewer } from '../components'
 
 import { dateFormatter } from '@/utils/formatTime'
 
@@ -120,7 +148,6 @@ import * as HTTP from '@/api/st/plan'
 import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 const { params } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 
-const { push } = useRouter() // 路由
 const message = useMessage() // 消息弹窗
 
 defineOptions({ name: 'PlanAssociated' })
@@ -132,6 +159,7 @@ const queryParams = ref<any>({
   moduleId: null
 })
 
+const checked = ref<any>([])
 const currentPlanId = ref<any>(-1)
 const title = ref('')
 const loading = ref(false)
@@ -177,13 +205,31 @@ const handleAssociCase = async () => {
   caseAssociated.value.open()
 }
 
-const handleEditCase = async (id: number) => {
-  push('/st/case/edit/' + id)
+const caseViewer = ref()
+const handleExecuteCase = async (data?: any) => {
+  caseViewer.value.open({ id: data.id, planId: data.planId })
 }
 
 const handleNodeClick = async (row: any) => {
   queryParams.value.moduleId = row.id === 0 ? null : row.id
   handleQuery()
+}
+
+const handleSelectionChange = async (val: any[]) => {
+  checked.value = val.map((item) => item.id)
+}
+
+const handleBatchUnlinkCase = async () => {
+  await message.delConfirm('是否确认取消关联选中的用例？')
+  await HTTP.batchRemoveAssociCase(checked.value)
+  toggleSelection()
+  await handleQuery()
+}
+
+const multipleTableRef = ref()
+const toggleSelection = () => {
+  multipleTableRef.value!.clearSelection()
+  checked.value = []
 }
 
 /** 初始化 **/

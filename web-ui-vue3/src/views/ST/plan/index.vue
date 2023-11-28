@@ -7,7 +7,7 @@
           v-model="queryParams.name"
           class="!w-240px"
           clearable
-          placeholder="请输入项目名称"
+          placeholder="请输入计划名称"
           @keyup.enter="handleQuery"
         />
       </el-form-item>
@@ -36,26 +36,112 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" highlight-current-row stripe>
-      <el-table-column align="center" label="计划名称" prop="name" />
-      <el-table-column align="center" label="执行人" prop="executor" />
-      <el-table-column align="center" label="预计开始时间" prop="expectedStartTime" />
-      <el-table-column align="center" label="预计结束时间" prop="expectedEndTime" />
-      <el-table-column align="center" label="实际开始时间" prop="actualStartTime" />
-      <el-table-column align="center" label="实际结束时间" prop="actualEndTime" />
-      <el-table-column key="status" label="状态" prop="status" />
-      <el-table-column align="center" label="用例数" prop="totalCase" />
-      <el-table-column align="center" label="通过率" prop="passedRate" />
+      <el-table-column
+        align="center"
+        label="计划名称"
+        prop="name"
+        show-overflow-tooltip
+        width="200"
+      >
+        <template #default="scope">
+          <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
+            {{ scope.row.name }}
+          </el-button>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="执行人" prop="executorUser" show-overflow-tooltip />
+      <el-table-column
+        :formatter="dateFormatter"
+        align="center"
+        label="预计开始时间"
+        prop="expectedStartTime"
+        show-overflow-tooltip
+        width="170"
+      />
+      <el-table-column
+        :formatter="dateFormatter"
+        align="center"
+        label="预计结束时间"
+        prop="expectedEndTime"
+        show-overflow-tooltip
+        width="170"
+      />
+      <el-table-column
+        :formatter="dateFormatter"
+        align="center"
+        label="实际开始时间"
+        prop="actualStartTime"
+        show-overflow-tooltip
+        width="170"
+      />
+      <el-table-column
+        :formatter="dateFormatter"
+        align="center"
+        label="实际结束时间"
+        prop="actualEndTime"
+        show-overflow-tooltip
+        width="170"
+      />
+      <el-table-column align="right" label="用例总数" prop="total" width="100">
+        <template #default="scope">
+          <el-button link type="primary">
+            {{ scope.row.statistics.total }}
+          </el-button>
+        </template>
+      </el-table-column>
+      <el-table-column align="right" label="执行进度" width="120">
+        <template #default="scope">
+          <el-tooltip content="通过数" placement="top">
+            <el-button link type="success">
+              {{ scope.row.statistics.passed }}
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="不通过数" placement="top">
+            <el-button link type="danger">
+              {{
+                scope.row.statistics.total -
+                scope.row.statistics.passed -
+                scope.row.statistics.notstarted -
+                scope.row.statistics.skipped
+              }}
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="跳过数" placement="top">
+            <el-button link type="info">
+              {{ scope.row.statistics.skipped }}
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="未执行数" placement="top">
+            <el-button link type="warning">
+              {{ scope.row.statistics.notstarted }}
+            </el-button>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column align="right" label="通过率" width="70">
+        <template #default="scope">
+          <el-button link type="primary">
+            {{ (scope.row.statistics.passed / scope.row.statistics.total) * 100 }} %
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width="150">
         <template #default="scope">
-          <el-button circle plain type="primary" @click="openForm('update', scope.row.id)">
-            <Icon icon="ep:edit" />
-          </el-button>
-          <el-button circle plain type="primary" @click="handleGoAssociCase(scope.row.id)">
-            <Icon icon="ep:link" />
-          </el-button>
-          <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
-            <Icon icon="ep:delete" />
-          </el-button>
+          <el-tooltip content="编辑" placement="top">
+            <el-button circle plain type="primary" @click="openForm('update', scope.row.id)">
+              <Icon icon="ep:edit" />
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="规划&执行" placement="top">
+            <el-button circle plain type="primary" @click="handleGoAssociCase(scope.row.id)">
+              <Icon icon="ep:link" />
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="删除" placement="top">
+            <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
+              <Icon icon="ep:delete" />
+            </el-button>
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
@@ -73,6 +159,8 @@
 
 <script lang="ts" setup>
 import { PlanForm } from '../components'
+
+import { dateFormatter } from '@/utils/formatTime'
 
 import * as HTTP from '@/api/st/plan'
 

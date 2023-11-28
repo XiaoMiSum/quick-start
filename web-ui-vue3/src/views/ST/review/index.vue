@@ -42,21 +42,26 @@
         prop="name"
         show-overflow-tooltip
         width="200"
-      />
+      >
+        <template #default="scope">
+          <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
+            {{ scope.row.name }}
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="主讲人" prop="speakUser" show-overflow-tooltip />
       <el-table-column align="center" label="参与人员" prop="reviewers" show-overflow-tooltip>
         <template #default="scope">
           <el-tag
             v-for="(item, index) in scope.row.reviewers"
             :key="index"
-            class="ml-2"
+            class="mr-2"
             type="info"
           >
             {{ item }}
           </el-tag>
         </template>
       </el-table-column>
-
       <el-table-column
         :formatter="dateFormatter"
         align="center"
@@ -89,15 +94,47 @@
         show-overflow-tooltip
         width="170"
       />
-      <el-table-column key="status" align="center" label="状态" prop="status" width="70">
+      <el-table-column align="right" label="用例总数" width="100">
         <template #default="scope">
-          <EnumTag :enums="RESULT_ENUMS" :value="scope.row.status" />
+          <el-button link type="primary">
+            {{ scope.row.statistics.total }}
+          </el-button>
         </template>
       </el-table-column>
-      <el-table-column align="right" label="用例数" prop="totalCase" width="70" />
-      <el-table-column align="right" label="通过率" prop="passedRate" width="100">
+      <el-table-column align="right" label="评审进度" width="120">
         <template #default="scope">
-          {{ scope.row.passedRate + '%' }}
+          <el-tooltip content="通过数" placement="top">
+            <el-button link type="success">
+              {{ scope.row.statistics.passed }}
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="不通过数" placement="top">
+            <el-button link type="danger">
+              {{
+                scope.row.statistics.total -
+                scope.row.statistics.passed -
+                scope.row.statistics.notstarted -
+                scope.row.statistics.skipped
+              }}
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="跳过数" placement="top">
+            <el-button link type="info">
+              {{ scope.row.statistics.skipped }}
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="未评审数" placement="top">
+            <el-button link type="warning">
+              {{ scope.row.statistics.notstarted }}
+            </el-button>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column align="right" label="通过率" width="70">
+        <template #default="scope">
+          <el-button link type="primary">
+            {{ (scope.row.statistics.passed / scope.row.statistics.total) * 100 }} %
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width="150">
@@ -107,7 +144,7 @@
               <Icon icon="ep:edit" />
             </el-button>
           </el-tooltip>
-          <el-tooltip content="关联用例" placement="top">
+          <el-tooltip content="规划&评审" placement="top">
             <el-button circle plain type="primary" @click="handleGoAssociCase(scope.row.id)">
               <Icon icon="ep:link" />
             </el-button>
@@ -134,8 +171,6 @@
 
 <script lang="ts" setup>
 import { ReviewForm } from '../components'
-
-import { RESULT_ENUMS } from '@/utils/enums'
 
 import * as HTTP from '@/api/st/review'
 

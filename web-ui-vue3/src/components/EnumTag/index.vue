@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Tag 样式 -->
-    <el-tag :disable-transitions="true" :type="tag" size="small">
+    <el-tag :disable-transitions="true" effect="dark" :type="tag" size="small">
       {{ getLabel() }}
     </el-tag>
   </div>

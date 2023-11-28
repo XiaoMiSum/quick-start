@@ -7,6 +7,7 @@ import org.example.controller.st.testcase.vo.TestcaseQueryReqVO;
 import org.example.convert.st.ReviewConvert;
 import org.example.convert.st.TestcaseConvert;
 import org.example.dal.dataobject.st.ReviewCase;
+import org.example.dal.dataobject.st.Testcase;
 import org.example.model.dto.TestcaseDTO;
 import org.example.service.project.module.ModuleService;
 import org.example.service.st.ReviewCaseService;
@@ -22,6 +23,9 @@ import xyz.migoo.framework.security.core.annotation.CurrentUser;
 import java.util.List;
 import java.util.Objects;
 
+import static org.example.enums.ResultEnum.NOTSTARTED;
+import static org.example.enums.ResultEnum.UNREVIEWED;
+
 @RestController
 @RequestMapping("/st/review")
 public class ReviewController {
@@ -34,7 +38,6 @@ public class ReviewController {
 
     @Resource
     private TestcaseService testcaseService;
-
     @Resource
     private ModuleService moduleService;
     @Resource
@@ -47,14 +50,16 @@ public class ReviewController {
         PageResult<ReviewPageRespVO> result = ReviewConvert.INSTANCE.convert(service.getPage(req));
         result.getList().forEach(item -> {
             item.setSpeakUser(userService.get(item.getSpeaker()).getName());
+            item.setStatistics(caseService.statistics(item.getId()));
         });
-        // todo 这里要统计评审用例总数 评审通过率
         return Result.getSuccessful(result);
     }
 
     @GetMapping("/{id}")
     public Result<?> get(@PathVariable Long id) {
-        return Result.getSuccessful(ReviewConvert.INSTANCE.convert(service.get(id)));
+        ReviewRespVO result = ReviewConvert.INSTANCE.convert(service.get(id));
+        result.setStatistics(caseService.statistics(result.getId()));
+        return Result.getSuccessful(result);
     }
 
     @PostMapping
@@ -108,13 +113,33 @@ public class ReviewController {
     @PostMapping("/case/execute")
     public Result<?> reviewCase(@CurrentUser LoginUser user, @RequestBody ReviewCaseExecuteVO execute) {
         execute.setReviewer(user.getId());
+        // 设置实际开始时间
+        List<ReviewCase> total = caseService.getList(execute.getReviewId());
+        List<ReviewCase> notStart = caseService.getList(execute.getReviewId(), UNREVIEWED);
+        if (total.size() == notStart.size()) {
+            service.setStartTime(execute.getReviewId());
+        }
         caseService.reviewed(execute);
-        return Result.getSuccessful(ReviewConvert.INSTANCE.convert(caseService.get(execute.getId())));
+        testcaseService.update(new Testcase().setId(execute.getId()).setReviewed(execute.getResult()));
+        List<ReviewCase> notStart2 = caseService.getList(execute.getReviewId(), NOTSTARTED);
+        // 设置实际结束时间
+        if (notStart2.isEmpty()) {
+            service.setEndTime(execute.getReviewId());
+        }
+        return Result.getSuccessful();
+    }
+
+    @GetMapping("/case/first")
+    public Result<?> getReviewCaseStart(Long reviewId) {
+        List<ReviewCase> results = caseService.getList(reviewId);
+        if (results.isEmpty()) {
+            return Result.getSuccessful(null);
+        }
+        return Result.getSuccessful(results.get(0).getCaseId());
     }
 
     @GetMapping("/case/{opt}")
     public Result<?> getReviewCase(Long reviewId, Long id, @PathVariable String opt) {
-        // todo 1、从头开始获取评审下的第一条用例 用于开始评审按钮
         List<ReviewCase> results = caseService.getListGtId(opt, reviewId, id);
         if (results.isEmpty()) {
             return Result.getSuccessful(null);

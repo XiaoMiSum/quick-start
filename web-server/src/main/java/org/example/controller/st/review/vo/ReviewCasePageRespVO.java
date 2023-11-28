@@ -11,6 +11,8 @@ public class ReviewCasePageRespVO extends ReviewCaseBaseVO {
 
     private Long id;
 
+    private String reviewed;
+
     private String path;
 
     private String chargeUser;

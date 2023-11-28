@@ -1,5 +1,5 @@
 <template>
-  <ContentWrap :title="'测试评审：' + title">
+  <ContentWrap :title="'测试评审：' + title" :statistics="statistics">
     <el-row :gutter="5">
       <!-- 左侧模块树 -->
       <el-col :span="5" :xs="24">
@@ -47,7 +47,7 @@
                 <Icon class="mr-5px" icon="fa-solid:unlink" />
                 取消关联
               </el-button>
-              <el-button plain type="primary" @click="handleAssociCase()">
+              <el-button plain type="primary" @click="handleReviewFirstCase()">
                 <Icon class="mr-5px" icon="ep:caret-right" />
                 开始评审
               </el-button>
@@ -100,7 +100,7 @@
               :formatter="dateFormatter"
               align="center"
               label="评审时间"
-              prop="updateTime"
+              prop="reviewTime"
               width="170"
             />
             <el-table-column :width="150" align="center" fixed="right" label="操作">
@@ -141,6 +141,18 @@
 </template>
 
 <script lang="ts" setup>
+/** 初始化 **/
+onMounted(async () => {
+  if (params && params.reviewId) {
+    currentReviewId.value = params.reviewId
+    const data = await HTTP.getData(params.reviewId)
+    statistics.value = data.statistics
+    statistics.value.name = '评审进度'
+    title.value = data.name
+  }
+  await getList()
+})
+
 import { ModuleTree } from '@/views/Project/components/index'
 import { CaseAssociated, CaseViewer } from '../components'
 
@@ -171,6 +183,7 @@ const title = ref('')
 const loading = ref(false)
 const list = ref<any>([])
 const total = ref(0)
+const statistics = ref<any>(null)
 const queryFormRef = ref() // 搜索的表单
 
 const getList = async () => {
@@ -216,6 +229,11 @@ const handleReviewCase = async (data?: any) => {
   caseViewer.value.open({ id: data.id, reviewId: data.reviewId })
 }
 
+const handleReviewFirstCase = async () => {
+  const id = await HTTP.getFirstReviewCase({ reviewId: currentReviewId.value })
+  caseViewer.value.open({ id, reviewId: currentReviewId.value })
+}
+
 const handleNodeClick = async (row: any) => {
   queryParams.value.moduleId = row.id === 0 ? null : row.id
   await handleQuery()
@@ -237,16 +255,6 @@ const toggleSelection = () => {
   multipleTableRef.value!.clearSelection()
   checked.value = []
 }
-
-/** 初始化 **/
-onMounted(async () => {
-  if (params && params.reviewId) {
-    currentReviewId.value = params.reviewId
-    const data = await HTTP.getData(params.reviewId)
-    title.value = data.name
-  }
-  await getList()
-})
 </script>
 
 <style scoped></style>

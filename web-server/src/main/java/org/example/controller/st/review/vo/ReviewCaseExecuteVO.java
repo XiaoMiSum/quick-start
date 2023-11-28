@@ -11,6 +11,10 @@ public class ReviewCaseExecuteVO {
 
     private Long id;
 
+    private Long caseId;
+
+    private Long reviewId;
+
     private String result;
 
     private Long reviewer;

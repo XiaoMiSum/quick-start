@@ -21,11 +21,12 @@ export const CASE_LEVEL_ENUMS = [
 ]
 
 export const RESULT_ENUMS = [
-  { key: 'NOTSTART', label: '未开始', tag: 'info' },
-  { key: 'UNREVIEWED', label: '未评审', tag: 'info' },
+  { key: 'NOTSTARTED', label: '未开始', tag: 'warning' },
+  { key: 'UNREVIEWED', label: '未评审', tag: 'warning' },
   { key: 'ONGOING', label: '进行中', tag: 'success' },
   { key: 'PASSED', label: '已通过', tag: 'success' },
-  { key: 'NOPASSED', label: '不通过', tag: 'danger' }
+  { key: 'NOPASSED', label: '不通过', tag: 'danger' },
+  { key: 'SKIPPED', label: '已跳过', tag: 'info' }
 ]
 
 export const LINK_ENUMS = [

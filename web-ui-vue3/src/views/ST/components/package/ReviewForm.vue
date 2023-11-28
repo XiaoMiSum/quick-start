@@ -174,11 +174,11 @@ const submitForm = async (to?: Boolean) => {
     if (to) {
       push('/st/review/' + data.id + '/associated-use-cases')
     } else {
-      _visible.value = false
       // 发送操作成功的事件
       emit('success')
     }
   } finally {
+    _visible.value = false
     formLoading.value = false
   }
 }

@@ -1,4 +1,4 @@
-package org.example.controller.st.review.vo;
+package org.example.controller.st.plan.vo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,11 +11,11 @@ import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_D
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ReviewPageRespVO extends ReviewBaseVO {
+public class PlanPageRespVO extends PlanBaseVO {
 
     private Long id;
 
-    private String speakUser;
+    private String executorUser;
 
     private Statistics statistics;
 

@@ -16,7 +16,9 @@
         />
       </el-form-item>
       <el-form-item label="执行人" prop="executor">
-        <el-input v-model="formData.executor" placeholder="请输入执行人" />
+        <el-select v-model="formData.executor" placeholder="请选择执行人" style="width: 100%">
+          <el-option v-for="item in users" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
       </el-form-item>
       <el-row :gutter="10">
         <el-col :span="1.5">
@@ -62,6 +64,7 @@
 
 <script lang="ts" setup>
 import * as HTTP from '@/api/st/plan'
+import * as USER from '@/api/system/user'
 
 defineOptions({ name: 'ReviewForm' })
 
@@ -75,17 +78,20 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref<any>({
   id: undefined,
   name: '',
-  executor: 0,
+  executor: undefined,
   expectedStartTime: '',
   expectedEndTime: '',
   memo: ''
 })
 const formRules = reactive({
-  name: [{ required: true, message: '评审名称不能为空', trigger: 'blur' }],
-  speaker: [{ required: true, message: '主讲人不能为空', trigger: 'blur' }],
+  name: [{ required: true, message: '测试计划名称不能为空', trigger: 'blur' }],
+  executor: [{ required: true, message: '执行人不能为空', trigger: 'blur' }],
   expectedStartTime: [{ required: true, message: '预计开始时间不能为空', trigger: 'blur' }],
   expectedEndTime: [{ required: true, message: '预计结束时间不能为空', trigger: 'blur' }]
 })
+
+const users = ref<any>([])
+
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
@@ -103,6 +109,12 @@ const open = async (type: string, id?: number) => {
       formLoading.value = false
     }
   }
+  getUsers()
+}
+
+/**  获取用户列表 */
+const getUsers = async () => {
+  users.value = await USER.listSimple()
 }
 
 /** 重置表单 */
@@ -110,7 +122,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     name: '',
-    executor: 0,
+    executor: undefined,
     expectedStartTime: '',
     expectedEndTime: '',
     memo: ''
@@ -139,11 +151,11 @@ const submitForm = async (to?: Boolean) => {
     if (to) {
       push('/st/plan/' + data.id + '/associated-use-cases')
     } else {
-      _visible.value = false
       // 发送操作成功的事件
       emit('success')
     }
   } finally {
+    _visible.value = false
     formLoading.value = false
   }
 }

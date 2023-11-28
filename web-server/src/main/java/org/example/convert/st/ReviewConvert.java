@@ -29,7 +29,6 @@ public interface ReviewConvert {
                 .setId(bean.getId())
                 .setActualEndTime(bean.getActualEndTime())
                 .setActualStartTime(bean.getActualStartTime())
-                .setStatus(bean.getStatus())
                 .setProjectId(bean.getProjectId())
                 .setSpeaker(bean.getSpeaker())
                 .setName(bean.getName())
@@ -46,6 +45,7 @@ public interface ReviewConvert {
 
     default ReviewCasePageRespVO convert2(Testcase bean) {
         return (ReviewCasePageRespVO) new ReviewCasePageRespVO()
+                .setReviewed(bean.getReviewed())
                 .setCaseId(bean.getId())
                 .setName(bean.getName())
                 .setChargeUserId(bean.getChargeUserId())
