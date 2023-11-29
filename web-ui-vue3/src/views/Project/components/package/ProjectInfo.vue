@@ -36,9 +36,9 @@ import { Card } from '@/components/Card'
 
 import * as PROJECT from '@/api/project'
 
-import { useUserStoreWithOut } from '@/store/modules/user'
+import { useUserStore } from '@/store/modules/user'
 
-const userStore = useUserStoreWithOut()
+const userStore = useUserStore()
 
 defineOptions({ name: 'ProjectInfo' })
 
@@ -47,12 +47,23 @@ const info = ref<any>({})
 /** 添加/修改操作 */
 const infoFormRef = ref()
 const openForm = (type: string, id?: number) => {
+  console.log('获取默认项目id: ' + userStore.getProject)
   infoFormRef.value.open(type, id)
 }
 
 const getInfo = async () => {
-  info.value = await PROJECT.getData(userStore.getUser.id)
+  const id = userStore.getProject
+  info.value = await PROJECT.getData(id)
 }
+
+// 监听当前项目变化，刷新列表数据
+watch(
+  computed(() => userStore.getProject),
+  () => {
+    getInfo()
+  },
+  { immediate: true, deep: true }
+)
 
 onMounted(() => {
   getInfo()

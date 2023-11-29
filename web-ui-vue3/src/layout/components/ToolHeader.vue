@@ -38,6 +38,9 @@ const locale = computed(() => appStore.getLocale)
 // 消息图标
 const message = computed(() => appStore.getMessage)
 
+// 项目选择
+const projectPick = computed(() => appStore.getProjectPick)
+
 export default defineComponent({
   name: 'ToolHeader',
   setup() {
@@ -59,7 +62,7 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
-          <ProjectSelector />
+          {projectPick.value ? <ProjectSelector class="custom-hover" /> : undefined}
           {screenfull.value ? (
             <Screenfull class="custom-hover" color="var(--top-header-text-color)"></Screenfull>
           ) : undefined}

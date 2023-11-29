@@ -34,13 +34,19 @@
           <!-- 操作工具栏 -->
           <el-row :gutter="10">
             <el-col :span="1.5">
-              <el-button plain type="primary" @click="handleAssociCase()">
+              <el-button
+                plain
+                type="primary"
+                v-hasPermi="['plan:case:add']"
+                @click="handleAssociCase()"
+              >
                 <Icon class="mr-5px" icon="ep:link" />
                 关联用例
               </el-button>
               <el-button
                 :disabled="!checked || checked.length < 1"
                 plain
+                v-hasPermi="['plan:case:remove']"
                 type="danger"
                 @click="handleBatchUnlinkCase"
               >
@@ -102,12 +108,24 @@
             <el-table-column :width="150" align="center" fixed="right" label="操作">
               <template #default="scope">
                 <el-tooltip content="执行" placement="top">
-                  <el-button circle plain type="primary" @click="handleExecuteCase(scope.row)">
+                  <el-button
+                    circle
+                    plain
+                    type="primary"
+                    v-hasPermi="['plan:case:execute']"
+                    @click="handleExecuteCase(scope.row)"
+                  >
                     <Icon icon="ep:checked" />
                   </el-button>
                 </el-tooltip>
                 <el-tooltip content="移除" placement="top">
-                  <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
+                  <el-button
+                    circle
+                    plain
+                    type="danger"
+                    v-hasPermi="['plan:case:remove']"
+                    @click="handleDelete(scope.row.id)"
+                  >
                     <Icon icon="ep:unlock" />
                   </el-button>
                 </el-tooltip>
@@ -149,6 +167,9 @@ import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRo
 const { params } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 
 const message = useMessage() // 消息弹窗
+
+import { useAppStore } from '@/store/modules/app'
+const appStore = useAppStore()
 
 defineOptions({ name: 'PlanAssociated' })
 
@@ -234,6 +255,7 @@ const toggleSelection = () => {
 
 /** 初始化 **/
 onMounted(async () => {
+  appStore.setProjectPick(false)
   if (params && params.planId) {
     currentPlanId.value = params.planId
     const data = await HTTP.getData(params.planId)

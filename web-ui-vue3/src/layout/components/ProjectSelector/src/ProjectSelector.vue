@@ -9,14 +9,23 @@ defineOptions({ name: 'ProjectSelector' })
 
 const currentProject = userStore.getDefaultProject || 1
 const projects = ref<any>([])
+const title = ref('')
 
 const getList = async () => {
   projects.value = await getSimple()
+  projects.value.length
+  for (let i = 0; i < projects.value.length; i++) {
+    const item = projects.value[i]
+    if (item.code === currentProject) {
+      title.value = item.name
+    }
+  }
 }
 
-const handleChange = async (value: number) => {
+const handleChange = async (value: number, name: string) => {
   await userStore.setDefaultProject(value)
-  location.href = '/index'
+  title.value = name
+  // location.href = '/index'
 }
 
 onMounted(() => {
@@ -25,19 +34,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-select
-    v-model="currentProject"
-    class="m-2"
-    placeholder="Select"
-    size="large"
-    @change="handleChange"
-  >
-    <el-option
-      v-for="item in projects"
-      :key="item.code"
-      :disiable="item.disiable"
-      :label="item.name"
-      :value="item.code"
-    />
-  </el-select>
+  <el-dropdown>
+    <span class="el-dropdown-link"> {{ '项目：' + title }}</span>
+    <template #dropdown>
+      <el-dropdown-menu>
+        <el-dropdown-item
+          v-for="item in projects"
+          :key="item.code"
+          :disiable="item.disiable"
+          @click="handleChange(item.code, item.name)"
+        >
+          {{ item.name }}
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </template>
+  </el-dropdown>
 </template>
+
+<style scoped>
+.el-dropdown-link {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+}
+</style>

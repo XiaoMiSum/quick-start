@@ -41,7 +41,7 @@ public class TagController {
         return Result.getSuccessful();
     }
 
-    @PutMapping("/status")
+    @PutMapping("/trackedatus")
     public Result<?> updateStatus(@RequestHeader("x-project-id") Long projectId, @RequestBody TagUpdateStatusReqVo data) {
         data.setProjectId(projectId);
         service.update(TagConvert.INSTANCE.convert(data));

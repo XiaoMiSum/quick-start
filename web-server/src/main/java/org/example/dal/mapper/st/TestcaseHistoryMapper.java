@@ -1,7 +1,7 @@
 package org.example.dal.mapper.st;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.example.dal.dataobject.st.TestcaseHistory;
+import org.example.dal.dataobject.tracked.TestcaseHistory;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;

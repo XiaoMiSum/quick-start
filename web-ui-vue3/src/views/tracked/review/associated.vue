@@ -34,7 +34,12 @@
           <!-- 操作工具栏 -->
           <el-row :gutter="10">
             <el-col :span="1.5">
-              <el-button plain type="primary" @click="handleAssociCase()">
+              <el-button
+                plain
+                type="primary"
+                v-hasPermi="['review:case:add']"
+                @click="handleAssociCase()"
+              >
                 <Icon class="mr-5px" icon="ep:link" />
                 关联用例
               </el-button>
@@ -42,12 +47,18 @@
                 :disabled="!checked || checked.length < 1"
                 plain
                 type="danger"
+                v-hasPermi="['review:case:remove']"
                 @click="handleBatchUnlinkCase"
               >
                 <Icon class="mr-5px" icon="fa-solid:unlink" />
                 取消关联
               </el-button>
-              <el-button plain type="primary" @click="handleReviewFirstCase()">
+              <el-button
+                plain
+                type="primary"
+                v-hasPermi="['review:case:execute']"
+                @click="handleReviewFirstCase()"
+              >
                 <Icon class="mr-5px" icon="ep:caret-right" />
                 开始评审
               </el-button>
@@ -106,12 +117,24 @@
             <el-table-column :width="150" align="center" fixed="right" label="操作">
               <template #default="scope">
                 <el-tooltip content="评审" placement="top">
-                  <el-button circle plain type="primary" @click="handleReviewCase(scope.row)">
+                  <el-button
+                    circle
+                    plain
+                    type="primary"
+                    v-hasPermi="['review:case:execute']"
+                    @click="handleReviewCase(scope.row)"
+                  >
                     <Icon icon="ep:checked" />
                   </el-button>
                 </el-tooltip>
                 <el-tooltip content="移除" placement="top">
-                  <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
+                  <el-button
+                    circle
+                    plain
+                    type="danger"
+                    v-hasPermi="['review:case:remove']"
+                    @click="handleDelete(scope.row.id)"
+                  >
                     <Icon icon="ep:unlock" />
                   </el-button>
                 </el-tooltip>
@@ -143,6 +166,7 @@
 <script lang="ts" setup>
 /** 初始化 **/
 onMounted(async () => {
+  appStore.setProjectPick(true)
   if (params && params.reviewId) {
     currentReviewId.value = params.reviewId
     const data = await HTTP.getData(params.reviewId)
@@ -152,6 +176,8 @@ onMounted(async () => {
   }
   await getList()
 })
+import { useAppStore } from '@/store/modules/app'
+const appStore = useAppStore()
 
 import { ModuleTree } from '@/views/Project/components/index'
 import { CaseAssociated, CaseViewer } from '../components'

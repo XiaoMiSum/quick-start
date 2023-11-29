@@ -75,6 +75,10 @@ import * as LINK from '@/api/project/link'
 
 import { LINK_ENUMS } from '@/utils/enums'
 
+import { useUserStore } from '@/store/modules/user'
+
+const userStore = useUserStore()
+
 const link = ref<any>({
   list: [],
   total: 0
@@ -113,6 +117,15 @@ const handleDeleteLink = (id: any) => {
   LINK.removeData(id)
   handleQueryLink()
 }
+
+// 监听当前项目变化，刷新列表数据
+watch(
+  computed(() => userStore.getProject),
+  () => {
+    getLink()
+  },
+  { immediate: true, deep: true }
+)
 
 onMounted(() => {
   getLink()

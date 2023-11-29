@@ -1,8 +1,8 @@
 package org.example.dal.mapper.st;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.example.controller.st.review.vo.ReviewQueryReqVO;
-import org.example.dal.dataobject.st.Review;
+import org.example.controller.tracked.review.vo.ReviewQueryReqVO;
+import org.example.dal.dataobject.tracked.Review;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;

@@ -19,7 +19,7 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column v-if="showActual" label="实际结果">
+        <el-table-column v-if="false" label="实际结果">
           <template #default="scope">
             <el-form-item :prop="'formData.steps.' + scope.$index + '.actual'" clearable>
               <el-input v-model="scope.row.actual" type="textarea" />
@@ -52,15 +52,10 @@ const props = defineProps({
   modelValue: {
     required: true,
     type: Object as () => CaseVO
-  },
-  showActual: {
-    required: false,
-    type: Boolean,
-    default: false
   }
 })
 
-const { modelValue, showActual } = toRefs(props)
+const { modelValue } = toRefs(props)
 
 const dragOptions = [
   {

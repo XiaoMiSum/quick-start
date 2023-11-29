@@ -59,6 +59,8 @@ import { ModuleForm } from '../components'
 import * as UserApi from '@/api/system/user'
 
 defineOptions({ name: 'SystemDept' })
+import { useAppStore } from '@/store/modules/app'
+const appStore = useAppStore()
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -126,6 +128,7 @@ const handleDelete = async (id: number) => {
 
 /** 初始化 **/
 onMounted(async () => {
+  appStore.setProjectPick(true)
   await getList()
   // 获取用户列表
   userList.value = await UserApi.listSimple()

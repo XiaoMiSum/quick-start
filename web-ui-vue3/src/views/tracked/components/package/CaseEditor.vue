@@ -1,10 +1,13 @@
 <template>
   <CaseInfo v-model="caseData" :modules="modules" :tags="tags" :users="users" />
   <CaseStep v-model="caseData" :showActual="false" />
-  <ContentWrap v-if="!viewModel">
+  <ContentWrap>
     <div class="float-right">
       <el-button @click="handleGoCaseList">取消</el-button>
-      <el-button :loading="loading" type="primary" @click="handleSubmit">确定</el-button>
+      <el-button :loading="loading" type="primary" @click="handleSubmitAndCloseView"
+        >保存并关闭</el-button
+      >
+      <el-button :loading="loading" @click="handleSubmitAndAdd"> 保存并继续添加 </el-button>
     </div>
   </ContentWrap>
 </template>
@@ -20,30 +23,19 @@ import * as MODULE from '@/api/project/module'
 import * as TAG from '@/api/project/tag'
 import * as USER from '@/api/system/user'
 
+import { useTagsViewStore } from '@/store/modules/tagsView'
 import { useUserStoreWithOut } from '@/store/modules/user'
-import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
+import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 
 const userStore = useUserStoreWithOut()
 
 const { params, query } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 
-const { push } = useRouter()
+const { currentRoute, push } = useRouter()
+
+const tagsViewStore = useTagsViewStore()
 
 const message = useMessage()
-
-const props = defineProps({
-  viewModel: {
-    required: false,
-    type: Boolean,
-    default: false
-  },
-  action: {
-    required: false,
-    type: String,
-    default: 'add'
-  }
-})
-const { viewModel, action } = toRefs(props)
 
 const caseData = ref<CaseVO>({
   moduleId: undefined,
@@ -57,25 +49,53 @@ const users = ref<any>([])
 const tags = ref<any>([])
 
 const loading = ref(false)
-const handleSubmit = async () => {
+
+const handleSubmitAndCloseView = async () => {
   loading.value = true
   try {
-    if (action.value === 'add') {
+    if (!caseData.value.id) {
+      caseData.value.id = await HTTP.addData(caseData.value)
+      message.success('新增成功')
+      if (query && query.from) {
+        toCaseAdd()
+      }
+    } else {
+      await HTTP.updateData(caseData.value)
+      message.success('更新成功')
+    }
+    await handleCloseView()
+    toCaseList()
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitAndAdd = async () => {
+  loading.value = true
+  try {
+    if (!caseData.value.id) {
       await HTTP.addData(caseData.value)
       message.success('新增成功')
       resetData()
     } else {
       await HTTP.updateData(caseData.value)
       message.success('更新成功')
+      await handleCloseView()
+      toCaseAdd()
     }
   } finally {
     loading.value = false
   }
 }
 
+const handleCloseView = async () => {
+  tagsViewStore.delView(unref(currentRoute))
+}
+
 const resetData = () => {
   caseData.value = {
     moduleId: undefined,
+    chargeUserId: userStore.getUser.id,
     name: '',
     level: '',
     steps: [{ exec: '', expected: '', actual: '' }]
@@ -86,9 +106,18 @@ const handleGoCaseList = async () => {
   try {
     await message.confirm('确认返回测试用例列表？')
     resetData()
-    push('/st/case')
+    await handleCloseView()
+    toCaseList()
   } finally {
   }
+}
+
+const toCaseList = async () => {
+  push('/st/case')
+}
+
+const toCaseAdd = async () => {
+  push('/st/case/add')
 }
 
 /** 获得模块树 */
@@ -116,6 +145,7 @@ onMounted(async () => {
   }
   if (query && query.from) {
     caseData.value = await HTTP.getData(query.from)
+    delete caseData.value.id
     caseData.value.name = 'COPY_' + caseData.value.name
   }
   caseData.value.chargeUserId = userStore.getUser.id

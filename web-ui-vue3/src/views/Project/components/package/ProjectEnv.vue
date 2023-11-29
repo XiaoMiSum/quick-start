@@ -100,6 +100,10 @@ import * as ENV from '@/api/project/env'
 
 import { ENV_ENUMS, PROTOCOL_ENUMS } from '@/utils/enums'
 
+import { useUserStore } from '@/store/modules/user'
+
+const userStore = useUserStore()
+
 const env = ref<any>({
   list: [],
   total: 0
@@ -138,6 +142,15 @@ const handleDeleteEnv = (id: any) => {
   ENV.removeData(id)
   handleQueryEnv()
 }
+
+// 监听当前项目变化，刷新列表数据
+watch(
+  computed(() => userStore.getProject),
+  () => {
+    getEnv()
+  },
+  { immediate: true, deep: true }
+)
 
 onMounted(() => {
   getEnv()

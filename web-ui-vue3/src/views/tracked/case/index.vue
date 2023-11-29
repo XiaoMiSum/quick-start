@@ -64,7 +64,7 @@
           @selection-change="handleSelectionChange"
         >
           <el-table-column :reserve-selection="true" type="selection" width="35" />
-          <el-table-column align="center" label="编号" prop="id" width="60" />
+          <el-table-column align="center" label="编号" prop="id" width="55" />
           <el-table-column label="用例名称" prop="name" show-overflow-tooltip width="200">
             <template #default="scope">
               <el-button link type="primary" @click="handleEditCase(scope.row.id)">
@@ -90,7 +90,7 @@
               <EnumTag :enums="RESULT_ENUMS" :value="scope.row.reviewed" />
             </template>
           </el-table-column>
-          <el-table-column align="center" label="负责人" prop="chargeUser" show-overflow-tooltip />
+          <el-table-column label="负责人" prop="chargeUser" show-overflow-tooltip />
           <el-table-column
             :formatter="dateFormatter"
             align="center"
@@ -144,6 +144,11 @@ import * as HTTP from '@/api/st/testcase'
 const { push } = useRouter() // 路由
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
+
+import { useAppStore } from '@/store/modules/app'
+const appStore = useAppStore()
+import { useUserStore } from '@/store/modules/user'
+const userStore = useUserStore()
 
 defineOptions({ name: 'ProjectManager' })
 
@@ -233,8 +238,18 @@ const getTree = async () => {
   modules.value = handleTree(data)
 }
 
+// 监听当前项目变化，刷新列表数据
+watch(
+  computed(() => userStore.getProject),
+  () => {
+    getList()
+  },
+  { immediate: true, deep: true }
+)
+
 /** 初始化 **/
 onMounted(async () => {
+  appStore.setProjectPick(true)
   await getList()
   await getTree()
 })

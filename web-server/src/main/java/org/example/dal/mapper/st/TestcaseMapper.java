@@ -1,8 +1,8 @@
 package org.example.dal.mapper.st;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.example.controller.st.testcase.vo.TestcaseQueryReqVO;
-import org.example.dal.dataobject.st.Testcase;
+import org.example.controller.tracked.testcase.vo.TestcaseQueryReqVO;
+import org.example.dal.dataobject.tracked.Testcase;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;

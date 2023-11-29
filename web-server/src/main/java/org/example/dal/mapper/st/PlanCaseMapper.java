@@ -1,8 +1,8 @@
 package org.example.dal.mapper.st;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.example.controller.st.plan.vo.PlanCaseQueryReqVO;
-import org.example.dal.dataobject.st.PlanCase;
+import org.example.controller.tracked.plan.vo.PlanCaseQueryReqVO;
+import org.example.dal.dataobject.tracked.PlanCase;
 import org.example.enums.ResultEnum;
 import org.example.model.dto.Statistics;
 import xyz.migoo.framework.common.pojo.PageResult;

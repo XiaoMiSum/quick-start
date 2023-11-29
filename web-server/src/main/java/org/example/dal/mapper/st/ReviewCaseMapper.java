@@ -1,8 +1,8 @@
 package org.example.dal.mapper.st;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.example.controller.st.review.vo.ReviewCaseQueryReqVO;
-import org.example.dal.dataobject.st.ReviewCase;
+import org.example.controller.tracked.review.vo.ReviewCaseQueryReqVO;
+import org.example.dal.dataobject.tracked.ReviewCase;
 import org.example.enums.ResultEnum;
 import org.example.model.dto.Statistics;
 import xyz.migoo.framework.common.pojo.PageResult;

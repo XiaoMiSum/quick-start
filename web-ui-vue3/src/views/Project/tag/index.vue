@@ -80,6 +80,8 @@ import { COMMON_STATUS_ENUM } from '@/utils/enums'
 import { TagForm } from '../components'
 
 import * as HTTP from '@/api/project/tag'
+import { useAppStore } from '@/store/modules/app'
+const appStore = useAppStore()
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -157,6 +159,7 @@ const handleDelete = async (id: number) => {
 
 /** 初始化 **/
 onMounted(async () => {
+  appStore.setProjectPick(true)
   await getList()
 })
 </script>

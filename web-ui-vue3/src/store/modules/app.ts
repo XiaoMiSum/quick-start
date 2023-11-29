@@ -38,6 +38,7 @@ interface AppState {
   footer: boolean
   theme: ThemeTypes
   fixedMenu: boolean
+  projectPick: boolean
 }
 
 export const useAppStore = defineStore('app', {
@@ -48,7 +49,7 @@ export const useAppStore = defineStore('app', {
       mobile: false, // 是否是移动端
       title: import.meta.env.VITE_APP_TITLE, // 标题
       pageLoading: false, // 路由跳转loading
-
+      projectPick: false, // 项目选择
       breadcrumb: true, // 面包屑
       breadcrumbIcon: true, // 面包屑图标
       collapse: false, // 折叠菜单
@@ -187,6 +188,9 @@ export const useAppStore = defineStore('app', {
     },
     getShowMerchantThirdPartyUser(): boolean {
       return this.showMerchantThirdPartyUser
+    },
+    getProjectPick(): boolean {
+      return this.projectPick
     }
   },
   actions: {
@@ -203,6 +207,9 @@ export const useAppStore = defineStore('app', {
     },
     setBreadcrumbIcon(breadcrumbIcon: boolean) {
       this.breadcrumbIcon = breadcrumbIcon
+    },
+    setProjectPick(projectPick: boolean) {
+      this.projectPick = projectPick
     },
     setCollapse(collapse: boolean) {
       this.collapse = collapse

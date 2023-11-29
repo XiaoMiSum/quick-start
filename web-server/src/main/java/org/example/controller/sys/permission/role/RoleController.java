@@ -53,7 +53,7 @@ public class RoleController {
         return Result.getSuccessful();
     }
 
-    @PutMapping("/status")
+    @PutMapping("/trackedatus")
     @PreAuthorize("@ss.hasPermission('system:role:update')")
     public Result<?> updateRole(@RequestBody RoleStatusUpdateReqVO reqVO) {
         roleService.update(RoleConvert.INSTANCE.convert(reqVO));
