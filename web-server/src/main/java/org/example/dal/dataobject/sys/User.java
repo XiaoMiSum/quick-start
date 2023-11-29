@@ -19,13 +19,17 @@ public class User extends BaseDO {
     @TableId
     private Long id;
 
+    private String username;
+
+    private String password;
+
     private String name;
 
-    private String phone;
+    private String avatar;
+
+    private String mobile;
 
     private Integer gender;
-
-    private String avatar;
 
     private Long deptId;
 
@@ -34,7 +38,7 @@ public class User extends BaseDO {
 
     private String email;
 
-    private String password;
+    private String memo;
 
     private Integer status;
 

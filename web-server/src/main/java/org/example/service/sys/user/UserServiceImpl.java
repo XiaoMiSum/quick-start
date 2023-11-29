@@ -39,10 +39,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(String phone) {
-        User user = mapper.selectByPhone(phone);
+    public User get(String username) {
+        User user = mapper.selectByUsername(username);
         if (Objects.isNull(user)) {
-            throw new UsernameNotFoundException(phone);
+            throw new UsernameNotFoundException(username);
         }
         return user;
     }
@@ -76,8 +76,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void verify(String phone) {
-        if (Objects.nonNull(mapper.selectByPhone(phone))) {
+    public void verify(String username) {
+        if (Objects.nonNull(mapper.selectByUsername(username))) {
             throw ServiceExceptionUtil.get(ErrorCodeConstants.USER_IS_EXISTS);
         }
     }

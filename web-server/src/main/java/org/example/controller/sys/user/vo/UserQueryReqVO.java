@@ -11,7 +11,7 @@ public class UserQueryReqVO extends PageParam {
 
     private String name;
 
-    private String phone;
+    private String username;
 
     private Integer status;
 

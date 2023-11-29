@@ -41,6 +41,13 @@ import Logger from '@/utils/Logger'
 
 import VueDOMPurifyHTML from 'vue-dompurify-html' // 解决v-html 的安全隐患
 
+import VXETable from 'vxe-table'
+import 'vxe-table/lib/style.css'
+
+function useTable (app) {
+  app.use(VXETable)
+}
+
 // 创建实例
 const setupAll = async () => {
   const app = createApp(App)
@@ -62,6 +69,7 @@ const setupAll = async () => {
   await router.isReady()
 
   app.use(VueDOMPurifyHTML)
+  .use(useTable)
 
   app.mount('#app')
 }

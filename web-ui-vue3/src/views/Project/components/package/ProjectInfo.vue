@@ -10,17 +10,17 @@
     </template>
     <el-descriptions :column="2" border>
       <el-descriptions-item label="产品经理">
-        <el-tag v-for="(item, index) in info.productManagers" :key="index" class="ml-2" type="info"
+        <el-tag v-for="(item, index) in info.productManagers" :key="index" class="mr-2" type="info"
           >{{ item }}
         </el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="开发人员">
-        <el-tag v-for="(item, index) in info.developers" :key="index" class="ml-2" type="info"
+        <el-tag v-for="(item, index) in info.developers" :key="index" class="mr-2" type="info"
           >{{ item }}
         </el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="测试人员">
-        <el-tag v-for="(item, index) in info.testers" :key="index" class="ml-2" type="info"
+        <el-tag v-for="(item, index) in info.testers" :key="index" class="mr-2" type="info"
           >{{ item }}
         </el-tag>
       </el-descriptions-item>

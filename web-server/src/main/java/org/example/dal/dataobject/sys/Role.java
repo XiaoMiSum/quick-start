@@ -36,6 +36,6 @@ public class Role extends BaseDO {
     /**
      * 备注
      */
-    private String remark;
+    private String memo;
 
 }

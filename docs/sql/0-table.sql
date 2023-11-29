@@ -46,8 +46,7 @@ CREATE TABLE `infra_error_log`
     `update_time`                  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '接口异常表';
+  AUTO_INCREMENT = 1 COMMENT = '接口异常表';
 
 -- ----------------------------
 -- Table structure for mg_project
@@ -69,8 +68,7 @@ CREATE TABLE `mg_project`
     `update_time`      datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '项目信息表';
+  AUTO_INCREMENT = 1 COMMENT = '项目信息表';
 
 -- ----------------------------
 -- Table structure for mg_project_env
@@ -92,8 +90,7 @@ CREATE TABLE `mg_project_env`
     `update_time` datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '项目环境表';
+  AUTO_INCREMENT = 1 COMMENT = '项目环境表';
 
 -- ----------------------------
 -- Table structure for mg_project_link
@@ -113,8 +110,7 @@ CREATE TABLE `mg_project_link`
     `update_time` datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '项目链接表';
+  AUTO_INCREMENT = 1 COMMENT = '项目链接表';
 
 -- ----------------------------
 -- Table structure for mg_project_member
@@ -132,8 +128,7 @@ CREATE TABLE `mg_project_member`
     `update_time` datetime    NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '项目成员表';
+  AUTO_INCREMENT = 1 COMMENT = '项目成员表';
 
 -- ----------------------------
 -- Table structure for mg_project_module
@@ -154,8 +149,7 @@ CREATE TABLE `mg_project_module`
     `update_time` datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '项目模块表';
+  AUTO_INCREMENT = 1 COMMENT = '项目模块表';
 
 -- ----------------------------
 -- Table structure for mg_project_tag
@@ -174,8 +168,7 @@ CREATE TABLE `mg_project_tag`
     `update_time` datetime    NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '项目标签表';
+  AUTO_INCREMENT = 1 COMMENT = '项目标签表';
 
 -- ----------------------------
 -- Table structure for mg_tracked_plan
@@ -198,8 +191,7 @@ CREATE TABLE `mg_tracked_plan`
     `updater`             varchar(64)  NOT NULL,
     `update_time`         datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-    COMMENT = '测试计划表';
+) ENGINE = InnoDB COMMENT = '测试计划表';
 
 -- ----------------------------
 -- Table structure for mg_tracked_plan_case
@@ -228,8 +220,7 @@ CREATE TABLE `mg_tracked_plan_case`
     `updater`         varchar(64)  NOT NULL,
     `update_time`     datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-    COMMENT = '计划用例表';
+) ENGINE = InnoDB COMMENT = '计划用例表';
 
 -- ----------------------------
 -- Table structure for mg_tracked_review
@@ -284,8 +275,7 @@ CREATE TABLE `mg_tracked_review_case`
     `updater`        varchar(64)  NOT NULL,
     `update_time`    datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-    COMMENT = '评审用例表';
+) ENGINE = InnoDB COMMENT = '评审用例表';
 
 -- ----------------------------
 -- Table structure for mg_tracked_testcase
@@ -310,8 +300,7 @@ CREATE TABLE `mg_tracked_testcase`
     `update_time`    datetime     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '测试用例表';
+  AUTO_INCREMENT = 1 COMMENT = '测试用例表';
 
 -- ----------------------------
 -- Table structure for mg_tracked_testcase_history
@@ -332,8 +321,7 @@ CREATE TABLE `mg_tracked_testcase_history`
     `updater`      varchar(64) NOT NULL,
     `update_time`  datetime    NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-    COMMENT = '项目归档表';
+) ENGINE = InnoDB COMMENT = '项目归档表';
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -355,8 +343,7 @@ CREATE TABLE `sys_dept`
     `update_time`    datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '部门信息表';
+  AUTO_INCREMENT = 1 COMMENT = '部门信息表';
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -386,8 +373,7 @@ CREATE TABLE `sys_menu`
     `update_time`    datetime     NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '菜单权限表';
+  AUTO_INCREMENT = 1 COMMENT = '菜单权限表';
 
 -- ----------------------------
 -- Table structure for sys_post
@@ -408,8 +394,7 @@ CREATE TABLE `sys_post`
     `update_time` datetime     NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '岗位信息表';
+  AUTO_INCREMENT = 1 COMMENT = '岗位信息表';
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -423,7 +408,7 @@ CREATE TABLE `sys_role`
     `sort`        int          NOT NULL COMMENT '排序',
     `status`      tinyint(1)   NOT NULL DEFAULT 1 COMMENT '状态：1正常；0停用',
     `type`        int          NOT NULL COMMENT '角色类型',
-    `remark`      varchar(512) NULL     DEFAULT NULL,
+    `memo`        varchar(512) NULL     DEFAULT NULL,
     `deleted`     tinyint(1)   NOT NULL DEFAULT 0,
     `creator`     varchar(64)  NULL     DEFAULT NULL,
     `create_time` datetime     NULL     DEFAULT NULL,
@@ -431,8 +416,7 @@ CREATE TABLE `sys_role`
     `update_time` datetime     NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '角色信息表';
+  AUTO_INCREMENT = 1 COMMENT = '角色信息表';
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -450,8 +434,7 @@ CREATE TABLE `sys_role_menu`
     `update_time` datetime     NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '角色菜单表';
+  AUTO_INCREMENT = 1 COMMENT = '角色菜单表';
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -460,24 +443,26 @@ DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`
 (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
-    `phone`       varchar(12)  NOT NULL COMMENT '用户手机号，登录名',
+    `username`    varchar(32)  NOT NULL COMMENT '用户手机号，登录名',
     `password`    varchar(255) NOT NULL COMMENT '密码',
     `name`        varchar(255) NOT NULL COMMENT '真实姓名',
-    `avatar`      varchar(512) NULL     DEFAULT NULL COMMENT '头像',
-    `status`      tinyint      NOT NULL DEFAULT 1 COMMENT '状态0禁用、1启用',
-    `gender`      tinyint      NULL     DEFAULT NULL COMMENT '性别 1男 2女',
-    `dept_id`     bigint       NULL     DEFAULT NULL COMMENT '部门编号',
-    `post_ids`    varchar(255) NULL     DEFAULT NULL COMMENT '岗位编号',
-    `email`       varchar(255) NULL     DEFAULT NULL COMMENT '邮箱地址',
-    `deleted`     tinyint(1)   NOT NULL DEFAULT 0,
-    `creator`     varchar(64)  NULL     DEFAULT NULL,
-    `create_time` datetime     NULL     DEFAULT NULL,
-    `updater`     varchar(64)  NULL     DEFAULT NULL,
-    `update_time` datetime     NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `avatar`      varchar(512)          DEFAULT NULL COMMENT '头像',
+    `mobile`      varchar(32)           DEFAULT NULL COMMENT '手机号',
+    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT '状态0禁用、1启用',
+    `gender`      tinyint               DEFAULT NULL COMMENT '性别 1男 2女',
+    `dept_id`     bigint                DEFAULT NULL COMMENT '部门编号',
+    `post_ids`    varchar(255)          DEFAULT NULL COMMENT '岗位编号',
+    `email`       varchar(255)          DEFAULT NULL COMMENT '邮箱地址',
+    `memo`        varchar(255)          DEFAULT NULL,
+    `deleted`     tinyint(1)   NOT NULL DEFAULT '0',
+    `creator`     varchar(64)           DEFAULT NULL,
+    `create_time` datetime              DEFAULT NULL,
+    `updater`     varchar(64)           DEFAULT NULL,
+    `update_time` datetime              DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '用户信息表';
+  AUTO_INCREMENT = 3 COMMENT ='用户信息表';
+
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -495,7 +480,6 @@ CREATE TABLE `sys_user_role`
     `update_time` datetime    NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-    COMMENT = '用户角色表';
+  AUTO_INCREMENT = 1 COMMENT = '用户角色表';
 
 SET FOREIGN_KEY_CHECKS = 1;

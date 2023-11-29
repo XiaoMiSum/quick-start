@@ -12,4 +12,6 @@ public class UserUpdateReqVO extends UserBaseVO {
     private Long id;
 
     private Integer status;
+
+    private String memo;
 }

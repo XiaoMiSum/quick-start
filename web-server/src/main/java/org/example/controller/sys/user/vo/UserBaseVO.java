@@ -10,6 +10,8 @@ import java.util.Set;
 @Setter
 public abstract class UserBaseVO {
 
+    private String username;
+
     @Size(max = 30, message = "用户昵称长度不能超过30个字符")
     private String name;
 
@@ -19,7 +21,7 @@ public abstract class UserBaseVO {
 
     private String email;
 
-    private String phone;
+    private String mobile;
 
     private Integer gender;
 

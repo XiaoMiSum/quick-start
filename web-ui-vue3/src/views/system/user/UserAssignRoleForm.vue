@@ -40,13 +40,13 @@ const formRef = ref() // 表单 Ref
 const roleList = ref([]) // 角色的列表
 
 /** 打开弹窗 */
-const open = async (row: UserApi.UserVO) => {
+const open = async (row: any) => {
   dialogVisible.value = true
   resetForm()
   // 设置数据
   formData.value.id = row.id
   formData.value.username = row.username
-  formData.value.nickname = row.nickname
+  formData.value.nickname = row.name
   // 获得角色拥有的菜单集合
   formLoading.value = true
   try {

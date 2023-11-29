@@ -3,20 +3,17 @@ import request from '@/config/axios'
 const url = '/user'
 
 export interface UserVO {
-  id: number
+  id?: number
   username: string
-  nickname: string
-  deptId: number
-  postIds: string[]
-  email: string
-  mobile: string
-  sex: number
-  avatar: string
-  loginIp: string
-  status: number
-  remark: string
-  loginDate: Date
-  createTime: Date
+  name: string
+  deptId?: number
+  postIds?: string[]
+  email?: string
+  mobile?: string
+  gender?: number
+  avatar?: string
+  status?: number
+  memo?: string
 }
 
 // 查询用户列表

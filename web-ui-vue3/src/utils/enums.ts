@@ -44,13 +44,13 @@ export const LINK_ENUMS = [
 ]
 
 export const ENV_ENUMS = [
-  { key: 'dev', label: '开发环境', tag: 'danger' },
-  { key: 'test', label: '测试环境', tag: 'danger' },
-  { key: 'uat', label: 'UAT环境', tag: 'danger' },
+  { key: 'dev', label: '开发环境', tag: 'info' },
+  { key: 'test', label: '测试环境', tag: 'success' },
+  { key: 'uat', label: 'UAT环境', tag: 'warning' },
   { key: 'prod', label: '正式环境', tag: 'danger' }
 ]
 
 export const PROTOCOL_ENUMS = [
-  { key: 'http', label: 'HTTP', tag: 'danger' },
-  { key: 'https', label: 'HTTPS', tag: 'danger' }
+  { key: 'http', label: 'HTTP', tag: 'primary' },
+  { key: 'https', label: 'HTTPS', tag: 'success' }
 ]

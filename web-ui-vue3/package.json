@@ -54,7 +54,9 @@
     "vue-router": "^4.2.5",
     "vue-types": "^5.1.1",
     "vuedraggable": "^4.1.0",
+    "vxe-table": "^4.5.13",
     "web-storage-cache": "^1.1.1",
+    "xe-utils": "^3.5.14",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {

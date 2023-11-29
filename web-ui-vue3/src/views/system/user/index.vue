@@ -12,7 +12,7 @@
         <el-form ref="queryFormRef" :inline="true" :model="queryParams">
           <el-form-item label="" prop="username">
             <el-input
-              v-model="queryParams.phone"
+              v-model="queryParams.username"
               class="!w-240px"
               clearable
               placeholder="请输入用户名称"
@@ -53,7 +53,7 @@
             :show-overflow-tooltip="true"
             align="center"
             label="登录名称"
-            prop="phone"
+            prop="username"
           />
           <el-table-column
             :show-overflow-tooltip="true"
@@ -94,8 +94,15 @@
                   type="primary"
                   @click="openForm('update', scope.row.id)"
                 >
-                  <Icon icon="ep:edit" />
                   修改
+                </el-button>
+                <el-button
+                  v-hasPermi="['system:permission:assign-user-role']"
+                  link
+                  type="primary"
+                  @click="handleRole(scope.row)"
+                >
+                  分配角色
                 </el-button>
                 <el-dropdown
                   v-hasPermi="[
@@ -105,10 +112,7 @@
                   ]"
                   @command="(command) => handleCommand(command, scope.row)"
                 >
-                  <el-button link type="primary">
-                    <Icon icon="ep:d-arrow-right" />
-                    更多
-                  </el-button>
+                  <el-button link type="primary"> 更多</el-button>
                   <template #dropdown>
                     <el-dropdown-menu>
                       <el-dropdown-item
@@ -117,13 +121,6 @@
                       >
                         <Icon icon="ep:key" />
                         重置密码
-                      </el-dropdown-item>
-                      <el-dropdown-item
-                        v-if="checkPermi(['system:permission:assign-user-role'])"
-                        command="handleRole"
-                      >
-                        <Icon icon="ep:circle-check" />
-                        分配角色
                       </el-dropdown-item>
                       <el-dropdown-item
                         v-if="checkPermi(['system:user:remove'])"
@@ -175,7 +172,7 @@ const list = ref([]) // 列表的数
 const queryParams = ref({
   pageNo: 1,
   pageSize: 10,
-  phone: undefined,
+  username: undefined,
   deptId: undefined
 })
 const queryFormRef = ref() // 搜索的表单
@@ -221,7 +218,7 @@ const handleStatusChange = async (row: HTTP.UserVO) => {
   try {
     // 修改状态的二次确认
     const text = row.status === COMMON_STATUS_ENUM.ENABLE ? '启用' : '停用'
-    await message.confirm('确认要"' + text + '""' + row.username + '"用户吗?')
+    await message.confirm('确认要"' + text + '""' + row.name + '"用户吗?')
     // 发起修改状态
     await HTTP.updateUser({ id: row.id, status: row.status })
     // 刷新列表
@@ -253,7 +250,7 @@ const handleCommand = (command: string, row: HTTP.UserVO) => {
 }
 
 /** 删除按钮操作 */
-const handleDelete = async (id: number) => {
+const handleDelete = async (id: number | undefined) => {
   try {
     // 删除的二次确认
     await message.delConfirm()
@@ -269,10 +266,7 @@ const handleDelete = async (id: number) => {
 const handleResetPwd = async (row: HTTP.UserVO) => {
   try {
     // 重置的二次确认
-    const result = await message.prompt(
-      '请输入"' + row.username + '"的新密码',
-      t('common.reminder')
-    )
+    const result = await message.prompt('请输入"' + row.name + '"的新密码', t('common.reminder'))
     const password = result.value
     // 发起重置
     await HTTP.resetUserPwd(row.id, password)

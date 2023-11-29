@@ -13,14 +13,14 @@ import java.util.List;
 public interface UserMapper extends BaseMapperX<User> {
 
 
-    default User selectByPhone(String phone) {
+    default User selectByUsername(String username) {
         return selectOne(new LambdaQueryWrapperX<User>()
-                .eq(User::getPhone, phone));
+                .eq(User::getUsername, username));
     }
 
     default PageResult<User> selectPage(UserQueryReqVO reqVO) {
         return selectPage(reqVO, new LambdaQueryWrapperX<User>()
-                .likeIfPresent(User::getPhone, reqVO.getPhone())
+                .likeIfPresent(User::getUsername, reqVO.getUsername())
                 .likeIfPresent(User::getName, reqVO.getName())
                 .eqIfPresent(User::getDeptId, reqVO.getDeptId())
                 .eqIfPresent(User::getStatus, reqVO.getStatus())

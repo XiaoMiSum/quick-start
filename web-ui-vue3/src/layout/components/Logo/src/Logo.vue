@@ -2,7 +2,6 @@
 import { computed, onMounted, ref, unref, watch } from 'vue'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
-import * as Auth from '@/utils/auth'
 
 defineOptions({ name: 'Logo' })
 
@@ -19,8 +18,6 @@ const title = computed(() => appStore.getTitle)
 const layout = computed(() => appStore.getLayout)
 
 const collapse = computed(() => appStore.getCollapse)
-
-const icon = computed(() => appStore.getIcon)
 
 onMounted(() => {
   if (unref(collapse)) show.value = false
@@ -70,7 +67,7 @@ watch(
       to="/index"
     >
       <img
-        :src="'/' + icon + '.ico'"
+        :src="'/logo.ico'"
         alt=""
         class="h-[calc(var(--logo-height)-10px)] w-[calc(var(--logo-height)-10px)]"
       />

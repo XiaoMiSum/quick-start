@@ -10,4 +10,6 @@ public class UserAddReqVO extends UserBaseVO {
 
     @NotBlank(message = "登录密码不能为空")
     private String password;
+
+    private String memo;
 }

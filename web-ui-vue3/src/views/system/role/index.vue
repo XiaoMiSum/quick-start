@@ -65,7 +65,7 @@
       <el-table-column align="center" label="角色类型" prop="type" />
       <el-table-column align="center" label="角色标识" prop="code" />
       <el-table-column align="center" label="显示顺序" prop="sort" />
-      <el-table-column align="center" label="备注" prop="remark" />
+      <el-table-column align="center" label="备注" prop="memo" />
       <el-table-column key="status" label="状态">
         <template #default="scope">
           <el-switch

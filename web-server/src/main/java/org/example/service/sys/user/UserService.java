@@ -13,7 +13,7 @@ public interface UserService {
 
     List<User> get(Integer... status);
 
-    User get(String phone);
+    User get(String username);
 
     User get(Long id);
 
@@ -23,7 +23,7 @@ public interface UserService {
 
     void remove(Long id);
 
-    void verify(String phone);
+    void verify(String username);
 
     void update(PasswordVO password);
 

@@ -16,6 +16,9 @@
       <el-form-item label="显示顺序" prop="sort">
         <el-input v-model="formData.sort" placeholder="请输入显示顺序" />
       </el-form-item>
+      <el-form-item label="备注" prop="memo">
+        <el-input v-model="formData.memo" placeholder="请输入备注信息" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
@@ -43,7 +46,7 @@ const formData = ref({
   code: '',
   sort: undefined,
   status: COMMON_STATUS_ENUM.ENABLE,
-  remark: ''
+  memo: ''
 })
 const formRules = reactive({
   name: [{ required: true, message: '岗位标题不能为空', trigger: 'blur' }],
@@ -77,7 +80,7 @@ const resetForm = () => {
     code: '',
     sort: undefined,
     status: COMMON_STATUS_ENUM.ENABLE,
-    remark: ''
+    memo: ''
   }
   formRef.value?.resetFields()
 }

@@ -11,7 +11,7 @@
         <el-col :span="12">
           <el-form-item label="登录名称" prop="phone">
             <el-input
-              v-model="formData.phone"
+              v-model="formData.username"
               :disabled="formData.id !== undefined"
               placeholder="请输入登录名称"
             />
@@ -36,11 +36,28 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item label="手机号" prop="mobile">
+            <el-input v-model="formData.mobile" placeholder="请输入手机号" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="性别" prop="gender">
+            <el-radio-group v-model="formData.gender">
+              <el-radio :label="1" border>男</el-radio>
+              <el-radio :label="2" border>女</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="formData.email" placeholder="请输入用户邮箱" />
           </el-form-item>
         </el-col>
       </el-row>
+
       <el-row>
         <el-col :span="12">
           <el-form-item label="归属部门" prop="deptId">
@@ -55,7 +72,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="岗位">
+          <el-form-item label="岗位" prop="postIds">
             <el-select v-model="formData.postIds" multiple placeholder="请选择">
               <el-option
                 v-for="item in postList"
@@ -67,6 +84,13 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="备注" prop="memo">
+            <el-input v-model="formData.memo" placeholder="请输入备注信息" />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
@@ -75,7 +99,6 @@
   </Dialog>
 </template>
 <script lang="ts" setup>
-import { COMMON_STATUS_ENUM } from '@/utils/enums'
 import { defaultProps, handleTree } from '@/utils/tree'
 import * as PostApi from '@/api/system/post'
 import * as DeptApi from '@/api/system/dept'
@@ -90,16 +113,9 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
-const formData = ref({
-  phone: '',
-  name: '',
-  deptId: '',
-  id: undefined,
-  password: '',
-  email: '',
-  postIds: [],
-  status: COMMON_STATUS_ENUM.ENABLE,
-  roleIds: []
+const formData = ref<UserApi.UserVO>({
+  username: '',
+  name: ''
 })
 const formRules = reactive({
   phone: [{ required: true, message: '登录名不能为空', trigger: 'blur' }],
@@ -161,15 +177,8 @@ const submitForm = async () => {
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
-    phone: '',
-    name: '',
-    deptId: '',
-    email: '',
-    id: undefined,
-    password: '',
-    postIds: [],
-    status: COMMON_STATUS_ENUM.ENABLE,
-    roleIds: []
+    username: '',
+    name: ''
   }
   formRef.value?.resetFields()
 }

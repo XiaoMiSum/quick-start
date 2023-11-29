@@ -22,9 +22,6 @@ interface AppState {
   tagsView: boolean
   tagsViewIcon: boolean
   logo: boolean
-  icon: string
-  loginPage: string
-  showMerchantThirdPartyUser: boolean
   fixedHeader: boolean
   greyMode: boolean
   pageLoading: boolean
@@ -66,10 +63,7 @@ export const useAppStore = defineStore('app', {
       footer: true, // 显示页脚
       greyMode: false, // 是否开始灰色模式，用于特殊悼念日
       fixedMenu: wsCache.get('fixedMenu') || false, // 是否固定菜单
-      icon: '',
-      loginPage: '',
-      showMerchantThirdPartyUser: false,
-      layout: wsCache.get(CACHE_KEY.LAYOUT) || 'classic', // layout布局
+      layout: wsCache.get(CACHE_KEY.LAYOUT) || 'top', // layout布局
       isDark: wsCache.get(CACHE_KEY.IS_DARK) || false, // 是否是暗黑模式
       currentSize: wsCache.get('default') || 'default', // 组件尺寸
       theme: wsCache.get(CACHE_KEY.THEME) || {
@@ -141,12 +135,6 @@ export const useAppStore = defineStore('app', {
     getLogo(): boolean {
       return this.logo
     },
-    getIcon(): string {
-      return this.icon
-    },
-    getLoginPage(): string {
-      return this.loginPage
-    },
     getFixedHeader(): boolean {
       return this.fixedHeader
     },
@@ -186,22 +174,11 @@ export const useAppStore = defineStore('app', {
     getFooter(): boolean {
       return this.footer
     },
-    getShowMerchantThirdPartyUser(): boolean {
-      return this.showMerchantThirdPartyUser
-    },
     getProjectPick(): boolean {
       return this.projectPick
     }
   },
   actions: {
-    async setAppConfig(data: any) {
-      this.title = data.title
-      this.setIsDark(data.theme === 'dark')
-      this.icon = data.icon
-      this.loginPage = data.loginPage
-      this.layout = data.layout || 'top'
-      this.showMerchantThirdPartyUser = data.showMerchantThirdPartyUser === 'true'
-    },
     setBreadcrumb(breadcrumb: boolean) {
       this.breadcrumb = breadcrumb
     },

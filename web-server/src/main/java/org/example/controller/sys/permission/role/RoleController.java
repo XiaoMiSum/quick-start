@@ -13,6 +13,7 @@ import xyz.migoo.framework.common.enums.CommonStatusEnum;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +35,9 @@ public class RoleController {
     @GetMapping
     @PreAuthorize("@ss.hasPermission('system:role:query')")
     public Result<PageResult<RoleRespVO>> getRolePage(RoleQueryReqVO req) {
-        return Result.getSuccessful(RoleConvert.INSTANCE.convert(roleService.getPage(req)));
+        PageResult<RoleRespVO> result = RoleConvert.INSTANCE.convert(roleService.getPage(req));
+        result.getList().sort(Comparator.comparing(RoleRespVO::getSort));
+        return Result.getSuccessful(result);
     }
 
     @PostMapping

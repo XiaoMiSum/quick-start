@@ -34,32 +34,36 @@ COMMIT;
 -- Records of sys_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_role` (`id`, `name`, `code`, `sort`, `status`, `type`, `remark`, `deleted`, `creator`, `create_time`,
+INSERT INTO `sys_role` (`id`, `name`, `code`, `sort`, `status`, `type`, `memo`, `deleted`, `creator`, `create_time`,
                         `updater`, `update_time`)
 VALUES (1, '超级管理员', 'super_admin', 0, 1, 1, '超级管理员', 0, '系统', '2022-04-29 20:43:45', '系统',
         '2022-04-29 20:44:34');
-INSERT INTO `sys_role` (`id`, `name`, `code`, `sort`, `status`, `type`, `remark`, `deleted`, `creator`, `create_time`,
+INSERT INTO `sys_role` (`id`, `name`, `code`, `sort`, `status`, `type`, `memo`, `deleted`, `creator`, `create_time`,
                         `updater`, `update_time`)
-VALUES (2, '开发者', 'developer', 1, 1, 2, '开发者', 0, '超级管理员', '2022-05-14 13:14:56', '超级管理员',
-        '2022-05-14 13:14:56');
-INSERT INTO `sys_role` (`id`, `name`, `code`, `sort`, `status`, `type`, `remark`, `deleted`, `creator`, `create_time`,
-                        `updater`, `update_time`)
-VALUES (3, '管理员', 'admin', 2, 1, 2, '普通管理员', 0, '超级管理员', '2022-07-16 21:54:07', '超级管理员',
+VALUES (2, '管理员', 'admin', 0, 1, 2, '普通管理员', 0, '超级管理员', '2022-07-16 21:54:07', '超级管理员',
         '2022-07-16 21:54:07');
+INSERT INTO `sys_role` (`id`, `name`, `code`, `sort`, `status`, `type`, `memo`, `deleted`, `creator`, `create_time`,
+                        `updater`, `update_time`)
+VALUES (3, '测试人员', 'developer', 2, 1, 2, '开发者', 0, '超级管理员', '2022-05-14 13:14:56', '超级管理员',
+        '2022-05-14 13:14:56');
+INSERT INTO `sys_role` (`id`, `name`, `code`, `sort`, `status`, `type`, `memo`, `deleted`, `creator`, `create_time`,
+                        `updater`, `update_time`)
+VALUES (4, '开发人员', 'developer', 3, 1, 2, '开发者', 0, '超级管理员', '2022-05-14 13:14:56', '超级管理员',
+        '2022-05-14 13:14:56');
 COMMIT;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user` (`id`, `phone`, `password`, `name`, `avatar`, `status`, `gender`, `dept_id`, `post_ids`, `email`,
-                        `deleted`, `creator`, `create_time`, `updater`, `update_time`)
-VALUES (1, 'superadmin', '$2a$10$OMZslBjgQK/LJogOedenfOq65uywRcAUKnJgkVE9dTBElcp0OpT7W', '超级管理员', '', 1, 1, 1,
-        NULL, NULL, 0, '1', '2022-04-29 16:06:56', '超级管理员', '2022-11-23 12:29:42');
-INSERT INTO `sys_user` (`id`, `phone`, `password`, `name`, `avatar`, `status`, `gender`, `dept_id`, `post_ids`, `email`,
-                        `deleted`, `creator`, `create_time`, `updater`, `update_time`)
-VALUES (2, 'developer', '$2a$10$DmzOXDEemQOXtQjEHDnMqOcMLi0wjuYluTDSAEvA3VpYOAn9Zh3KC', '开发者', NULL, 1, 0, 2, '[]',
-        'mail@cc.com', 0, '超级管理员', '2022-05-01 17:53:00', '超级管理员', '2022-05-31 20:14:42');
+INSERT INTO `sys_user` (`id`, `username`, `password`, `name`, `avatar`, `mobile`, `status`, `gender`, `dept_id`,
+                        `post_ids`, `email`, `memo`, `deleted`, `creator`, `create_time`, `updater`, `update_time`)
+VALUES (1, 'superadmin', '$2a$10$OMZslBjgQK/LJogOedenfOq65uywRcAUKnJgkVE9dTBElcp0OpT7W', '超级管理员', '', NULL, 1, 1,
+        1, NULL, NULL, NULL, 0, '1', '2022-04-29 16:06:56', '超级管理员', '2022-11-23 12:29:42');
+INSERT INTO `sys_user` (`id`, `username`, `password`, `name`, `avatar`, `mobile`, `status`, `gender`, `dept_id`,
+                        `post_ids`, `email`, `memo`, `deleted`, `creator`, `create_time`, `updater`, `update_time`)
+VALUES (2, 'admin', '$2a$10$x1XjUE1mv/rimgssEXdDYeRNjL46SJpgoTuWqN35Zf5a2UVcZnaau', '管理员', NULL, NULL, 1, 0, 2, '[]',
+        'mail@cc.com', NULL, 0, '超级管理员', '2022-05-01 17:53:00', '超级管理员', '2023-11-29 20:14:12');
 COMMIT;
 
 -- ----------------------------
