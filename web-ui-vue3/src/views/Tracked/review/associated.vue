@@ -1,5 +1,5 @@
 <template>
-  <ContentWrap :title="'测试评审：' + title" :statistics="statistics">
+  <ContentWrap :statistics="statistics" :title="'测试评审：' + title">
     <el-row :gutter="5">
       <!-- 左侧模块树 -->
       <el-col :span="5" :xs="24">
@@ -35,28 +35,28 @@
           <el-row :gutter="10">
             <el-col :span="1.5">
               <el-button
+                v-hasPermi="['review:case:add']"
                 plain
                 type="primary"
-                v-hasPermi="['review:case:add']"
                 @click="handleAssociCase()"
               >
                 <Icon class="mr-5px" icon="ep:link" />
                 关联用例
               </el-button>
               <el-button
+                v-hasPermi="['review:case:remove']"
                 :disabled="!checked || checked.length < 1"
                 plain
                 type="danger"
-                v-hasPermi="['review:case:remove']"
                 @click="handleBatchUnlinkCase"
               >
                 <Icon class="mr-5px" icon="fa-solid:unlink" />
                 取消关联
               </el-button>
               <el-button
+                v-hasPermi="['review:case:execute']"
                 plain
                 type="primary"
-                v-hasPermi="['review:case:execute']"
                 @click="handleReviewFirstCase()"
               >
                 <Icon class="mr-5px" icon="ep:caret-right" />
@@ -118,10 +118,10 @@
               <template #default="scope">
                 <el-tooltip content="评审" placement="top">
                   <el-button
+                    v-hasPermi="['review:case:execute']"
                     circle
                     plain
                     type="primary"
-                    v-hasPermi="['review:case:execute']"
                     @click="handleReviewCase(scope.row)"
                   >
                     <Icon icon="ep:checked" />
@@ -129,10 +129,10 @@
                 </el-tooltip>
                 <el-tooltip content="移除" placement="top">
                   <el-button
+                    v-hasPermi="['review:case:remove']"
                     circle
                     plain
                     type="danger"
-                    v-hasPermi="['review:case:remove']"
                     @click="handleDelete(scope.row.id)"
                   >
                     <Icon icon="ep:unlock" />
@@ -177,8 +177,6 @@ onMounted(async () => {
   await getList()
 })
 import { useAppStore } from '@/store/modules/app'
-const appStore = useAppStore()
-
 import { ModuleTree } from '@/views/Project/components/index'
 import { CaseAssociated, CaseViewer } from '../components'
 
@@ -186,9 +184,12 @@ import { dateFormatter } from '@/utils/formatTime'
 
 import { CASE_LEVEL_ENUMS, RESULT_ENUMS } from '@/utils/enums'
 
-import * as HTTP from '@/api/st/review'
+import * as HTTP from '@/api/tracked/review'
 
 import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
+
+const appStore = useAppStore()
+
 const { params } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 
 const message = useMessage() // 消息弹窗

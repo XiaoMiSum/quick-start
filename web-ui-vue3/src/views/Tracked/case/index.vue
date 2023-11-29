@@ -139,15 +139,16 @@ import { handleTree } from '@/utils/tree'
 import { CASE_LEVEL_ENUMS, RESULT_ENUMS } from '@/utils/enums'
 
 import * as MHTTP from '@/api/project/module'
-import * as HTTP from '@/api/st/testcase'
+import * as HTTP from '@/api/tracked/testcase'
+import { useAppStore } from '@/store/modules/app'
+import { useUserStore } from '@/store/modules/user'
 
 const { push } = useRouter() // 路由
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
-import { useAppStore } from '@/store/modules/app'
 const appStore = useAppStore()
-import { useUserStore } from '@/store/modules/user'
+
 const userStore = useUserStore()
 
 defineOptions({ name: 'ProjectManager' })
@@ -200,14 +201,14 @@ const handleDelete = async (id: number) => {
 }
 
 const handleAddCase = async () => {
-  await push('/st/case/add')
+  await push('/tracked/case/add')
 }
 
 const handleEditCase = async (id: number) => {
-  await push('/st/case/edit/' + id)
+  await push('/tracked/case/edit/' + id)
 }
 const handleCopyCase = async (id: number) => {
-  await push({ path: '/st/case/add', query: { from: id } })
+  await push({ path: '/tracked/case/add', query: { from: id } })
 }
 
 const handleNodeClick = async (row: any) => {

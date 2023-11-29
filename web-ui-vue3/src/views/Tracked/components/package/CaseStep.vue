@@ -46,7 +46,7 @@
 
 <script lang="ts" setup>
 import { vDragable } from 'element-plus-table-dragable'
-import { CaseStep, CaseVO } from '@/api/st/testcase.data'
+import { CaseStep, CaseVO } from '@/api/tracked/testcase.data'
 
 const props = defineProps({
   modelValue: {

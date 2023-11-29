@@ -35,18 +35,18 @@
           <el-row :gutter="10">
             <el-col :span="1.5">
               <el-button
+                v-hasPermi="['plan:case:add']"
                 plain
                 type="primary"
-                v-hasPermi="['plan:case:add']"
                 @click="handleAssociCase()"
               >
                 <Icon class="mr-5px" icon="ep:link" />
                 关联用例
               </el-button>
               <el-button
+                v-hasPermi="['plan:case:remove']"
                 :disabled="!checked || checked.length < 1"
                 plain
-                v-hasPermi="['plan:case:remove']"
                 type="danger"
                 @click="handleBatchUnlinkCase"
               >
@@ -109,10 +109,10 @@
               <template #default="scope">
                 <el-tooltip content="执行" placement="top">
                   <el-button
+                    v-hasPermi="['plan:case:execute']"
                     circle
                     plain
                     type="primary"
-                    v-hasPermi="['plan:case:execute']"
                     @click="handleExecuteCase(scope.row)"
                   >
                     <Icon icon="ep:checked" />
@@ -120,10 +120,10 @@
                 </el-tooltip>
                 <el-tooltip content="移除" placement="top">
                   <el-button
+                    v-hasPermi="['plan:case:remove']"
                     circle
                     plain
                     type="danger"
-                    v-hasPermi="['plan:case:remove']"
                     @click="handleDelete(scope.row.id)"
                   >
                     <Icon icon="ep:unlock" />
@@ -161,14 +161,15 @@ import { dateFormatter } from '@/utils/formatTime'
 
 import { CASE_LEVEL_ENUMS, RESULT_ENUMS } from '@/utils/enums'
 
-import * as HTTP from '@/api/st/plan'
+import * as HTTP from '@/api/tracked/plan'
 
 import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
+import { useAppStore } from '@/store/modules/app'
+
 const { params } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 
 const message = useMessage() // 消息弹窗
 
-import { useAppStore } from '@/store/modules/app'
 const appStore = useAppStore()
 
 defineOptions({ name: 'PlanAssociated' })

@@ -91,8 +91,8 @@
 import { ModuleTree } from '@/views/Project/components/index'
 import { CASE_LEVEL_ENUMS, RESULT_ENUMS } from '@/utils/enums'
 
-import * as REVIEW from '@/api/st/review'
-import * as PLAN from '@/api/st/plan'
+import * as REVIEW from '@/api/tracked/review'
+import * as PLAN from '@/api/tracked/plan'
 
 const props = defineProps({
   source: {

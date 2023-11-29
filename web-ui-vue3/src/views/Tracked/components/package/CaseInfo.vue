@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts" setup>
-import { CaseVO } from '@/api/st/testcase.data'
+import { CaseVO } from '@/api/tracked/testcase.data'
 import { CASE_LEVEL_ENUMS } from '@/utils/enums'
 import { defaultProps } from '@/utils/tree'
 

@@ -7,7 +7,7 @@
           v-model="queryParams.name"
           class="!w-240px"
           clearable
-          placeholder="请输入计划名称"
+          placeholder="请输入评审名称"
           @keyup.enter="handleQuery"
         />
       </el-form-item>
@@ -26,9 +26,9 @@
     <el-row :gutter="10">
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['tracked:review:add']"
           plain
           type="primary"
-          v-hasPermi="['tracked:plan:add']"
           @click="openForm('create')"
         >
           <Icon class="mr-5px" icon="ep:plus" />
@@ -43,7 +43,7 @@
     <el-table v-loading="loading" :data="list" highlight-current-row stripe>
       <el-table-column
         align="center"
-        label="计划名称"
+        label="评审名称"
         prop="name"
         show-overflow-tooltip
         width="200"
@@ -54,7 +54,19 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="执行人" prop="executorUser" show-overflow-tooltip />
+      <el-table-column align="center" label="主讲人" prop="speakUser" show-overflow-tooltip />
+      <el-table-column align="center" label="参与人员" prop="reviewers" show-overflow-tooltip>
+        <template #default="scope">
+          <el-tag
+            v-for="(item, index) in scope.row.reviewers"
+            :key="index"
+            class="mr-2"
+            type="info"
+          >
+            {{ item }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column
         :formatter="dateFormatter"
         align="center"
@@ -87,14 +99,14 @@
         show-overflow-tooltip
         width="170"
       />
-      <el-table-column align="right" label="用例总数" prop="total" width="100">
+      <el-table-column align="right" label="用例总数" width="100">
         <template #default="scope">
           <el-button link type="primary">
             {{ scope.row.statistics.total }}
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column align="right" label="执行进度" width="120">
+      <el-table-column align="right" label="评审进度" width="120">
         <template #default="scope">
           <el-tooltip content="通过数" placement="top">
             <el-button link type="success">
@@ -116,7 +128,7 @@
               {{ scope.row.statistics.skipped }}
             </el-button>
           </el-tooltip>
-          <el-tooltip content="未执行数" placement="top">
+          <el-tooltip content="未评审数" placement="top">
             <el-button link type="warning">
               {{ scope.row.statistics.notstarted }}
             </el-button>
@@ -134,21 +146,21 @@
         <template #default="scope">
           <el-tooltip content="编辑" placement="top">
             <el-button
+              v-hasPermi="['tracked:review:update']"
               circle
               plain
               type="primary"
-              v-hasPermi="['tracked:plan:update']"
               @click="openForm('update', scope.row.id)"
             >
               <Icon icon="ep:edit" />
             </el-button>
           </el-tooltip>
-          <el-tooltip content="规划&执行" placement="top">
+          <el-tooltip content="规划&评审" placement="top">
             <el-button
+              v-hasPermi="['tracked:review:execute']"
               circle
               plain
               type="primary"
-              v-hasPermi="['tracked:plan:execute']"
               @click="handleGoAssociCase(scope.row.id)"
             >
               <Icon icon="ep:link" />
@@ -156,10 +168,10 @@
           </el-tooltip>
           <el-tooltip content="删除" placement="top">
             <el-button
+              v-hasPermi="['tracked:review:remove']"
               circle
               plain
               type="danger"
-              v-hasPermi="['tracked:plan:remove']"
               @click="handleDelete(scope.row.id)"
             >
               <Icon icon="ep:delete" />
@@ -177,20 +189,22 @@
     />
   </ContentWrap>
 
-  <PlanForm ref="formRef" @success="handleQuery" />
+  <ReviewForm ref="formRef" @success="handleQuery" />
 </template>
 
 <script lang="ts" setup>
-import { PlanForm } from '../components'
+import { ReviewForm } from '../components'
+
+import * as HTTP from '@/api/tracked/review'
 
 import { dateFormatter } from '@/utils/formatTime'
 
-import * as HTTP from '@/api/st/plan'
-
-import { useAppStore } from '@/store/modules/app'
-const appStore = useAppStore()
 import { useUserStore } from '@/store/modules/user'
+import { useAppStore } from '@/store/modules/app'
+
 const userStore = useUserStore()
+
+const appStore = useAppStore()
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -238,7 +252,7 @@ const openForm = (type: string, id?: number) => {
 }
 
 const handleGoAssociCase = async (id: Number) => {
-  push('/st/plan/' + id + '/associated-use-cases')
+  push('/tracked/review/' + id + '/associated-use-cases')
 }
 
 const handleDelete = async (id: number) => {

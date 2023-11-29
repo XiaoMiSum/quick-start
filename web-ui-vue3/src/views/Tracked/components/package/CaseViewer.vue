@@ -2,7 +2,7 @@
   <Dialog v-model="visible" :tag="status" :title="data.name" width="80%" @close="close">
     <ContentWrap>
       <!-- 搜索工作栏 -->
-      <el-form label-width="90px" v-loading="loading">
+      <el-form v-loading="loading" label-width="90px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="所属模块：">
@@ -107,8 +107,8 @@
 <script lang="ts" setup>
 import { CASE_LEVEL_ENUMS } from '@/utils/enums'
 
-import * as REVIEW from '@/api/st/review'
-import * as PLAN from '@/api/st/plan'
+import * as REVIEW from '@/api/tracked/review'
+import * as PLAN from '@/api/tracked/plan'
 
 const message = useMessage() // 消息弹窗
 

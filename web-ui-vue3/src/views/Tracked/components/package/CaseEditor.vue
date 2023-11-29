@@ -5,9 +5,9 @@
     <div class="float-right">
       <el-button @click="handleGoCaseList">取消</el-button>
       <el-button :loading="loading" type="primary" @click="handleSubmitAndCloseView"
-        >保存并关闭</el-button
-      >
-      <el-button :loading="loading" @click="handleSubmitAndAdd"> 保存并继续添加 </el-button>
+        >保存并关闭
+      </el-button>
+      <el-button :loading="loading" @click="handleSubmitAndAdd"> 保存并继续添加</el-button>
     </div>
   </ContentWrap>
 </template>
@@ -15,10 +15,10 @@
 <script lang="ts" setup>
 import CaseInfo from './CaseInfo.vue'
 import CaseStep from './CaseStep.vue'
-import { CaseVO } from '@/api/st/testcase.data'
+import { CaseVO } from '@/api/tracked/testcase.data'
 import { handleTree } from '@/utils/tree'
 
-import * as HTTP from '@/api/st/testcase/index'
+import * as HTTP from '@/api/tracked/testcase/index'
 import * as MODULE from '@/api/project/module'
 import * as TAG from '@/api/project/tag'
 import * as USER from '@/api/system/user'
@@ -113,11 +113,11 @@ const handleGoCaseList = async () => {
 }
 
 const toCaseList = async () => {
-  push('/st/case')
+  push('/tracked/case')
 }
 
 const toCaseAdd = async () => {
-  push('/st/case/add')
+  push('/tracked/case/add')
 }
 
 /** 获得模块树 */

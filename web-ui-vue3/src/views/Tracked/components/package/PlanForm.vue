@@ -7,31 +7,17 @@
       :rules="formRules"
       label-width="110px"
     >
-      <el-form-item label="评审名称" prop="name">
+      <el-form-item label="计划名称" prop="name">
         <el-input
           v-model="formData.name"
           maxlength="64"
-          placeholder="请输入评审名称"
+          placeholder="请输入计划名称"
           show-word-limit
         />
       </el-form-item>
-      <el-form-item label="主讲人" prop="speaker">
-        <el-select v-model="formData.speaker" placeholder="请选择主讲人" style="width: 100%">
+      <el-form-item label="执行人" prop="executor">
+        <el-select v-model="formData.executor" placeholder="请选择执行人" style="width: 100%">
           <el-option v-for="item in users" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="参与人员" prop="reviewers">
-        <el-select
-          v-model="formData.reviewers"
-          allow-create
-          clearable
-          filterable
-          multiple
-          placeholder="请选参与人员，用户不存在可直接输入姓名"
-          style="width: 100%"
-          @blur="reviewersBlur"
-        >
-          <el-option v-for="item in users" :key="item.id" :label="item.name" :value="item.name" />
         </el-select>
       </el-form-item>
       <el-row :gutter="10">
@@ -54,8 +40,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-
-      <el-form-item label="备注" prop="memo">
+      <el-form-item label="备注" maxlength="" prop="memo" show-word-limit>
         <el-input
           v-model="formData.memo"
           maxlength="255"
@@ -78,12 +63,8 @@
 </template>
 
 <script lang="ts" setup>
-import * as HTTP from '@/api/st/review'
+import * as HTTP from '@/api/tracked/plan'
 import * as USER from '@/api/system/user'
-
-import { useUserStoreWithOut } from '@/store/modules/user'
-
-const userStore = useUserStoreWithOut()
 
 defineOptions({ name: 'ReviewForm' })
 
@@ -97,15 +78,14 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref<any>({
   id: undefined,
   name: '',
-  speaker: undefined,
-  reviewers: [],
+  executor: undefined,
   expectedStartTime: '',
   expectedEndTime: '',
   memo: ''
 })
 const formRules = reactive({
-  name: [{ required: true, message: '评审名称不能为空', trigger: 'blur' }],
-  speaker: [{ required: true, message: '主讲人不能为空', trigger: 'blur' }],
+  name: [{ required: true, message: '测试计划名称不能为空', trigger: 'blur' }],
+  executor: [{ required: true, message: '执行人不能为空', trigger: 'blur' }],
   expectedStartTime: [{ required: true, message: '预计开始时间不能为空', trigger: 'blur' }],
   expectedEndTime: [{ required: true, message: '预计结束时间不能为空', trigger: 'blur' }]
 })
@@ -128,8 +108,6 @@ const open = async (type: string, id?: number) => {
     } finally {
       formLoading.value = false
     }
-  } else {
-    formData.value.speaker = userStore.getUser.id
   }
   getUsers()
 }
@@ -144,8 +122,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     name: '',
-    speaker: undefined,
-    reviewers: [],
+    executor: undefined,
     expectedStartTime: '',
     expectedEndTime: '',
     memo: ''
@@ -172,7 +149,7 @@ const submitForm = async (to?: Boolean) => {
       await HTTP.updateData(data)
     }
     if (to) {
-      push('/st/review/' + data.id + '/associated-use-cases')
+      push('/tracked/plan/' + data.id + '/associated-use-cases')
     } else {
       // 发送操作成功的事件
       emit('success')
@@ -180,13 +157,6 @@ const submitForm = async (to?: Boolean) => {
   } finally {
     _visible.value = false
     formLoading.value = false
-  }
-}
-
-const reviewersBlur = async (el: any) => {
-  const val = el.target.value
-  if (val) {
-    formData.value.reviewers?.push(val)
   }
 }
 </script>
