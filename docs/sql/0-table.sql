@@ -178,10 +178,10 @@ CREATE TABLE `mg_project_tag`
     COMMENT = '项目标签表';
 
 -- ----------------------------
--- Table structure for mg_st_plan
+-- Table structure for mg_tracked_plan
 -- ----------------------------
-DROP TABLE IF EXISTS `mg_st_plan`;
-CREATE TABLE `mg_st_plan`
+DROP TABLE IF EXISTS `mg_tracked_plan`;
+CREATE TABLE `mg_tracked_plan`
 (
     `id`                  bigint       NOT NULL AUTO_INCREMENT,
     `project_id`          bigint       NOT NULL COMMENT '关联项目id',
@@ -202,10 +202,10 @@ CREATE TABLE `mg_st_plan`
     COMMENT = '测试计划表';
 
 -- ----------------------------
--- Table structure for mg_st_plan_case
+-- Table structure for mg_tracked_plan_case
 -- ----------------------------
-DROP TABLE IF EXISTS `mg_st_plan_case`;
-CREATE TABLE `mg_st_plan_case`
+DROP TABLE IF EXISTS `mg_tracked_plan_case`;
+CREATE TABLE `mg_tracked_plan_case`
 (
     `id`              bigint       NOT NULL AUTO_INCREMENT,
     `plan_id`         bigint       NOT NULL COMMENT '关联计划id',
@@ -232,10 +232,10 @@ CREATE TABLE `mg_st_plan_case`
     COMMENT = '计划用例表';
 
 -- ----------------------------
--- Table structure for mg_st_review
+-- Table structure for mg_tracked_review
 -- ----------------------------
-DROP TABLE IF EXISTS `mg_st_review`;
-CREATE TABLE `mg_st_review`
+DROP TABLE IF EXISTS `mg_tracked_review`;
+CREATE TABLE `mg_tracked_review`
 (
     `id`                  bigint       NOT NULL AUTO_INCREMENT,
     `project_id`          bigint       NOT NULL COMMENT '关联项目id',
@@ -258,10 +258,10 @@ CREATE TABLE `mg_st_review`
   AUTO_INCREMENT = 1 COMMENT = '测试评审表';
 
 -- ----------------------------
--- Table structure for mg_st_review_case
+-- Table structure for mg_tracked_review_case
 -- ----------------------------
-DROP TABLE IF EXISTS `mg_st_review_case`;
-CREATE TABLE `mg_st_review_case`
+DROP TABLE IF EXISTS `mg_tracked_review_case`;
+CREATE TABLE `mg_tracked_review_case`
 (
     `id`             bigint       NOT NULL AUTO_INCREMENT,
     `project_id`     bigint       NOT NULL COMMENT '关联项目id',
@@ -288,10 +288,10 @@ CREATE TABLE `mg_st_review_case`
     COMMENT = '评审用例表';
 
 -- ----------------------------
--- Table structure for mg_st_testcase
+-- Table structure for mg_tracked_testcase
 -- ----------------------------
-DROP TABLE IF EXISTS `mg_st_testcase`;
-CREATE TABLE `mg_st_testcase`
+DROP TABLE IF EXISTS `mg_tracked_testcase`;
+CREATE TABLE `mg_tracked_testcase`
 (
     `id`             bigint       NOT NULL AUTO_INCREMENT,
     `project_id`     bigint       NOT NULL COMMENT '关联项目id',
@@ -314,10 +314,10 @@ CREATE TABLE `mg_st_testcase`
     COMMENT = '测试用例表';
 
 -- ----------------------------
--- Table structure for mg_st_testcase_history
+-- Table structure for mg_tracked_testcase_history
 -- ----------------------------
-DROP TABLE IF EXISTS `mg_st_testcase_history`;
-CREATE TABLE `mg_st_testcase_history`
+DROP TABLE IF EXISTS `mg_tracked_testcase_history`;
+CREATE TABLE `mg_tracked_testcase_history`
 (
     `id`           bigint      NOT NULL,
     `case_id`      bigint      NOT NULL,
