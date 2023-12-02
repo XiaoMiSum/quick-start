@@ -19,6 +19,52 @@
               @keyup.enter="handleQuery"
             />
           </el-form-item>
+          <el-form-item label="" prop="level">
+            <el-select
+              v-model="queryParams.level"
+              clearable
+              placeholder="请选择用例等级"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in CASE_LEVEL_ENUMS"
+                :key="item.key"
+                :label="item.label"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="" prop="tag">
+            <el-select
+              v-model="queryParams.tag"
+              clearable
+              placeholder="请选择用例标签"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in tags"
+                :key="item.code"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="" prop="reviewed">
+            <el-select
+              v-model="queryParams.reviewed"
+              clearable
+              placeholder="请选择评审结果"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in TESTCASE_REVIEWED_ENUMS"
+                :key="item.key"
+                :label="item.label"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="handleQuery">
               <Icon class="mr-5px" icon="ep:search" />
@@ -49,6 +95,18 @@
               批量删除
             </el-button>
           </el-col>
+          <el-col :span="1.5" @click="openImports">
+            <el-button plain>
+              <Icon class="mr-5px" icon="ep:upload" />
+              导入
+            </el-button>
+          </el-col>
+          <el-col :span="1.5" @click="handleDownload()">
+            <el-button plain>
+              <Icon class="mr-5px" icon="ep:download" />
+              导出
+            </el-button>
+          </el-col>
         </el-row>
       </ContentWrap>
 
@@ -65,7 +123,7 @@
         >
           <el-table-column :reserve-selection="true" type="selection" width="35" />
           <el-table-column align="center" label="编号" prop="id" width="55" />
-          <el-table-column label="用例名称" prop="name" show-overflow-tooltip width="200">
+          <el-table-column label="用例名称" prop="name" show-overflow-tooltip>
             <template #default="scope">
               <el-button link type="primary" @click="handleEditCase(scope.row.id)">
                 {{ scope.row.name }}
@@ -73,11 +131,6 @@
             </template>
           </el-table-column>
           <el-table-column label="所属模块" prop="path" show-overflow-tooltip width="200" />
-          <el-table-column align="center" label="用例等级" prop="level">
-            <template #default="scope">
-              <EnumTag :enums="CASE_LEVEL_ENUMS" :value="scope.row.level" />
-            </template>
-          </el-table-column>
           <el-table-column align="center" label="标签" prop="tags" show-overflow-tooltip>
             <template #default="scope">
               <el-tag v-for="(item, index) in scope.row.tags" :key="index" class="ml-2">
@@ -85,18 +138,29 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="评审结果" prop="reviewed">
+          <el-table-column align="center" label="用例等级" prop="level" width="80">
             <template #default="scope">
-              <EnumTag :enums="RESULT_ENUMS" :value="scope.row.reviewed" />
+              <EnumTag :enums="CASE_LEVEL_ENUMS" :value="scope.row.level" />
             </template>
           </el-table-column>
-          <el-table-column label="负责人" prop="chargeUser" show-overflow-tooltip />
+          <el-table-column align="center" label="评审结果" prop="reviewed" width="80">
+            <template #default="scope">
+              <EnumTag :enums="TESTCASE_REVIEWED_ENUMS" :value="scope.row.reviewed" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="负责人"
+            prop="chargeUser"
+            show-overflow-tooltip
+            width="100"
+          />
           <el-table-column
             :formatter="dateFormatter"
             align="center"
             label="更新时间"
             prop="updateTime"
-            width="170"
+            width="165"
           />
           <el-table-column align="center" fixed="right" label="操作" width="150">
             <template #default="scope">
@@ -128,20 +192,29 @@
       </ContentWrap>
     </el-col>
   </el-row>
+
+  <CaseImports
+    ref="caseImports"
+    @close="getList"
+    @upload="handleBatchImports"
+    @download="handleDownload"
+  />
 </template>
 
 <script lang="ts" setup>
 import { ModuleTree } from '@/views/Project/components/index'
-
+import { CaseImports } from '../components'
 import { dateFormatter } from '@/utils/formatTime'
 import { handleTree } from '@/utils/tree'
 
-import { CASE_LEVEL_ENUMS, RESULT_ENUMS } from '@/utils/enums'
+import { CASE_LEVEL_ENUMS, TESTCASE_REVIEWED_ENUMS } from '@/utils/enums'
 
 import * as MHTTP from '@/api/project/module'
 import * as HTTP from '@/api/tracked/testcase'
+import * as TAG from '@/api/project/tag'
 import { useAppStore } from '@/store/modules/app'
 import { useUserStore } from '@/store/modules/user'
+import download from '@/utils/download'
 
 const { push } = useRouter() // 路由
 const message = useMessage() // 消息弹窗
@@ -165,6 +238,7 @@ const list = ref<any>([])
 const total = ref(0)
 const modules = ref<any>([])
 const checked = ref<any>([])
+const tags = ref<any>([])
 
 const queryFormRef = ref() // 搜索的表单
 const getList = async () => {
@@ -232,11 +306,29 @@ const toggleSelection = () => {
   checked.value = []
 }
 
+const handleDownload = async (template: boolean = false) => {
+  const data = await HTTP.download(template)
+  download.excel(data, '测试用例.xlsx')
+}
+
+const caseImports = ref()
+const handleBatchImports = async (data: any) => {
+  await HTTP.batchImports(data)
+}
+
+const openImports = () => {
+  caseImports.value.open()
+}
+
 /** 获得模块树 */
 const getTree = async () => {
   modules.value = []
   const data = await MHTTP.getSimple()
   modules.value = handleTree(data)
+}
+
+const getTags = async () => {
+  tags.value = await TAG.getSimple()
 }
 
 // 监听当前项目变化，刷新列表数据
@@ -253,6 +345,7 @@ onMounted(async () => {
   appStore.setProjectPick(true)
   await getList()
   await getTree()
+  await getTags()
 })
 </script>
 

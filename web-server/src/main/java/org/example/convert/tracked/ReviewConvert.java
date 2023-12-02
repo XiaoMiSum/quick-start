@@ -9,6 +9,7 @@ import org.example.model.dto.TestcaseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
+import xyz.migoo.framework.common.pojo.SimpleData;
 
 import java.util.List;
 
@@ -70,4 +71,10 @@ public interface ReviewConvert {
     PageResult<ReviewCasePageRespVO> convert1(PageResult<ReviewCase> page);
 
     PageResult<ReviewCasePageRespVO> convert2(PageResult<Testcase> page);
+
+    default List<SimpleData<Long>> convert3(List<Review> list) {
+        List<SimpleData<Long>> result = Lists.newArrayList();
+        list.forEach(item -> result.add(new SimpleData<>(item.getId(), item.getName(), false)));
+        return result;
+    }
 }

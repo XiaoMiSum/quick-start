@@ -42,6 +42,11 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     }
 
     @Override
+    public List<ReviewCase> getListNotInCaseIds(Long reviewId, List<Long> notInCaseIds) {
+        return mapper.selectListNotInCaseIds(reviewId, notInCaseIds);
+    }
+
+    @Override
     public List<ReviewCase> getListGtId(String opt, Long reviewId, Long id) {
         return (Objects.equals(opt, "next")) ?
                 mapper.selectListByGtId(reviewId, id) : mapper.selectListByLtId(reviewId, id);

@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import { getSimple } from '@/api/project/index.ts'
+import { getSimple } from '@/api/project'
 import { useUserStore } from '@/store/modules/user'
+import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
+
+const { push } = useRouter()
+
+const message = useMessage() // 消息弹窗
 
 const userStore = useUserStore()
 
-defineOptions({ name: 'ProjectSelector' })
+defineOptions({ name: 'ProjectPicker' })
 
 const currentProject = userStore.getDefaultProject || 1
 const projects = ref<any>([])
@@ -13,11 +18,15 @@ const title = ref('')
 
 const getList = async () => {
   projects.value = await getSimple()
-  projects.value.length
-  for (let i = 0; i < projects.value.length; i++) {
-    const item = projects.value[i]
-    if (item.code === currentProject) {
-      title.value = item.name
+  if (projects.value.length === 0) {
+    message.warning('没有可用项目，请先添加项目！')
+    push('/project/table')
+  } else {
+    for (let i = 0; i < projects.value.length; i++) {
+      const item = projects.value[i]
+      if (item.code === currentProject) {
+        title.value = item.name
+      }
     }
   }
 }
@@ -25,7 +34,6 @@ const getList = async () => {
 const handleChange = async (value: number, name: string) => {
   await userStore.setDefaultProject(value)
   title.value = name
-  // location.href = '/index'
 }
 
 onMounted(() => {

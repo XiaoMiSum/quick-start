@@ -49,7 +49,7 @@
             <el-table-column label="所属模块" prop="path" show-overflow-tooltip width="200" />
             <el-table-column align="center" label="用例等级" prop="level">
               <template #default="scope">
-                <EnumTag :enums="caseLevelEnums" :value="scope.row.level" />
+                <EnumTag :enums="CASE_LEVEL_ENUMS" :value="scope.row.level" />
               </template>
             </el-table-column>
             <el-table-column align="center" label="标签" prop="tags" show-overflow-tooltip>
@@ -59,7 +59,7 @@
             </el-table-column>
             <el-table-column align="center" label="评审结果" prop="reviewed">
               <template #default="scope">
-                <EnumTag :enums="resultEnums" :value="scope.row.reviewed" />
+                <EnumTag :enums="enums" :value="scope.row.reviewed" />
               </template>
             </el-table-column>
             <el-table-column
@@ -89,7 +89,7 @@
 
 <script lang="ts" setup>
 import { ModuleTree } from '@/views/Project/components/index'
-import { CASE_LEVEL_ENUMS, RESULT_ENUMS } from '@/utils/enums'
+import { CASE_LEVEL_ENUMS } from '@/utils/enums'
 
 import * as REVIEW from '@/api/tracked/review'
 import * as PLAN from '@/api/tracked/plan'
@@ -104,18 +104,12 @@ const props = defineProps({
     type: null,
     default: -1
   },
-  caseLevelEnums: {
-    required: false,
-    type: Array,
-    default: CASE_LEVEL_ENUMS
-  },
-  resultEnums: {
-    required: false,
-    type: Array,
-    default: RESULT_ENUMS
+  enums: {
+    required: true,
+    type: Array
   }
 })
-const { source, dataId, caseLevelEnums } = toRefs(props)
+const { source, dataId } = toRefs(props)
 
 const visible = ref(false)
 const btnLoading = ref(false)

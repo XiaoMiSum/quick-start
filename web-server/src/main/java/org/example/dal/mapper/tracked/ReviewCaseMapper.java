@@ -76,4 +76,11 @@ public interface ReviewCaseMapper extends BaseMapperX<ReviewCase> {
                 .eq(ReviewCase::getReviewResult, result)
         );
     }
+
+    default List<ReviewCase> selectListNotInCaseIds(Long reviewId, List<Long> notInCaseIds) {
+        return selectList(new LambdaQueryWrapperX<ReviewCase>()
+                .eq(ReviewCase::getReviewId, reviewId)
+                .notInIfPresent(ReviewCase::getCaseId, notInCaseIds)
+        );
+    }
 }

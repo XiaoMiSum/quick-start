@@ -15,6 +15,16 @@
           show-word-limit
         />
       </el-form-item>
+      <el-form-item label="测试阶段" prop="stage">
+        <el-select v-model="formData.stage" placeholder="请选择测试阶段" style="width: 100%">
+          <el-option
+            v-for="item in TEST_STAGE_ENUMS"
+            :key="item.key"
+            :label="item.label"
+            :value="item.key"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="执行人" prop="executor">
         <el-select v-model="formData.executor" placeholder="请选择执行人" style="width: 100%">
           <el-option v-for="item in users" :key="item.id" :label="item.name" :value="item.id" />
@@ -66,6 +76,12 @@
 import * as HTTP from '@/api/tracked/plan'
 import * as USER from '@/api/system/user'
 
+import { TEST_STAGE_ENUMS } from '@/utils/enums'
+
+import { useUserStore } from '@/store/modules/user'
+import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
+
+const userStore = useUserStore()
 defineOptions({ name: 'ReviewForm' })
 
 const { t } = useI18n() // 国际化
@@ -78,13 +94,15 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref<any>({
   id: undefined,
   name: '',
-  executor: undefined,
+  stage: '',
+  executor: userStore.getUser.id,
   expectedStartTime: '',
   expectedEndTime: '',
   memo: ''
 })
 const formRules = reactive({
   name: [{ required: true, message: '测试计划名称不能为空', trigger: 'blur' }],
+  stage: [{ required: true, message: '测试阶段不能为空', trigger: 'blur' }],
   executor: [{ required: true, message: '执行人不能为空', trigger: 'blur' }],
   expectedStartTime: [{ required: true, message: '预计开始时间不能为空', trigger: 'blur' }],
   expectedEndTime: [{ required: true, message: '预计结束时间不能为空', trigger: 'blur' }]
@@ -122,7 +140,8 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     name: '',
-    executor: undefined,
+    stage: '',
+    executor: userStore.getUser.id,
     expectedStartTime: '',
     expectedEndTime: '',
     memo: ''

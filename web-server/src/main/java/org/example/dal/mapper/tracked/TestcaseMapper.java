@@ -16,7 +16,9 @@ public interface TestcaseMapper extends BaseMapperX<Testcase> {
         return selectPage(req, new LambdaQueryWrapperX<Testcase>()
                 .eq(Testcase::getProjectId, req.getProjectId())
                 .eqIfPresent(Testcase::getLevel, req.getLevel())
+                .eqIfPresent(Testcase::getReviewed, req.getReviewed())
                 .eqIfPresent(Testcase::getModuleId, req.getModuleId())
+                .likeIfPresent(Testcase::getTags, req.getTag())
                 .likeIfPresent(Testcase::getName, req.getName())
         );
     }

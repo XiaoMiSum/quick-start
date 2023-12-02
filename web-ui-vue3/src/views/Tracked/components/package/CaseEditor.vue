@@ -24,10 +24,11 @@ import * as TAG from '@/api/project/tag'
 import * as USER from '@/api/system/user'
 
 import { useTagsViewStore } from '@/store/modules/tagsView'
-import { useUserStoreWithOut } from '@/store/modules/user'
+import { useUserStore } from '@/store/modules/user'
 import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
+import { TESTCASE_STATUS } from '@/utils/enums'
 
-const userStore = useUserStoreWithOut()
+const userStore = useUserStore()
 
 const { params, query } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 
@@ -50,16 +51,18 @@ const tags = ref<any>([])
 
 const loading = ref(false)
 
+/** 保存并关闭 */
 const handleSubmitAndCloseView = async () => {
   loading.value = true
   try {
     if (!caseData.value.id) {
       caseData.value.id = await HTTP.addData(caseData.value)
       message.success('新增成功')
-      if (query && query.from) {
-        toCaseAdd()
-      }
     } else {
+      if (caseData.value.reviewed === TESTCASE_STATUS.PASSED) {
+        await message.confirm('当前测试用例已「评审通过」，继续操作将重置为「未评审」')
+        caseData.value.reviewed = TESTCASE_STATUS.NOTSTARTED
+      }
       await HTTP.updateData(caseData.value)
       message.success('更新成功')
     }
@@ -70,6 +73,7 @@ const handleSubmitAndCloseView = async () => {
   }
 }
 
+/** 保存并继续添加 */
 const handleSubmitAndAdd = async () => {
   loading.value = true
   try {
@@ -77,7 +81,14 @@ const handleSubmitAndAdd = async () => {
       await HTTP.addData(caseData.value)
       message.success('新增成功')
       resetData()
+      if (query && query.from) {
+        toCaseAdd()
+      }
     } else {
+      if (caseData.value.reviewed === TESTCASE_STATUS.PASSED) {
+        await message.confirm('当前测试用例已「评审通过」，继续操作将重置为「未评审」')
+        caseData.value.reviewed = TESTCASE_STATUS.NOTSTARTED
+      }
       await HTTP.updateData(caseData.value)
       message.success('更新成功')
       await handleCloseView()

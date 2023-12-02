@@ -17,6 +17,7 @@ import org.example.service.tracked.TestcaseService;
 import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
+import xyz.migoo.framework.common.pojo.SimpleData;
 import xyz.migoo.framework.security.core.LoginUser;
 import xyz.migoo.framework.security.core.annotation.CurrentUser;
 
@@ -98,6 +99,16 @@ public class ReviewController {
         return Result.getSuccessful(result);
     }
 
+    @PostMapping("/case/sync")
+    public Result<?> syncReviewCase(@RequestHeader("x-project-id") Long projectId,
+                                    @RequestBody ReviewCaseExecuteVO req) {
+        TestcaseDTO testcase = TestcaseConvert.INSTANCE.convert(testcaseService.get(req.getCaseId()));
+        ReviewCase reviewCase = ReviewConvert.INSTANCE.convert(testcase);
+        reviewCase.setReviewId(req.getReviewId()).setId(req.getId());
+        caseService.update(reviewCase);
+        return Result.getSuccessful(reviewCase);
+    }
+
     @GetMapping("/case/execute")
     public Result<?> getReviewCase(Long id) {
         ReviewCaseRespVO result = ReviewConvert.INSTANCE.convert(caseService.get(id));
@@ -120,7 +131,7 @@ public class ReviewController {
             service.setStartTime(execute.getReviewId());
         }
         caseService.reviewed(execute);
-        testcaseService.update(new Testcase().setId(execute.getId()).setReviewed(execute.getResult()));
+        testcaseService.update(new Testcase().setId(execute.getCaseId()).setReviewed(execute.getResult()));
         List<ReviewCase> notStart2 = caseService.getList(execute.getReviewId(), NOTSTARTED);
         // 设置实际结束时间
         if (notStart2.isEmpty()) {
@@ -188,5 +199,11 @@ public class ReviewController {
     public Result<?> remove(String ids) {
         caseService.remove(StrUtil.split(ids, ",").stream().map(Long::valueOf).toList());
         return Result.getSuccessful();
+    }
+
+    @GetMapping("/simple")
+    public Result<List<SimpleData<Long>>> getSimple(@RequestHeader("x-project-id") Long projectId) {
+        // 获得用户列表，只要开启状态的
+        return Result.getSuccessful(ReviewConvert.INSTANCE.convert3(service.getList(projectId)));
     }
 }

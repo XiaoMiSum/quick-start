@@ -20,6 +20,8 @@ public interface TestcaseService {
 
     Long add(Testcase testcase);
 
+    void add(List<Testcase> testcases);
+
     void update(Testcase testcase);
 
     void remove(Long id);

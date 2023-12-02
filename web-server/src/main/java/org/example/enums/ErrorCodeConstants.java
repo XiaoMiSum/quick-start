@@ -61,6 +61,9 @@ public interface ErrorCodeConstants {
     ErrorCode POST_NAME_DUPLICATE = new ErrorCode(1002005001, "已经存在该名字的岗位");
     ErrorCode POST_CODE_DUPLICATE = new ErrorCode(1002005001, "已经存在该标识的岗位");
 
+    // ========== 用例模块 1003001000 ==========
+
+    ErrorCode TEST_CASE_IMPORT_ERROR = new ErrorCode(1003001001, "无可用测试用例，请先创建");
 
     // ========== 模块 99999999 ==========
     ErrorCode ERROR = new ErrorCode(99999999, "异常操作");

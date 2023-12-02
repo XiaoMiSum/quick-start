@@ -118,7 +118,7 @@ const formData = ref<UserApi.UserVO>({
   name: ''
 })
 const formRules = reactive({
-  phone: [{ required: true, message: '登录名不能为空', trigger: 'blur' }],
+  username: [{ required: true, message: '登录名不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '用户名称不能为空', trigger: 'blur' }],
   password: [{ required: true, message: '用户密码不能为空', trigger: 'blur' }]
 })

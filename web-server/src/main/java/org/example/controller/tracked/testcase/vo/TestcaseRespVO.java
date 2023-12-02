@@ -11,5 +11,7 @@ public class TestcaseRespVO extends TestcaseBaseVO {
 
     private Long id;
 
+    private String reviewed;
+
     private List<TestcaseStep> steps;
 }

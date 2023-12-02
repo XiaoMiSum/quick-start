@@ -1,9 +1,6 @@
 package org.example.convert.tracked;
 
-import org.example.controller.tracked.testcase.vo.TestcaseAddReqVO;
-import org.example.controller.tracked.testcase.vo.TestcasePageRespVO;
-import org.example.controller.tracked.testcase.vo.TestcaseRespVO;
-import org.example.controller.tracked.testcase.vo.TestcaseUpdateReqVO;
+import org.example.controller.tracked.testcase.vo.*;
 import org.example.dal.dataobject.tracked.Testcase;
 import org.example.model.dto.TestcaseDTO;
 import org.mapstruct.Mapper;
@@ -38,5 +35,9 @@ public interface TestcaseConvert {
     }
 
     List<TestcaseDTO> convert(List<Testcase> testcases);
+
+    List<TestcaseExportVO> convert1(List<Testcase> testcases);
+
+    List<Testcase> convert2(List<TestcaseExportVO> imports);
 
 }

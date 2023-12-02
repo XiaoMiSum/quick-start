@@ -53,7 +53,11 @@
                 <Icon class="mr-5px" icon="fa-solid:unlink" />
                 取消关联
               </el-button>
-              <el-button plain type="primary" @click="handleAssociCase()">
+              <el-button plain type="primary" @click="handleOpenImportCase">
+                <Icon class="mr-5px" icon="ep:upload" />
+                从评审导入
+              </el-button>
+              <el-button plain type="success" @click="handleAssociCase()">
                 <Icon class="mr-5px" icon="ep:caret-right" />
                 开始执行
               </el-button>
@@ -88,7 +92,7 @@
             </el-table-column>
             <el-table-column align="center" label="执行结果" prop="executeResult">
               <template #default="scope">
-                <EnumTag :enums="RESULT_ENUMS" :value="scope.row.executeResult" />
+                <EnumTag :enums="TESTCASE_EXECUTE_ENUMS" :value="scope.row.executeResult" />
               </template>
             </el-table-column>
             <el-table-column
@@ -148,18 +152,21 @@
     ref="caseAssociated"
     :data-id="currentPlanId"
     source="plan"
+    :enums="TESTCASE_EXECUTE_ENUMS"
     @close="handleQuery"
   />
-  <CaseViewer ref="caseViewer" source="plan" @close="handleQuery" />
+  <CaseViewer ref="caseViewer" source="plan" :enums="TESTCASE_EXECUTE_ENUMS" @close="handleQuery" />
+  <CaseImports ref="caseImports" @close="getList" />
 </template>
 
 <script lang="ts" setup>
 import { ModuleTree } from '@/views/Project/components/index'
 import { CaseAssociated, CaseViewer } from '../components'
+import CaseImports from './CaseImports.vue'
 
 import { dateFormatter } from '@/utils/formatTime'
 
-import { CASE_LEVEL_ENUMS, RESULT_ENUMS } from '@/utils/enums'
+import { CASE_LEVEL_ENUMS, TESTCASE_EXECUTE_ENUMS } from '@/utils/enums'
 
 import * as HTTP from '@/api/tracked/plan'
 
@@ -252,6 +259,11 @@ const multipleTableRef = ref()
 const toggleSelection = () => {
   multipleTableRef.value!.clearSelection()
   checked.value = []
+}
+
+const caseImports = ref()
+const handleOpenImportCase = () => {
+  caseImports.value.open(currentPlanId.value)
 }
 
 /** 初始化 **/

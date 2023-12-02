@@ -98,7 +98,7 @@
             />
             <el-table-column align="center" label="评审结果" prop="reviewResult">
               <template #default="scope">
-                <EnumTag :enums="RESULT_ENUMS" :value="scope.row.reviewResult" />
+                <EnumTag :enums="TESTCASE_REVIEWED_ENUMS" :value="scope.row.reviewResult" />
               </template>
             </el-table-column>
             <el-table-column
@@ -157,10 +157,16 @@
     ref="caseAssociated"
     :data-id="currentReviewId"
     source="review"
+    :enums="TESTCASE_REVIEWED_ENUMS"
     @close="handleQuery"
   />
 
-  <CaseViewer ref="caseViewer" source="review" @close="handleQuery" />
+  <CaseViewer
+    ref="caseViewer"
+    :enums="TESTCASE_REVIEWED_ENUMS"
+    source="review"
+    @close="handleQuery"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -169,10 +175,6 @@ onMounted(async () => {
   appStore.setProjectPick(true)
   if (params && params.reviewId) {
     currentReviewId.value = params.reviewId
-    const data = await HTTP.getData(params.reviewId)
-    statistics.value = data.statistics
-    statistics.value.name = '评审进度'
-    title.value = data.name
   }
   await getList()
 })
@@ -182,7 +184,7 @@ import { CaseAssociated, CaseViewer } from '../components'
 
 import { dateFormatter } from '@/utils/formatTime'
 
-import { CASE_LEVEL_ENUMS, RESULT_ENUMS } from '@/utils/enums'
+import { CASE_LEVEL_ENUMS, TESTCASE_REVIEWED_ENUMS } from '@/utils/enums'
 
 import * as HTTP from '@/api/tracked/review'
 
@@ -216,6 +218,7 @@ const queryFormRef = ref() // 搜索的表单
 const getList = async () => {
   loading.value = true
   try {
+    handleGetStatistics()
     queryParams.value.reviewId = currentReviewId.value
     const data = await HTTP.getReviewCase(queryParams.value)
     list.value = data.list
@@ -223,6 +226,13 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const handleGetStatistics = async () => {
+  const data = await HTTP.getData(currentReviewId.value)
+  statistics.value = data.statistics
+  statistics.value.name = '评审进度'
+  title.value = data.name
 }
 
 const handleQuery = async () => {

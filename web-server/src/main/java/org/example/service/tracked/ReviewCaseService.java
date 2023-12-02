@@ -19,6 +19,8 @@ public interface ReviewCaseService {
 
     List<ReviewCase> getList(Long reviewId, ResultEnum result);
 
+    List<ReviewCase> getListNotInCaseIds(Long reviewId, List<Long> notInCaseIds);
+
     List<ReviewCase> getListGtId(String opt, Long reviewId, Long id);
 
     void add(List<ReviewCase> data);

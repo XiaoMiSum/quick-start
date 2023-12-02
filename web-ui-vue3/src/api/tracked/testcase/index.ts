@@ -46,3 +46,16 @@ export const batchRemove = (ids: number[]) => {
     url: url + '?ids=' + ids
   })
 }
+
+export const batchImports = (data: any) => {
+  return request.upload({
+    url: url + '/imports',
+    data
+  })
+}
+
+export const download = (template: boolean = false) => {
+  return request.download({
+    url: url + '/download?template=' + template
+  })
+}

@@ -1,8 +1,8 @@
 <script lang="tsx">
-import { defineComponent, computed } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { Message } from '@/layout/components//Message'
 import { Collapse } from '@/layout/components/Collapse'
-import { ProjectSelector } from '@/layout/components/ProjectSelector'
+import { ProjectPicker } from '@/layout/components/ProjectPicker'
 import { UserInfo } from '@/layout/components/UserInfo'
 import { Screenfull } from '@/layout/components/Screenfull'
 import { Breadcrumb } from '@/layout/components/Breadcrumb'
@@ -62,7 +62,7 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
-          {projectPick.value ? <ProjectSelector class="custom-hover" /> : undefined}
+          {projectPick.value ? <ProjectPicker class="custom-hover" /> : undefined}
           {screenfull.value ? (
             <Screenfull class="custom-hover" color="var(--top-header-text-color)"></Screenfull>
           ) : undefined}

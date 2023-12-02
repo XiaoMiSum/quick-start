@@ -103,3 +103,17 @@ export const batchRemoveAssociCase = (ids: number) => {
     url: url + '/case?ids=' + ids
   })
 }
+
+export const importCase = (data: any) => {
+  return request.post({
+    url: url + '/imports',
+    data
+  })
+}
+
+export const syncCase = (data: any) => {
+  return request.post({
+    url: url + '/case/sync',
+    data
+  })
+}

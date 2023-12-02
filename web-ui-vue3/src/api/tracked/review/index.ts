@@ -103,3 +103,16 @@ export const batchRemoveAssociCase = (ids: number) => {
     url: url + '/case?ids=' + ids
   })
 }
+
+export const getSimple = () => {
+  return request.get({
+    url: url + '/simple'
+  })
+}
+
+export const syncCase = (data: any) => {
+  return request.post({
+    url: url + '/case/sync',
+    data
+  })
+}

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { propTypes } from '@/utils/propTypes'
 import { isNumber } from '@/utils/is'
-import { RESULT_ENUMS } from '@/utils/enums'
 
 defineOptions({ name: 'Dialog' })
 
@@ -14,7 +13,7 @@ const props = defineProps({
   width: propTypes.oneOfType([String, Number]).def('40%'),
   scroll: propTypes.bool.def(false), // 是否开启滚动条。如果是的话，按照 maxHeight 设置最大高度
   maxHeight: propTypes.oneOfType([String, Number]).def('400px'),
-  enums: propTypes.array.def(RESULT_ENUMS),
+  enums: propTypes.array.def([]),
   tag: propTypes.string.def('')
 })
 
@@ -78,7 +77,7 @@ const dialogStyle = computed(() => {
         <slot name="title">
           <div class="flex">
             {{ title }}
-            <EnumTag v-if="tag" :enums="RESULT_ENUMS" :value="tag" class="ml-50px" />
+            <EnumTag v-if="tag" :enums="enums" :value="tag" class="ml-50px" />
           </div>
         </slot>
         <div

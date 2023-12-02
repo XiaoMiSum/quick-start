@@ -1,5 +1,12 @@
 <template>
-  <Dialog v-model="visible" :tag="status" :title="data.name" width="80%" @close="close">
+  <Dialog
+    v-model="visible"
+    :tag="status"
+    :title="data.name"
+    :enums="enums"
+    width="80%"
+    @close="close"
+  >
     <ContentWrap>
       <!-- 搜索工作栏 -->
       <el-form v-loading="loading" label-width="90px">
@@ -32,7 +39,7 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="前置步骤：">
+            <el-form-item label="前置条件：">
               <el-input
                 v-model="data.precondition"
                 :autosize="{ minRows: 2, maxRows: 6 }"
@@ -86,18 +93,45 @@
         <Icon class="ml-5px" icon="ep:arrow-right" />
       </el-button>
       <el-divider direction="vertical" />
+      <el-button link type="warning" @click="handleSyncCase">
+        <Icon class="mr-5px" icon="ep:refresh" />
+        同步用例
+      </el-button>
       <el-button link>
         <Icon class="mr-5px" icon="ep:chat-dot-square" />
         评论
       </el-button>
       <el-divider direction="vertical" />
-      <el-button :loading="loading" plain type="warning" @click="handleReviewCase('SKIPPED')">
+      <el-button
+        v-if="source === 'plan'"
+        :loading="loading"
+        plain
+        type="danger"
+        @click="handleReviewCase(TESTCASE_STATUS.OBSTRUCTED)"
+      >
+        阻塞
+      </el-button>
+      <el-button
+        :loading="loading"
+        plain
+        type="info"
+        @click="handleReviewCase(TESTCASE_STATUS.SKIPPED)"
+      >
         跳过
       </el-button>
-      <el-button :loading="loading" plain type="danger" @click="handleReviewCase('NOPASSED')">
+      <el-button
+        :loading="loading"
+        plain
+        type="warning"
+        @click="handleReviewCase(TESTCASE_STATUS.UNPASSED)"
+      >
         不通过
       </el-button>
-      <el-button :loading="loading" type="primary" @click="handleReviewCase('PASSED')">
+      <el-button
+        :loading="loading"
+        type="success"
+        @click="handleReviewCase(TESTCASE_STATUS.PASSED)"
+      >
         通过
       </el-button>
     </template>
@@ -105,7 +139,7 @@
 </template>
 
 <script lang="ts" setup>
-import { CASE_LEVEL_ENUMS } from '@/utils/enums'
+import { CASE_LEVEL_ENUMS, TESTCASE_STATUS } from '@/utils/enums'
 
 import * as REVIEW from '@/api/tracked/review'
 import * as PLAN from '@/api/tracked/plan'
@@ -116,9 +150,13 @@ const props = defineProps({
   source: {
     required: true,
     type: String
+  },
+  enums: {
+    required: true,
+    type: Array
   }
 })
-const { source } = toRefs(props)
+const { source, enums } = toRefs(props)
 
 const visible = ref(false)
 const data = ref<any>({})
@@ -127,6 +165,7 @@ const status = ref('')
 
 /** 打开弹窗 */
 const open = async (obj: any) => {
+  console.log(source.value)
   loading.value = true
   visible.value = true
   if (source.value === 'review') {
@@ -145,6 +184,25 @@ const handleSetReviewCase = async (obj: any) => {
 const handleSetPlanCase = async (obj: any) => {
   data.value = await PLAN.getPlanCaseExecute(obj)
   status.value = data.value.executeResult
+}
+
+const handleSyncCase = async () => {
+  loading.value = true
+  const params = data.value
+  if (source.value === 'review') {
+    data.value = await REVIEW.syncCase({
+      id: params.id,
+      reviewId: params.reviewId,
+      caseId: params.caseId
+    })
+  } else if (source.value === 'plan') {
+    data.value = await PLAN.syncCase({
+      id: params.id,
+      planId: params.planId,
+      caseId: params.caseId
+    })
+  }
+  loading.value = false
 }
 
 const handleLastClick = async () => {

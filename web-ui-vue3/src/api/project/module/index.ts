@@ -9,6 +9,7 @@ export const getPage = (params: any) => {
     params
   })
 }
+
 export const getSimple = () => {
   return request.get({
     url: url + '/simple'

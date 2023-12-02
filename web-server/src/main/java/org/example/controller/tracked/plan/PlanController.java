@@ -14,6 +14,7 @@ import org.example.service.project.module.ModuleService;
 import org.example.service.sys.user.UserService;
 import org.example.service.tracked.PlanCaseService;
 import org.example.service.tracked.PlanService;
+import org.example.service.tracked.ReviewCaseService;
 import org.example.service.tracked.TestcaseService;
 import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -34,6 +35,8 @@ public class PlanController {
     private PlanService service;
     @Resource
     private PlanCaseService caseService;
+    @Resource
+    private ReviewCaseService reviewCaseService;
     @Resource
     private TestcaseService testcaseService;
     @Resource
@@ -96,8 +99,18 @@ public class PlanController {
         return Result.getSuccessful(result);
     }
 
+    @PostMapping("/case/sync")
+    public Result<?> syncReviewCase(@RequestHeader("x-project-id") Long projectId,
+                                    @RequestBody PlanCaseExecuteVO req) {
+        TestcaseDTO testcase = TestcaseConvert.INSTANCE.convert(testcaseService.get(req.getCaseId()));
+        PlanCase planCase = PlanConvert.INSTANCE.convert(testcase);
+        planCase.setPlanId(req.getPlanId()).setId(req.getId());
+        caseService.update(planCase);
+        return Result.getSuccessful(planCase);
+    }
+
     @GetMapping("/case/execute")
-    public Result<?> getReviewCase(Long id) {
+    public Result<?> getPlanCase(Long id) {
         PlanCaseRespVO result = PlanConvert.INSTANCE.convert(caseService.get(id));
         if (Objects.nonNull(result)) {
             if (result.getModuleId() > 0) {
@@ -174,6 +187,19 @@ public class PlanController {
         list.forEach(item -> item.setProjectId(projectId).setPlanId(data.getPlanId()));
         caseService.add(list);
         return Result.getSuccessful();
+    }
+
+    @PostMapping("/imports")
+    public Result<?> importPlanCase(@RequestHeader("x-project-id") Long projectId, @RequestBody PlanCaseImportReqVO data) {
+        List<Long> caseIds = caseService.getList(data.getPlanId())
+                .stream().map(PlanCase::getCaseId)
+                .toList();
+        List<PlanCase> list = PlanConvert.INSTANCE.convert1(
+                reviewCaseService.getListNotInCaseIds(data.getReviewId(), caseIds), data.getPlanId()
+        );
+        list.forEach(item -> item.setProjectId(projectId).setPlanId(data.getPlanId()));
+        caseService.add(list);
+        return Result.getSuccessful(list.size());
     }
 
     @DeleteMapping("/case/{id}")

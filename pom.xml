@@ -14,12 +14,14 @@
 
     <properties>
         <migoo.springboot.version>1.1.0-SNAPSHOT</migoo.springboot.version>
+        <easypoi.version>4.4.0</easypoi.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
+
         <dependencies>
             <dependency>
                 <groupId>xyz.migoo.springboot</groupId>
@@ -27,6 +29,12 @@
                 <version>${migoo.springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-spring-boot-starter</artifactId>
+                <version>${easypoi.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

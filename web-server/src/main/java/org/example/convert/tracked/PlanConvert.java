@@ -1,11 +1,13 @@
 package org.example.convert.tracked;
 
+import com.google.common.collect.Lists;
 import org.example.controller.tracked.plan.vo.PlanCasePageRespVO;
 import org.example.controller.tracked.plan.vo.PlanCaseRespVO;
 import org.example.controller.tracked.plan.vo.PlanPageRespVO;
 import org.example.controller.tracked.plan.vo.PlanRespVO;
 import org.example.dal.dataobject.tracked.Plan;
 import org.example.dal.dataobject.tracked.PlanCase;
+import org.example.dal.dataobject.tracked.ReviewCase;
 import org.example.dal.dataobject.tracked.Testcase;
 import org.example.model.dto.TestcaseDTO;
 import org.mapstruct.Mapper;
@@ -44,4 +46,25 @@ public interface PlanConvert {
                 .setModuleId(bean.getModuleId())
                 .setProjectId(bean.getProjectId());
     }
+
+    default List<PlanCase> convert1(List<ReviewCase> reviewCases, Long planId) {
+        List<PlanCase> results = Lists.newArrayList();
+        reviewCases.forEach(item -> results.add(convert1(item, planId)));
+        return results;
+    }
+
+    default PlanCase convert1(ReviewCase reviewCase, Long planId) {
+        return new PlanCase()
+                .setPlanId(planId)
+                .setCaseId(reviewCase.getCaseId())
+                .setName(reviewCase.getName())
+                .setTags(reviewCase.getTags())
+                .setLevel(reviewCase.getLevel())
+                .setModuleId(reviewCase.getModuleId())
+                .setChargeUserId(reviewCase.getChargeUserId())
+                .setPrecondition(reviewCase.getPrecondition())
+                .setSteps(reviewCase.getSteps())
+                .setProjectId(reviewCase.getProjectId());
+    }
+
 }

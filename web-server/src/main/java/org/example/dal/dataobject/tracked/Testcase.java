@@ -29,7 +29,7 @@ public class Testcase extends BaseDO {
 
     private String precondition;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = TestcaseStep.TestcaseStepTypeHandler.class)
     private List<TestcaseStep> steps;
 
     @TableField(typeHandler = JacksonTypeHandler.class)

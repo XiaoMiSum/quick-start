@@ -62,7 +62,11 @@
     <el-table v-loading="loading" :data="list">
       <el-table-column align="center" label="角色编号" prop="id" />
       <el-table-column align="center" label="角色名称" prop="name" />
-      <el-table-column align="center" label="角色类型" prop="type" />
+      <el-table-column align="center" label="角色类型" prop="type">
+        <template #default="scope">
+          <EnumTag :enums="ROLE_TYPE_ENUMS" :value="scope.row.type" />
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="角色标识" prop="code" />
       <el-table-column align="center" label="显示顺序" prop="sort" />
       <el-table-column align="center" label="备注" prop="memo" />
@@ -130,7 +134,7 @@
 </template>
 
 <script lang="ts" setup>
-import { COMMON_STATUS_ENUM, COMMON_STATUS_ENUMS } from '@/utils/enums'
+import { COMMON_STATUS_ENUM, COMMON_STATUS_ENUMS, ROLE_TYPE_ENUMS } from '@/utils/enums'
 import { dateFormatter } from '@/utils/formatTime'
 import * as HTTP from '@/api/system/role'
 import RoleForm from './RoleForm.vue'

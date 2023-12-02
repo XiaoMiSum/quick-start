@@ -12,9 +12,11 @@ import xyz.migoo.framework.common.util.json.JsonUtils;
 public class TestcaseQueryReqVO extends PageParam {
 
     private Long projectId;
-    private String name;
     private Long moduleId;
+    private String name;
     private String level;
+    private String tag;
+    private String reviewed;
 
     public TestcaseQueryReqVO(int pageNo, int pageSize) {
         setPageNo(pageNo);

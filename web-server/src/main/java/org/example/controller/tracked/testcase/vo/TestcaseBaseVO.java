@@ -17,7 +17,6 @@ public class TestcaseBaseVO {
 
     private String precondition;
 
-
     private List<String> tags;
 
     private Long chargeUserId;

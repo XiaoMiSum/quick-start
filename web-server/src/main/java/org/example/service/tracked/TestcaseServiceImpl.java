@@ -53,6 +53,11 @@ public class TestcaseServiceImpl implements TestcaseService {
     }
 
     @Override
+    public void add(List<Testcase> testcases) {
+        mapper.insertBatch(testcases);
+    }
+
+    @Override
     public void update(Testcase testcase) {
         mapper.updateById(testcase);
     }

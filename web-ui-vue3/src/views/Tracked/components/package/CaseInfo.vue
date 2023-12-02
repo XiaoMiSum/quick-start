@@ -37,10 +37,10 @@
           <el-form-item label="标签" prop="tags">
             <el-select
               v-model="modelValue.tags"
-              allow-create
               clearable
-              filterable
               multiple
+              allow-create
+              filterable
               placeholder="请选择用例标签，无可用标签可输入新标签"
               style="width: 100%"
               @blur="tagsBlur"
@@ -68,7 +68,7 @@
         </el-col>
       </el-row>
 
-      <el-form-item label="前置步骤" prop="precondition">
+      <el-form-item label="前置条件" prop="precondition">
         <el-input
           v-model="modelValue.precondition"
           :autosize="{ minRows: 2, maxRows: 6 }"

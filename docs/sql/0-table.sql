@@ -267,7 +267,7 @@ CREATE TABLE `mg_tracked_review_case`
     `charge_user_id` bigint       NULL     DEFAULT NULL,
     `review_time`    datetime     NULL     DEFAULT NULL COMMENT '评审时间',
     `reviewer`       bigint       NULL     DEFAULT NULL COMMENT '评审人',
-    `review_result`  varchar(32)  NULL     DEFAULT 'UNREVIEWED' COMMENT '评审结果',
+    `review_result`  varchar(32)  NULL     DEFAULT 'NOTSTARTED' COMMENT '评审结果',
     `review_comment` longtext     NULL,
     `deleted`        bit(1)       NOT NULL DEFAULT b'0',
     `creator`        varchar(64)  NOT NULL,
