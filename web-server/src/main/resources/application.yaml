@@ -36,7 +36,7 @@ spring:
 migoo:
   web:
     api-prefix: /${spring.application.name}
-    controller-package: org.example.controller
+    controller-package: com.github.xiaomisum.mstar.controller
     scan-all: true
   captcha:
     timeout: 5m
@@ -45,7 +45,7 @@ migoo:
   xss:
     enable: false
   mybatis:
-    mapper-package: org.example.dal.mapper
+    mapper-package: com.github.xiaomisum.mstar.dal.mapper
   security:
     token-header: X-Token
     token-secret: 17c553e34228909b1f8cef6d1de0b53d

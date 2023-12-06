@@ -3,11 +3,16 @@
     <!-- 左侧部门树 -->
     <el-col :span="5" :xs="24">
       <ContentWrap class="h-1/1">
-        <ModuleTree @node-click="handleNodeClick" />
+        <DefaultModuleTree @node-click="handleNodeClick" :readonly="false" />
       </ContentWrap>
     </el-col>
+
     <el-col :span="19" :xs="24">
       <ContentWrap>
+        <el-tabs v-model="activeName" @tab-change="tabChange">
+          <el-tab-pane label="测试用例" name="Testcase" />
+          <el-tab-pane label="回收站" name="Recycle" />
+        </el-tabs>
         <!-- 搜索工作栏 -->
         <el-form ref="queryFormRef" :inline="true" :model="queryParams">
           <el-form-item label="" prop="name">
@@ -77,7 +82,7 @@
           </el-form-item>
         </el-form>
         <!-- 操作工具栏 -->
-        <el-row :gutter="10">
+        <el-row v-if="activeName === 'Testcase'" :gutter="10">
           <el-col :span="1.5">
             <el-button plain type="primary" @click="handleAddCase">
               <Icon class="mr-5px" icon="ep:plus" />
@@ -108,6 +113,30 @@
             </el-button>
           </el-col>
         </el-row>
+        <el-row v-else :gutter="10">
+          <el-col :span="1.5">
+            <el-button
+              :disabled="!checked || checked.length < 1"
+              plain
+              type="success"
+              @click="handleBatchRecoverRecycleTestcase"
+            >
+              <Icon class="mr-5px" icon="ep:document-add" />
+              批量恢复
+            </el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              :disabled="!checked || checked.length < 1"
+              plain
+              type="danger"
+              @click="handleBatchRemoveRecycleTestcase"
+            >
+              <Icon class="mr-5px" icon="ep:delete" />
+              彻底删除
+            </el-button>
+          </el-col>
+        </el-row>
       </ContentWrap>
 
       <!-- 列表 -->
@@ -122,7 +151,6 @@
           @selection-change="handleSelectionChange"
         >
           <el-table-column :reserve-selection="true" type="selection" width="35" />
-          <el-table-column align="center" label="编号" prop="id" width="55" />
           <el-table-column label="用例名称" prop="name" show-overflow-tooltip>
             <template #default="scope">
               <el-button link type="primary" @click="handleEditCase(scope.row.id)">
@@ -143,26 +171,40 @@
               <EnumTag :enums="CASE_LEVEL_ENUMS" :value="scope.row.level" />
             </template>
           </el-table-column>
-          <el-table-column align="center" label="评审结果" prop="reviewed" width="80">
+          <el-table-column
+            v-if="activeName === 'Testcase'"
+            align="center"
+            label="评审结果"
+            prop="reviewed"
+            width="80"
+          >
             <template #default="scope">
               <EnumTag :enums="TESTCASE_REVIEWED_ENUMS" :value="scope.row.reviewed" />
             </template>
           </el-table-column>
           <el-table-column
+            v-if="activeName === 'Testcase'"
             align="center"
             label="负责人"
-            prop="chargeUser"
+            prop="maintainer"
             show-overflow-tooltip
             width="100"
           />
           <el-table-column
+            v-if="activeName === 'Testcase'"
             :formatter="dateFormatter"
             align="center"
             label="更新时间"
             prop="updateTime"
             width="165"
           />
-          <el-table-column align="center" fixed="right" label="操作" width="150">
+          <el-table-column
+            v-if="activeName === 'Testcase'"
+            align="center"
+            fixed="right"
+            label="操作"
+            width="150"
+          >
             <template #default="scope">
               <el-tooltip content="编辑" placement="top">
                 <el-button circle plain type="primary" @click="handleEditCase(scope.row.id)">
@@ -181,6 +223,23 @@
               </el-tooltip>
             </template>
           </el-table-column>
+
+          <el-table-column
+            v-if="activeName === 'Recycle'"
+            align="center"
+            label="删除人"
+            prop="creator"
+            show-overflow-tooltip
+            width="100"
+          />
+          <el-table-column
+            v-if="activeName === 'Recycle'"
+            :formatter="dateFormatter"
+            align="center"
+            label="删除时间"
+            prop="createTime"
+            width="165"
+          />
         </el-table>
         <!-- 分页 -->
         <Pagination
@@ -196,25 +255,25 @@
   <CaseImports
     ref="caseImports"
     @close="getList"
-    @upload="handleBatchImports"
     @download="handleDownload"
+    @upload="handleBatchImports"
   />
 </template>
 
 <script lang="ts" setup>
-import { ModuleTree } from '@/views/Project/components/index'
-import { CaseImports } from '../components'
+import { DefaultModuleTree } from '@/views/components/module'
+import CaseImports from './CaseImports.vue'
+
 import { dateFormatter } from '@/utils/formatTime'
 import { handleTree } from '@/utils/tree'
-
+import download from '@/utils/download'
 import { CASE_LEVEL_ENUMS, TESTCASE_REVIEWED_ENUMS } from '@/utils/enums'
 
-import * as MHTTP from '@/api/project/module'
-import * as HTTP from '@/api/tracked/testcase'
-import * as TAG from '@/api/project/tag'
+import * as MHTTP from '@/api/track/node'
+import * as HTTP from '@/api/track/testcase'
+
 import { useAppStore } from '@/store/modules/app'
 import { useUserStore } from '@/store/modules/user'
-import download from '@/utils/download'
 
 const { push } = useRouter() // 路由
 const message = useMessage() // 消息弹窗
@@ -230,8 +289,10 @@ const queryParams = ref<any>({
   pageNo: 1,
   pageSize: 10,
   name: '',
-  moduleId: null
+  nodeId: null
 })
+
+const activeName = ref('Testcase')
 
 const loading = ref(false)
 const list = ref<any>([])
@@ -244,7 +305,9 @@ const queryFormRef = ref() // 搜索的表单
 const getList = async () => {
   loading.value = true
   try {
-    const data = await HTTP.getPage(queryParams.value)
+    const data = await (activeName.value === 'Testcase'
+      ? HTTP.getPage(queryParams.value)
+      : HTTP.getRecycleTestcase(queryParams.value))
     list.value = data.list
     total.value = data.total
   } finally {
@@ -275,18 +338,18 @@ const handleDelete = async (id: number) => {
 }
 
 const handleAddCase = async () => {
-  await push('/tracked/case/add')
+  await push('/track/case/add')
 }
 
 const handleEditCase = async (id: number) => {
-  await push('/tracked/case/edit/' + id)
+  await push('/track/case/edit/' + id)
 }
 const handleCopyCase = async (id: number) => {
-  await push({ path: '/tracked/case/add', query: { from: id } })
+  await push({ path: '/track/case/add', query: { from: id } })
 }
 
 const handleNodeClick = async (row: any) => {
-  queryParams.value.moduleId = row.id === 0 ? null : row.id
+  queryParams.value.nodeId = row.id === 0 ? null : row.id
   await handleQuery()
 }
 
@@ -331,6 +394,26 @@ const getTags = async () => {
   tags.value = await TAG.getSimple()
 }
 
+const tabChange = async () => {
+  checked.value = []
+  list.value = []
+  total.value = 0
+  queryParams.value.nodeId = null
+  await handleQuery()
+}
+
+const handleBatchRemoveRecycleTestcase = async () => {
+  await HTTP.batchRemoveRecycleTestcase(checked.value)
+  toggleSelection()
+  await handleQuery()
+}
+
+const handleBatchRecoverRecycleTestcase = async () => {
+  await HTTP.recoverTestcase(checked.value)
+  toggleSelection()
+  await handleQuery()
+}
+
 // 监听当前项目变化，刷新列表数据
 watch(
   computed(() => userStore.getProject),
@@ -348,5 +431,3 @@ onMounted(async () => {
   await getTags()
 })
 </script>
-
-<style scoped></style>

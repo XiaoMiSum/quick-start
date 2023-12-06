@@ -4,7 +4,7 @@
       <!-- 左侧模块树 -->
       <el-col :span="5" :xs="24">
         <ContentWrap class="h-1/1">
-          <ModuleTree @node-click="handleNodeClick" />
+          <DefaultModuleTree @node-click="handleNodeClick" />
         </ContentWrap>
       </el-col>
       <el-col :span="19" :xs="24">
@@ -77,7 +77,6 @@
             @selection-change="handleSelectionChange"
           >
             <el-table-column :reserve-selection="true" type="selection" width="35" />
-            <el-table-column align="center" label="编号" prop="id" width="60" />
             <el-table-column label="用例名称" prop="name" show-overflow-tooltip width="200" />
             <el-table-column label="所属模块" prop="path" show-overflow-tooltip width="200" />
             <el-table-column align="center" label="用例等级" prop="level">
@@ -95,12 +94,7 @@
                 <EnumTag :enums="TESTCASE_EXECUTE_ENUMS" :value="scope.row.executeResult" />
               </template>
             </el-table-column>
-            <el-table-column
-              align="center"
-              label="执行人"
-              prop="executorUser"
-              show-overflow-tooltip
-            />
+            <el-table-column align="center" label="执行人" prop="executor" show-overflow-tooltip />
 
             <el-table-column
               :formatter="dateFormatter"
@@ -151,24 +145,25 @@
   <CaseAssociated
     ref="caseAssociated"
     :data-id="currentPlanId"
+    :enums="TESTCASE_REVIEWED_ENUMS"
     source="plan"
-    :enums="TESTCASE_EXECUTE_ENUMS"
     @close="handleQuery"
   />
-  <CaseViewer ref="caseViewer" source="plan" :enums="TESTCASE_EXECUTE_ENUMS" @close="handleQuery" />
+  <CaseViewer ref="caseViewer" :enums="TESTCASE_EXECUTE_ENUMS" @close="handleQuery" />
   <CaseImports ref="caseImports" @close="getList" />
 </template>
 
 <script lang="ts" setup>
-import { ModuleTree } from '@/views/Project/components/index'
-import { CaseAssociated, CaseViewer } from '../components'
+import { DefaultModuleTree } from '@/views/components/module'
+import { CaseAssociated } from '../components'
 import CaseImports from './CaseImports.vue'
+import CaseViewer from './CaseViewer.vue'
 
 import { dateFormatter } from '@/utils/formatTime'
 
-import { CASE_LEVEL_ENUMS, TESTCASE_EXECUTE_ENUMS } from '@/utils/enums'
+import { CASE_LEVEL_ENUMS, TESTCASE_EXECUTE_ENUMS, TESTCASE_REVIEWED_ENUMS } from '@/utils/enums'
 
-import * as HTTP from '@/api/tracked/plan'
+import * as HTTP from '@/api/track/plan'
 
 import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 import { useAppStore } from '@/store/modules/app'
@@ -185,7 +180,7 @@ const queryParams = ref<any>({
   pageNo: 1,
   pageSize: 10,
   caseName: '',
-  moduleId: null
+  nodeId: null
 })
 
 const checked = ref<any>([])
@@ -240,7 +235,7 @@ const handleExecuteCase = async (data?: any) => {
 }
 
 const handleNodeClick = async (row: any) => {
-  queryParams.value.moduleId = row.id === 0 ? null : row.id
+  queryParams.value.nodeId = row.id === 0 ? null : row.id
   handleQuery()
 }
 

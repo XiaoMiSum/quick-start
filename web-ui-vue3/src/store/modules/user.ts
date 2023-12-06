@@ -3,7 +3,6 @@ import { defineStore } from 'pinia'
 import { hasToken, removeToken } from '@/utils/auth'
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
 import { getInfo, loginOut } from '@/api/login'
-import { convertToInteger } from '@/utils'
 
 const { wsCache } = useCache()
 
@@ -45,7 +44,7 @@ export const useUserStore = defineStore('admin-user', {
       return this.project
     },
     getDefaultProject(): number {
-      return convertToInteger(wsCache.get(CACHE_KEY.PROJECT))
+      return wsCache.get(CACHE_KEY.PROJECT)
     }
   },
   actions: {
@@ -63,7 +62,7 @@ export const useUserStore = defineStore('admin-user', {
       if (!wsCache.get(CACHE_KEY.PROJECT)) {
         wsCache.add(CACHE_KEY.PROJECT, userInfo.defaultProject)
       }
-      this.project = convertToInteger(wsCache.get(CACHE_KEY.PROJECT))
+      this.project = wsCache.get(CACHE_KEY.PROJECT)
       this.isSetUser = true
       wsCache.set(CACHE_KEY.USER, userInfo)
     },

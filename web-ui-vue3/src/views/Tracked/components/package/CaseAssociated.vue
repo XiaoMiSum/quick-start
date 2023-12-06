@@ -4,7 +4,7 @@
       <!-- 左侧模块树 -->
       <el-col :span="5" :xs="24">
         <ContentWrap class="h-1/1">
-          <ModuleTree @node-click="handleNodeClick" />
+          <DefaultModuleTree @node-click="handleNodeClick" />
         </ContentWrap>
       </el-col>
       <el-col :span="19" :xs="24">
@@ -65,7 +65,7 @@
             <el-table-column
               align="center"
               label="负责人"
-              prop="chargeUser"
+              prop="maintainer"
               show-overflow-tooltip
             />
           </el-table>
@@ -80,7 +80,7 @@
       </el-col>
     </el-row>
     <template #footer>
-      <span> 已选中 {{ checked.length }} 条数据 </span>
+      <span class="mr-10px"> 已选中 {{ checked.length }} 条数据 </span>
       <el-button @click="visible = false">取 消</el-button>
       <el-button :loading="btnLoading" type="primary" @click="submitForm">确 定</el-button>
     </template>
@@ -88,11 +88,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ModuleTree } from '@/views/Project/components/index'
+import { DefaultModuleTree } from '@/views/components/module'
 import { CASE_LEVEL_ENUMS } from '@/utils/enums'
 
-import * as REVIEW from '@/api/tracked/review'
-import * as PLAN from '@/api/tracked/plan'
+import * as REVIEW from '@/api/track/review'
+import * as PLAN from '@/api/track/plan'
 
 const props = defineProps({
   source: {
@@ -122,7 +122,7 @@ const queryParams = ref<any>({
   pageNo: 1,
   pageSize: 10,
   caseName: '',
-  moduleId: null
+  nodeId: null
 })
 const queryFormRef = ref() // 搜索的表单
 
@@ -167,7 +167,7 @@ const resetQuery = async () => {
 }
 
 const handleNodeClick = async (row: any) => {
-  queryParams.value.moduleId = row.id === 0 ? null : row.id
+  queryParams.value.nodeId = row.id === 0 ? null : row.id
   await handleQuery()
 }
 

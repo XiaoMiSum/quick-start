@@ -20,8 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import * as REVIEW from '@/api/tracked/review'
-import * as HTTP from '@/api/tracked/plan'
+import * as REVIEW from '@/api/track/review'
+import * as HTTP from '@/api/track/plan'
 
 const message = useMessage()
 

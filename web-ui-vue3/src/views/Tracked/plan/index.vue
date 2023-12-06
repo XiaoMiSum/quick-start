@@ -54,7 +54,7 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="执行人" prop="executorUser" show-overflow-tooltip />
+      <el-table-column align="center" label="执行人" prop="executor" show-overflow-tooltip />
       <el-table-column
         :formatter="dateFormatter"
         align="center"
@@ -181,11 +181,11 @@
 </template>
 
 <script lang="ts" setup>
-import { PlanForm } from '../components'
+import PlanForm from './PlanForm.vue'
 
 import { dateFormatter } from '@/utils/formatTime'
 
-import * as HTTP from '@/api/tracked/plan'
+import * as HTTP from '@/api/track/plan'
 
 import { useAppStore } from '@/store/modules/app'
 import { useUserStore } from '@/store/modules/user'
@@ -240,7 +240,7 @@ const openForm = (type: string, id?: number) => {
 }
 
 const handleGoAssociCase = async (id: Number) => {
-  push('/tracked/plan/' + id + '/associated-use-cases')
+  push('/track/plan/' + id + '/associated-use-cases')
 }
 
 const handleDelete = async (id: number) => {

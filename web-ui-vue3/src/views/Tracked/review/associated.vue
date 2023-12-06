@@ -4,7 +4,7 @@
       <!-- 左侧模块树 -->
       <el-col :span="5" :xs="24">
         <ContentWrap class="h-1/1">
-          <ModuleTree @node-click="handleNodeClick" />
+          <DefaultModuleTree @node-click="handleNodeClick" />
         </ContentWrap>
       </el-col>
       <el-col :span="19" :xs="24">
@@ -93,7 +93,7 @@
             <el-table-column
               align="center"
               label="负责人"
-              prop="chargeUser"
+              prop="maintainer"
               show-overflow-tooltip
             />
             <el-table-column align="center" label="评审结果" prop="reviewResult">
@@ -101,12 +101,7 @@
                 <EnumTag :enums="TESTCASE_REVIEWED_ENUMS" :value="scope.row.reviewResult" />
               </template>
             </el-table-column>
-            <el-table-column
-              align="center"
-              label="评审人"
-              prop="reviewUser"
-              show-overflow-tooltip
-            />
+            <el-table-column align="center" label="评审人" prop="reviewer" show-overflow-tooltip />
             <el-table-column
               :formatter="dateFormatter"
               align="center"
@@ -119,8 +114,8 @@
                 <el-tooltip content="评审" placement="top">
                   <el-button
                     v-hasPermi="['review:case:execute']"
-                    circle
                     plain
+                    circle
                     type="primary"
                     @click="handleReviewCase(scope.row)"
                   >
@@ -161,12 +156,7 @@
     @close="handleQuery"
   />
 
-  <CaseViewer
-    ref="caseViewer"
-    :enums="TESTCASE_REVIEWED_ENUMS"
-    source="review"
-    @close="handleQuery"
-  />
+  <CaseViewer ref="caseViewer" :enums="TESTCASE_REVIEWED_ENUMS" @close="handleQuery" />
 </template>
 
 <script lang="ts" setup>
@@ -179,14 +169,15 @@ onMounted(async () => {
   await getList()
 })
 import { useAppStore } from '@/store/modules/app'
-import { ModuleTree } from '@/views/Project/components/index'
-import { CaseAssociated, CaseViewer } from '../components'
+import { DefaultModuleTree } from '@/views/components/module'
+import { CaseAssociated } from '../components'
+import CaseViewer from './CaseViewer.vue'
 
 import { dateFormatter } from '@/utils/formatTime'
 
 import { CASE_LEVEL_ENUMS, TESTCASE_REVIEWED_ENUMS } from '@/utils/enums'
 
-import * as HTTP from '@/api/tracked/review'
+import * as HTTP from '@/api/track/review'
 
 import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 
@@ -202,7 +193,7 @@ const queryParams = ref<any>({
   pageNo: 1,
   pageSize: 10,
   caseName: '',
-  moduleId: null
+  nodeId: null
 })
 
 const checked = ref<any>([])
@@ -272,7 +263,7 @@ const handleReviewFirstCase = async () => {
 }
 
 const handleNodeClick = async (row: any) => {
-  queryParams.value.moduleId = row.id === 0 ? null : row.id
+  queryParams.value.nodeId = row.id === 0 ? null : row.id
   await handleQuery()
 }
 

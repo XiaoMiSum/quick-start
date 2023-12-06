@@ -11,7 +11,7 @@
  Target Server Version : 80100 (8.1.0)
  File Encoding         : 65001
 
- Date: 29/11/2023 17:53:15
+ Date: 05/12/2023 16:50:25
 */
 
 SET NAMES utf8mb4;
@@ -43,7 +43,7 @@ CREATE TABLE `sys_menu`  (
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4141 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4143 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -74,20 +74,20 @@ INSERT INTO `sys_menu` VALUES (2032, '删除', 'system:post:remove', 3, 2, 203, 
 INSERT INTO `sys_menu` VALUES (2040, '新增', 'system:menu:add', 3, 0, 204, '', '', NULL, '', 1, 2, 1, 0, 1, 0, '超级管理员', '2022-05-01 16:19:11', '超级管理员', '2022-05-01 16:28:48');
 INSERT INTO `sys_menu` VALUES (2041, '修改', 'system:menu:update', 3, 1, 204, '', '', NULL, '', 1, 2, 1, 0, 1, 0, '超级管理员', '2022-05-01 16:19:42', '超级管理员', '2023-10-01 10:18:06');
 INSERT INTO `sys_menu` VALUES (2042, '删除', 'system:menu:remove', 3, 2, 204, '', '', NULL, '', 1, 2, 1, 0, 1, 0, '超级管理员', '2022-05-01 16:19:56', '超级管理员', '2022-05-01 16:28:57');
-INSERT INTO `sys_menu` VALUES (4110, '项目管理', '', 1, 99, 0, '/project', 'fa:product-hunt', '', '', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-08 16:59:07', '超级管理员', '2023-11-08 16:59:07');
-INSERT INTO `sys_menu` VALUES (4111, '项目列表', 'system:project:query', 2, 0, 4110, 'table', 'fa-solid:table', 'ProjectList', 'Project/list/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-08 17:03:17', '超级管理员', '2023-11-10 14:50:11');
+INSERT INTO `sys_menu` VALUES (4110, '项目管理', '', 1, 99, 0, '/project', 'ep:promotion', '', '', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-08 16:59:07', '超级管理员', '2023-11-30 10:21:32');
+INSERT INTO `sys_menu` VALUES (4111, '项目列表', 'system:project:query', 2, 0, 4110, 'table', 'fa:table', 'ProjectList', 'Project/table/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-08 17:03:17', '超级管理员', '2023-12-05 14:12:26');
 INSERT INTO `sys_menu` VALUES (4112, '新增', 'system:project:add', 3, 0, 4111, '', '', '', '', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-08 17:03:45', '超级管理员', '2023-11-08 17:03:45');
 INSERT INTO `sys_menu` VALUES (4113, '修改', 'system:project:update', 3, 1, 4111, '', '', '', '', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-08 17:04:03', '超级管理员', '2023-11-08 17:04:03');
 INSERT INTO `sys_menu` VALUES (4114, '删除', 'system:project:remove', 3, 2, 4111, '', '', '', '', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-08 17:04:20', '超级管理员', '2023-11-08 17:04:20');
-INSERT INTO `sys_menu` VALUES (4115, '项目信息', 'project:info:query', 2, 1, 4110, 'info', 'fa:info', 'ProjectInfo', 'Project/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-10 14:54:29', '超级管理员', '2023-11-10 14:54:45');
-INSERT INTO `sys_menu` VALUES (4116, '项目成员', '', 2, 2, 4110, 'member', 'fa:group', 'ProjectMember', 'Project/member/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 14:30:29', '超级管理员', '2023-11-13 14:30:29');
-INSERT INTO `sys_menu` VALUES (4117, '模块管理', '', 2, 3, 4110, 'module', 'fa-solid:align-justify', 'ProjectModule', 'Project/module/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 14:31:44', '超级管理员', '2023-11-13 14:31:44');
-INSERT INTO `sys_menu` VALUES (4118, '测试跟踪', '', 1, 1, 0, '/tracked', 'ep:coffee', '', '', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 16:04:04', '超级管理员', '2023-11-29 17:51:17');
-INSERT INTO `sys_menu` VALUES (4119, '测试用例', '', 2, 0, 4118, 'case', 'fa-solid:suitcase', 'CaseTracked', 'Tracked/case/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 16:05:53', '超级管理员', '2023-11-29 17:52:40');
-INSERT INTO `sys_menu` VALUES (4120, '测试评审', '', 2, 1, 4118, 'review', 'fa:envira', 'ReviewTracked', 'Tracked/review/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 16:08:46', '超级管理员', '2023-11-29 17:52:45');
-INSERT INTO `sys_menu` VALUES (4121, '测试计划', '', 2, 2, 4118, 'plan', 'fa-solid:paper-plane', 'PlanTracked', 'Tracked/plan/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 16:09:35', '超级管理员', '2023-11-29 17:52:49');
-INSERT INTO `sys_menu` VALUES (4122, '新增用例', '', 2, 99, 4118, 'case/add', 'ep:document-add', 'CaseAdd', 'Tracked/case/add.vue', 1, 2, 0, 0, 1, 0, '超级管理员', '2023-11-14 17:04:14', '超级管理员', '2023-11-29 17:52:14');
-INSERT INTO `sys_menu` VALUES (4123, '编辑用例', '', 2, 99, 4118, 'case/edit/:id', 'ep:edit', 'CaseEdit', 'Tracked/case/edit.vue', 1, 2, 0, 0, 1, 0, '超级管理员', '2023-11-14 17:31:39', '超级管理员', '2023-11-29 17:52:17');
+INSERT INTO `sys_menu` VALUES (4115, '项目信息', 'project:info:query', 2, 1, 4110, 'info', 'fa-solid:info', 'ProjectInfo', 'Project/info/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-10 14:54:29', '超级管理员', '2023-12-05 14:12:34');
+INSERT INTO `sys_menu` VALUES (4116, '项目成员', '', 2, 2, 4110, 'member', 'ep:user', 'ProjectMember', 'Project/member/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 14:30:29', '超级管理员', '2023-11-30 10:34:23');
+INSERT INTO `sys_menu` VALUES (4117, '模块管理', '', 2, 3, 4110, 'module', 'ep:files', 'ProjectModule', 'Project/module/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 14:31:44', '超级管理员', '2023-11-30 10:36:52');
+INSERT INTO `sys_menu` VALUES (4118, '测试跟踪', '', 1, 1, 0, '/track', 'ep:coffee', '', '', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 16:04:04', '超级管理员', '2023-11-29 17:51:17');
+INSERT INTO `sys_menu` VALUES (4119, '测试用例', '', 2, 0, 4118, 'case', 'ep:burger', 'CaseTracked', 'Tracked/case/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 16:05:53', '超级管理员', '2023-11-30 10:17:47');
+INSERT INTO `sys_menu` VALUES (4120, '测试评审', '', 2, 1, 4118, 'review', 'ep:ice-cream', 'ReviewTracked', 'Tracked/review/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 16:08:46', '超级管理员', '2023-11-30 10:18:33');
+INSERT INTO `sys_menu` VALUES (4121, '测试计划', '', 2, 2, 4118, 'plan', 'ep:hot-water', 'PlanTracked', 'Tracked/plan/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-13 16:09:35', '超级管理员', '2023-11-30 10:19:10');
+INSERT INTO `sys_menu` VALUES (4122, '新增用例', '', 2, 99, 4118, 'case/add', 'ep:document-add', 'CaseAdd', 'Tracked/case/CaseEditor.vue', 1, 2, 0, 0, 1, 0, '超级管理员', '2023-11-14 17:04:14', '超级管理员', '2023-12-05 15:51:21');
+INSERT INTO `sys_menu` VALUES (4123, '编辑用例', '', 2, 99, 4118, 'case/edit/:id', 'ep:edit', 'CaseEdit', 'Tracked/case/CaseEditor.vue', 1, 2, 0, 0, 1, 0, '超级管理员', '2023-11-14 17:31:39', '超级管理员', '2023-12-05 15:51:28');
 INSERT INTO `sys_menu` VALUES (4124, '规划&评审', '', 2, 99, 4118, 'review/:reviewId/associated-use-cases', 'ep:link', 'ReviewAssociatedCase', 'Tracked/review/associated.vue', 1, 2, 0, 0, 0, 0, '超级管理员', '2023-11-15 15:30:08', '超级管理员', '2023-11-29 17:52:22');
 INSERT INTO `sys_menu` VALUES (4125, '规划&执行', '', 2, 99, 4118, 'plan/:planId/associated-use-cases', 'fa-solid:link', 'PlanAssociatedCase', 'Tracked/plan/associated.vue', 1, 2, 0, 0, 0, 0, '超级管理员', '2023-11-16 11:13:23', '超级管理员', '2023-11-29 17:52:27');
 INSERT INTO `sys_menu` VALUES (4126, '标签管理', '', 2, 4, 4110, 'tag', 'ep:collection-tag', 'ProjectTag', 'Project/tag/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-16 15:39:02', '超级管理员', '2023-11-16 15:39:15');
@@ -105,5 +105,7 @@ INSERT INTO `sys_menu` VALUES (4137, '新增', 'tracked:review:add', 3, 0, 4120,
 INSERT INTO `sys_menu` VALUES (4138, '修改', 'tracked:review:update', 3, 1, 4120, '', '', '', '', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-29 17:35:13', '超级管理员', '2023-11-29 17:35:13');
 INSERT INTO `sys_menu` VALUES (4139, '删除', 'tracked:review:remove', 3, 2, 4120, '', '', '', '', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-29 17:35:28', '超级管理员', '2023-11-29 17:35:28');
 INSERT INTO `sys_menu` VALUES (4140, '规划&执行', 'tracked:review:execute', 3, 3, 4120, '', '', '', '', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-11-29 17:35:50', '超级管理员', '2023-11-29 17:35:50');
+INSERT INTO `sys_menu` VALUES (4141, '归档管理', '', 2, 5, 4110, 'archives', 'fa:file-archive-o', 'ProjectArchive', 'Project/archive/index.vue', 1, 2, 1, 1, 1, 0, '超级管理员', '2023-12-04 11:52:07', '超级管理员', '2023-12-04 11:52:18');
+INSERT INTO `sys_menu` VALUES (4142, '归档详情', '', 2, 6, 4110, 'archive/:id', 'fa:file-archive-o', 'ArchiveDetail', 'Project/archive/detail.vue', 1, 2, 0, 1, 1, 0, '超级管理员', '2023-12-05 16:32:09', '超级管理员', '2023-12-05 16:35:18');
 
 SET FOREIGN_KEY_CHECKS = 1;

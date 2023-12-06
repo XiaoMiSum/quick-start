@@ -54,7 +54,7 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="主讲人" prop="speakUser" show-overflow-tooltip />
+      <el-table-column align="center" label="主讲人" prop="speaker" show-overflow-tooltip />
       <el-table-column align="center" label="参与人员" prop="reviewers" show-overflow-tooltip>
         <template #default="scope">
           <el-tag
@@ -106,7 +106,7 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column align="right" label="评审进度" width="120">
+      <el-table-column align="right" label="评审进度" width="180">
         <template #default="scope">
           <el-tooltip content="通过数" placement="top">
             <el-button link type="success">
@@ -135,7 +135,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column align="right" label="通过率" width="70">
+      <el-table-column align="right" label="通过率" width="100">
         <template #default="scope">
           <el-button link type="primary">
             {{ (scope.row.statistics.passed / scope.row.statistics.total) * 100 }} %
@@ -193,9 +193,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ReviewForm } from '../components'
+import ReviewForm from './ReviewForm.vue'
 
-import * as HTTP from '@/api/tracked/review'
+import * as HTTP from '@/api/track/review'
 
 import { dateFormatter } from '@/utils/formatTime'
 
@@ -252,7 +252,7 @@ const openForm = (type: string, id?: number) => {
 }
 
 const handleGoAssociCase = async (id: Number) => {
-  push('/tracked/review/' + id + '/associated-use-cases')
+  push('/track/review/' + id + '/associated-use-cases')
 }
 
 const handleDelete = async (id: number) => {

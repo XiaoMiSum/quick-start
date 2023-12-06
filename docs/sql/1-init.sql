@@ -74,6 +74,4 @@ INSERT INTO `sys_user_role` (`id`, `user_id`, `role_id`, `deleted`, `creator`, `
 VALUES (1, 1, 1, 0, '系统', '2022-04-29 20:54:56', '系统', '2022-04-29 20:55:01');
 INSERT INTO `sys_user_role` (`id`, `user_id`, `role_id`, `deleted`, `creator`, `create_time`, `updater`, `update_time`)
 VALUES (2, 2, 2, 0, '系统', '2022-05-14 13:21:55', '系统', '2022-05-14 13:22:01');
-INSERT INTO `sys_user_role` (`id`, `user_id`, `role_id`, `deleted`, `creator`, `create_time`, `updater`, `update_time`)
-VALUES (3, 3, 3, 0, '超级管理员', '2022-07-16 22:32:22', '超级管理员', '2022-07-16 22:32:22');
 COMMIT;

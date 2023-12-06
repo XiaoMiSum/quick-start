@@ -42,7 +42,7 @@ export const TESTCASE_STATUS = {
 }
 
 export const TESTCASE_REVIEWED_ENUMS = [
-  { key: 'NOTSTARTED', label: '未评审', tag: 'warning' },
+  { key: 'UNREVIEWED', label: '未评审', tag: 'warning' },
   { key: 'PASSED', label: '通过评审', tag: 'success' },
   { key: 'UNPASSED', label: '不通过', tag: 'danger' },
   { key: 'SKIPPED', label: '跳过评审', tag: 'info' }

@@ -51,7 +51,7 @@ import type { UploadFile, UploadProps, UploadUserFile } from 'element-plus'
 import { ElNotification } from 'element-plus'
 
 import { propTypes } from '@/utils/propTypes'
-import { getAccessToken, getTenantId } from '@/utils/auth'
+import { getAccessToken } from '@/utils/auth'
 
 defineOptions({ name: 'UploadImgs' })
 

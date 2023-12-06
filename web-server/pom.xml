@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.example</groupId>
+        <groupId>com.github.xiaomisum</groupId>
         <artifactId>quick-start</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
@@ -69,7 +69,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.7.1</version>
                 <configuration>
-                    <mainClass>org.example.BootStart</mainClass>
+                    <mainClass>com.github.xiaomisum.mstar.BootStart</mainClass>
                     <layout>ZIP</layout>
                 </configuration>
                 <executions>

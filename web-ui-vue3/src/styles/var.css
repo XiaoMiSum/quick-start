@@ -48,9 +48,11 @@
 
     --app-content-padding: 0px;
 
+    --app-content-padding2: 10px;
+
     --app-content-bg-color: #f5f7f9;
 
-    --app-footer-height: 50px;
+    --app-footer-height: 30px;
 
     --transition-time-02: 0.2s;
 }
