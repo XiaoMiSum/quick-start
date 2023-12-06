@@ -1,0 +1,84 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2021.  Lorem XiaoMiSum (mi_xiao@qq.com)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * 'Software'), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package com.github.xiaomisum.mstar.service.track.plan;
+
+import com.github.xiaomisum.mstar.controller.track.plan.vo.PlanQueryReqVO;
+import com.github.xiaomisum.mstar.dal.dataobject.track.Plan;
+import com.github.xiaomisum.mstar.dal.mapper.track.PlanMapper;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
+import xyz.migoo.framework.common.pojo.PageResult;
+
+import java.util.Date;
+import java.util.List;
+
+@Service
+public class PlanServiceImpl implements PlanService {
+
+    @Resource
+    private PlanMapper mapper;
+
+    @Override
+    public PageResult<Plan> getPage(PlanQueryReqVO req) {
+        return mapper.selectPage(req);
+    }
+
+    @Override
+    public List<Plan> getList(String projectId) {
+        return mapper.selectList(projectId);
+    }
+
+    @Override
+    public Plan get(String projectId, String id) {
+        return mapper.selectOne(projectId, id);
+    }
+
+    @Override
+    public String add(Plan plan) {
+        mapper.insert(plan);
+        return plan.getId();
+    }
+
+    @Override
+    public void update(Plan plan) {
+        mapper.updateById(plan);
+    }
+
+    @Override
+    public void remove(String id) {
+        mapper.deleteById(id);
+    }
+
+    @Override
+    public void setStartTime(String planId) {
+        mapper.updateById((Plan) new Plan().setActualStartTime(new Date()).setId(planId));
+    }
+
+    @Override
+    public void setEndTime(String planId) {
+        mapper.updateById((Plan) new Plan().setActualEndTime(new Date()).setId(planId));
+    }
+}
