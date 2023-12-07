@@ -25,6 +25,7 @@
 
 package com.github.xiaomisum.mstar.controller.track.plan.vo;
 
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.model.dto.TestcaseStep;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,6 +46,6 @@ public class PlanCaseRespVO extends PlanCaseBaseVO {
 
     private List<TestcaseStep> steps;
 
-    private String executeResult;
+    private TestStatus executeResult;
 
 }

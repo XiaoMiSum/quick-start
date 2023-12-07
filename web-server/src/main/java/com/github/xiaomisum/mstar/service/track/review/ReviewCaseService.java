@@ -25,10 +25,10 @@
 
 package com.github.xiaomisum.mstar.service.track.review;
 
+import com.github.xiaomisum.mstar.controller.track.review.vo.ReviewCaseExecuteVO;
 import com.github.xiaomisum.mstar.controller.track.review.vo.ReviewCaseQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.track.ReviewCase;
-import com.github.xiaomisum.mstar.enums.ResultEnum;
-import com.github.xiaomisum.mstar.controller.track.review.vo.ReviewCaseExecuteVO;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.model.dto.Statistics;
 import xyz.migoo.framework.common.pojo.PageResult;
 
@@ -42,7 +42,7 @@ public interface ReviewCaseService {
 
     List<ReviewCase> getList(String reviewId);
 
-    List<ReviewCase> getList(String reviewId, ResultEnum result);
+    List<ReviewCase> getList(String reviewId, TestStatus result);
 
     List<ReviewCase> getListNotInCaseIds(String reviewId, List<String> notInCaseIds);
 

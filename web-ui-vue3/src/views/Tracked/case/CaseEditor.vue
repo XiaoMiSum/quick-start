@@ -37,8 +37,8 @@
           <el-form-item label="标签" prop="tags">
             <el-select
               v-model="caseData.tags"
-              clearable
               allow-create
+              clearable
               filterable
               multiple
               placeholder="请选择用例标签，无可用标签可输入新标签"
@@ -187,9 +187,9 @@ const handleSubmitAndCloseView = async () => {
       caseData.value.id = await HTTP.addData(caseData.value)
       message.success('新增成功')
     } else {
-      if (caseData.value.reviewed === TESTCASE_STATUS.PASSED) {
+      if (caseData.value.reviewed === TESTCASE_STATUS.Pass) {
         await message.confirm('当前测试用例已「评审通过」，继续操作将重置为「未评审」')
-        caseData.value.reviewed = TESTCASE_STATUS.NOTSTARTED
+        caseData.value.reviewed = TESTCASE_STATUS.Prepare
       }
       await HTTP.updateData(caseData.value)
       message.success('更新成功')
@@ -213,9 +213,9 @@ const handleSubmitAndAdd = async () => {
         toCaseAdd()
       }
     } else {
-      if (caseData.value.reviewed === TESTCASE_STATUS.PASSED) {
+      if (caseData.value.reviewed === TESTCASE_STATUS.Pass) {
         await message.confirm('当前测试用例已「评审通过」，继续操作将重置为「未评审」')
-        caseData.value.reviewed = TESTCASE_STATUS.NOTSTARTED
+        caseData.value.reviewed = TESTCASE_STATUS.Prepare
       }
       await HTTP.updateData(caseData.value)
       message.success('更新成功')

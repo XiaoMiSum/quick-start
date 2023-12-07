@@ -25,6 +25,7 @@
 
 package com.github.xiaomisum.mstar.controller.track.plan.vo;
 
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.model.dto.Statistics;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,5 +39,7 @@ public class PlanRespVO extends PlanBaseVO {
     private String memo;
 
     private Statistics statistics;
+
+    private TestStatus status;
 
 }

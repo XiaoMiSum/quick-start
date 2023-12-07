@@ -25,6 +25,7 @@
 
 package com.github.xiaomisum.mstar.controller.track.review.vo;
 
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -46,5 +47,5 @@ public class ReviewCasePageRespVO extends ReviewCaseBaseVO {
 
     private Date reviewTime;
 
-    private String reviewResult;
+    private TestStatus reviewResult;
 }

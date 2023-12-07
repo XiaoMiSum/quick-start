@@ -4,17 +4,17 @@
     :loading="loading"
     plain
     type="danger"
-    @click="handleClick(TESTCASE_STATUS.OBSTRUCTED)"
+    @click="handleClick(TESTCASE_STATUS.Blocking)"
   >
     阻塞
   </el-button>
-  <el-button :loading="loading" plain type="info" @click="handleClick(TESTCASE_STATUS.SKIPPED)">
+  <el-button :loading="loading" plain type="info" @click="handleClick(TESTCASE_STATUS.Skip)">
     跳过
   </el-button>
-  <el-button :loading="loading" plain type="warning" @click="handleClick(TESTCASE_STATUS.UNPASSED)">
+  <el-button :loading="loading" plain type="warning" @click="handleClick(TESTCASE_STATUS.Failure)">
     不通过
   </el-button>
-  <el-button :loading="loading" type="success" @click="handleClick(TESTCASE_STATUS.PASSED)">
+  <el-button :loading="loading" type="success" @click="handleClick(TESTCASE_STATUS.Pass)">
     通过
   </el-button>
 </template>

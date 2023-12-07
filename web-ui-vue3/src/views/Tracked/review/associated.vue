@@ -98,7 +98,7 @@
             />
             <el-table-column align="center" label="评审结果" prop="reviewResult">
               <template #default="scope">
-                <EnumTag :enums="TESTCASE_REVIEWED_ENUMS" :value="scope.row.reviewResult" />
+                <EnumTag :enums="REVIEW_TESTCASE_STATUS" :value="scope.row.reviewResult" />
               </template>
             </el-table-column>
             <el-table-column align="center" label="评审人" prop="reviewer" show-overflow-tooltip />
@@ -114,8 +114,8 @@
                 <el-tooltip content="评审" placement="top">
                   <el-button
                     v-hasPermi="['review:case:execute']"
-                    plain
                     circle
+                    plain
                     type="primary"
                     @click="handleReviewCase(scope.row)"
                   >
@@ -151,12 +151,12 @@
   <CaseAssociated
     ref="caseAssociated"
     :data-id="currentReviewId"
+    :enums="REVIEW_TESTCASE_STATUS"
     source="review"
-    :enums="TESTCASE_REVIEWED_ENUMS"
     @close="handleQuery"
   />
 
-  <CaseViewer ref="caseViewer" :enums="TESTCASE_REVIEWED_ENUMS" @close="handleQuery" />
+  <CaseViewer ref="caseViewer" :enums="REVIEW_TESTCASE_STATUS" @close="handleQuery" />
 </template>
 
 <script lang="ts" setup>
@@ -176,7 +176,7 @@ import CaseViewer from './CaseViewer.vue'
 
 import { dateFormatter } from '@/utils/formatTime'
 
-import { CASE_LEVEL_ENUMS, TESTCASE_REVIEWED_ENUMS } from '@/utils/enums'
+import { CASE_LEVEL_ENUMS, REVIEW_TESTCASE_STATUS } from '@/utils/enums'
 
 import * as HTTP from '@/api/track/review'
 

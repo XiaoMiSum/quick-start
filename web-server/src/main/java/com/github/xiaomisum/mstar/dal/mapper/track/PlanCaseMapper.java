@@ -27,7 +27,7 @@ package com.github.xiaomisum.mstar.dal.mapper.track;
 
 import com.github.xiaomisum.mstar.controller.track.plan.vo.PlanCaseQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.track.PlanCase;
-import com.github.xiaomisum.mstar.enums.ResultEnum;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.model.dto.Statistics;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -56,9 +56,9 @@ public interface PlanCaseMapper extends BaseMapperX<PlanCase> {
     default Statistics statistics(String planId) {
         return selectJoinOne(Statistics.class, new MPJLambdaWrapperX<PlanCase>()
                 .select("ifNull(count(id), 0) total",
-                        "sum(case when execute_result = 'PASSED' then 1 else 0 end) passed",
-                        "sum(case when execute_result = 'NOTSTARTED' then 1 else 0 end) unstarted",
-                        "sum(case when execute_result = 'SKIPPED' then 1 else 0 end) skipped")
+                        "sum(case when execute_result = 'Pass' then 1 else 0 end) passed",
+                        "sum(case when execute_result = 'Prepare' then 1 else 0 end) unstarted",
+                        "sum(case when execute_result = 'Skip' then 1 else 0 end) skipped")
                 .eq("plan_id", planId));
     }
 
@@ -86,11 +86,12 @@ public interface PlanCaseMapper extends BaseMapperX<PlanCase> {
         );
     }
 
-    default List<PlanCase> selectList(String planId, ResultEnum result) {
+    default List<PlanCase> selectList(String planId, TestStatus result) {
         return selectList(new LambdaQueryWrapperX<PlanCase>()
                 .eq(PlanCase::getPlanId, planId)
                 .eq(PlanCase::getExecuteResult, result)
         );
     }
+
 
 }

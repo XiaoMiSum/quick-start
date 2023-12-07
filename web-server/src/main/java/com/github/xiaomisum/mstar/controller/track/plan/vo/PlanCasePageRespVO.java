@@ -25,6 +25,7 @@
 
 package com.github.xiaomisum.mstar.controller.track.plan.vo;
 
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -42,7 +43,7 @@ public class PlanCasePageRespVO extends PlanCaseBaseVO {
 
     private Date executeTime;
 
-    private String executeResult;
+    private TestStatus executeResult;
 
     private String reviewed;
 }

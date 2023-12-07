@@ -34,52 +34,57 @@ export const TEST_STAGE_ENUMS = [
 ]
 
 export const TESTCASE_STATUS = {
-  NOTSTARTED: 'NOTSTARTED',
-  PASSED: 'PASSED',
-  UNPASSED: 'UNPASSED',
-  SKIPPED: 'SKIPPED',
-  OBSTRUCTED: 'OBSTRUCTED'
+  Prepare: 'Prepare',
+  Pass: 'Pass',
+  Failure: 'Failure',
+  Skip: 'Skip',
+  Blocking: 'Blocking',
+  Underway: 'Underway'
 }
 
-export const TESTCASE_REVIEWED_ENUMS = [
-  { key: 'UNREVIEWED', label: '未评审', tag: 'warning' },
-  { key: 'PASSED', label: '通过评审', tag: 'success' },
-  { key: 'UNPASSED', label: '不通过', tag: 'danger' },
-  { key: 'SKIPPED', label: '跳过评审', tag: 'info' }
+export const REVIEW_TESTCASE_STATUS = [
+  { key: 'Prepare', label: '未评审', tag: 'warning' },
+  { key: 'Pass', label: '通过评审', tag: 'success' },
+  { key: 'Failure', label: '不通过', tag: 'danger' },
+  { key: 'Skip', label: '跳过评审', tag: 'info' },
+  { key: 'Underway', label: '进行中', tag: 'primary' }
 ]
 
-export const TESTCASE_EXECUTE_ENUMS = [
-  { key: 'NOTSTARTED', label: '未开始', tag: 'warning' },
-  { key: 'PASSED', label: '通过测试', tag: 'success' },
-  { key: 'UNPASSED', label: '不通过', tag: 'danger' },
-  { key: 'SKIPPED', label: '跳过测试', tag: 'info' },
-  { key: 'OBSTRUCTED', label: '阻塞测试', tag: 'danger' }
+export const TESTPLAN_TESTCASE_STATUS = [
+  { key: 'Prepare', label: '未开始', tag: 'warning' },
+  { key: 'Pass', label: '通过测试', tag: 'success' },
+  { key: 'Failure', label: '不通过', tag: 'danger' },
+  { key: 'Skip', label: '跳过测试', tag: 'info' },
+  { key: 'Blocking', label: '阻塞测试', tag: 'danger' },
+  { key: 'Underway', label: '进行中', tag: 'primary' }
 ]
 
 export const REVIEW_STATUS = [
-  { key: 'NOTSTARTED', label: '未评审', tag: 'warning' },
-  { key: 'PASSED', label: '评审完成', tag: 'success' },
-  { key: 'UNPASSED', label: '评审完成', tag: 'danger' }
+  { key: 'Prepare', label: '未评审', tag: 'warning' },
+  { key: 'Underway', label: '进行中', tag: 'primary' },
+  { key: 'Pass', label: '评审完成', tag: 'success' },
+  { key: 'Failure', label: '评审完成', tag: 'danger' }
 ]
 
 export const PLAN_STATUS = [
-  { key: 'NOTSTARTED', label: '未开始', tag: 'warning' },
-  { key: 'PASSED', label: '测试完成', tag: 'success' },
-  { key: 'UNPASSED', label: '测试完成', tag: 'danger' }
+  { key: 'Prepare', label: '未开始', tag: 'warning' },
+  { key: 'Underway', label: '进行中', tag: 'primary' },
+  { key: 'Pass', label: '测试完成', tag: 'success' },
+  { key: 'Failure', label: '测试完成', tag: 'danger' }
 ]
 
 export const LINK_ENUMS = [
   { key: 'doc', label: '需求文档', tag: 'info' },
-  { key: 'prototype', label: '项目原型', tag: 'success' },
-  { key: 'wiki', label: 'Wiki', tag: 'danger' },
-  { key: 'ops', label: '运维相关', tag: 'danger' },
-  { key: 'dev-env', label: '开发环境', tag: 'danger' },
-  { key: 'test-env', label: '测试环境', tag: 'danger' },
-  { key: 'uat-env', label: 'UAT环境', tag: 'danger' },
+  { key: 'prototype', label: '项目原型', tag: 'info' },
+  { key: 'wiki', label: 'Wiki', tag: 'info' },
+  { key: 'ops', label: '运维相关', tag: 'primary' },
+  { key: 'dev-env', label: '开发环境', tag: 'success' },
+  { key: 'test-env', label: '测试环境', tag: 'success' },
+  { key: 'uat-env', label: 'UAT环境', tag: 'warning' },
   { key: 'prod-env', label: '正式环境', tag: 'danger' },
-  { key: 'database', label: '数据库', tag: 'danger' },
-  { key: 'redis', label: 'Redis', tag: 'danger' },
-  { key: 'other', label: '其他', tag: 'danger' }
+  { key: 'database', label: '数据库', tag: 'warning' },
+  { key: 'redis', label: 'Redis', tag: 'warning' },
+  { key: 'other', label: '其他', tag: 'primary' }
 ]
 
 export const ENV_ENUMS = [
@@ -91,5 +96,5 @@ export const ENV_ENUMS = [
 
 export const PROTOCOL_ENUMS = [
   { key: 'http', label: 'HTTP', tag: 'primary' },
-  { key: 'https', label: 'HTTPS', tag: 'success' }
+  { key: 'https', label: 'HTTPS', tag: 'primary' }
 ]

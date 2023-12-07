@@ -25,6 +25,7 @@
 
 package com.github.xiaomisum.mstar.controller.track.plan.vo;
 
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import lombok.Getter;
 import lombok.Setter;
 import xyz.migoo.framework.common.pojo.PageParam;
@@ -38,7 +39,7 @@ public class PlanQueryReqVO extends PageParam {
 
     private String name;
 
-    private String result;
+    private TestStatus result;
 
     @Override
     public String toString() {

@@ -32,7 +32,6 @@ import com.github.xiaomisum.mstar.convert.track.ReviewConvert;
 import com.github.xiaomisum.mstar.convert.track.TestcaseConvert;
 import com.github.xiaomisum.mstar.dal.dataobject.track.ReviewCase;
 import com.github.xiaomisum.mstar.dal.dataobject.track.Testcase;
-import com.github.xiaomisum.mstar.enums.ResultEnum;
 import com.github.xiaomisum.mstar.model.dto.TestcaseDTO;
 import com.github.xiaomisum.mstar.service.sys.user.UserService;
 import com.github.xiaomisum.mstar.service.track.review.ReviewCaseService;
@@ -49,6 +48,8 @@ import xyz.migoo.framework.security.core.annotation.CurrentUser;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.github.xiaomisum.mstar.enums.TestStatus.Prepare;
 
 @RestController
 @RequestMapping("/track/review")
@@ -139,16 +140,12 @@ public class ReviewController {
     public Result<?> reviewCase(@CurrentUser LoginUser user, @RequestBody ReviewCaseExecuteVO execute) {
         execute.setReviewer(user.getName());
         // 设置实际开始时间
-        List<ReviewCase> total = caseService.getList(execute.getReviewId());
-        List<ReviewCase> notStart = caseService.getList(execute.getReviewId(), ResultEnum.UNREVIEWED);
-        if (total.size() == notStart.size()) {
-            service.setStartTime(execute.getReviewId());
-        }
+        service.setStartTime(execute.getReviewId());
         caseService.reviewed(execute);
         testcaseService.update((Testcase) new Testcase().setReviewed(execute.getResult()).setId(execute.getCaseId()));
-        List<ReviewCase> notStart2 = caseService.getList(execute.getReviewId(), ResultEnum.NOTSTARTED);
+        List<ReviewCase> prepares = caseService.getList(execute.getReviewId(), Prepare);
         // 设置实际结束时间
-        if (notStart2.isEmpty()) {
+        if (prepares.isEmpty()) {
             service.setEndTime(execute.getReviewId());
         }
         return Result.getSuccessful();

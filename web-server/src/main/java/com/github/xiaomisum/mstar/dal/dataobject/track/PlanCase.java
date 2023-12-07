@@ -28,6 +28,7 @@ package com.github.xiaomisum.mstar.dal.dataobject.track;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.farmework.mybatis.Id;
 import com.github.xiaomisum.mstar.model.dto.TestcaseStep;
 import lombok.Data;
@@ -65,7 +66,7 @@ public class PlanCase extends Id {
 
     private Date executeTime;
 
-    private String executeResult;
+    private TestStatus executeResult;
 
     private String executeComment;
 }

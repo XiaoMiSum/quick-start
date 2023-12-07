@@ -25,13 +25,16 @@
 
 package com.github.xiaomisum.mstar.dal.mapper.track;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.xiaomisum.mstar.controller.track.review.vo.ReviewQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.track.Review;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -55,4 +58,20 @@ public interface ReviewMapper extends BaseMapperX<Review> {
         return selectList(new LambdaQueryWrapperX<Review>().eq(Review::getProjectId, projectId));
     }
 
+    default void updateStartTime(String reviewId) {
+        update(new Review().setActualStartTime(new Date()),
+                new LambdaUpdateWrapper<Review>()
+                        .eq(Review::getId, reviewId)
+                        .isNull(Review::getActualStartTime));
+    }
+
+    default void updateStatus(String reviewId, TestStatus status) {
+        update(new Review().setStatus(status),
+                new LambdaUpdateWrapper<Review>()
+                        .eq(Review::getId, reviewId));
+    }
+
+    default List<Review> selectByStatus(TestStatus status) {
+        return selectList(Review::getStatus, status.name());
+    }
 }

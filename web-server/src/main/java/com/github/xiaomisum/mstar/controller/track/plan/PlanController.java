@@ -33,7 +33,6 @@ import com.github.xiaomisum.mstar.convert.track.TestcaseConvert;
 import com.github.xiaomisum.mstar.dal.dataobject.track.Plan;
 import com.github.xiaomisum.mstar.dal.dataobject.track.PlanCase;
 import com.github.xiaomisum.mstar.dal.dataobject.track.Testcase;
-import com.github.xiaomisum.mstar.enums.ResultEnum;
 import com.github.xiaomisum.mstar.model.dto.TestcaseDTO;
 import com.github.xiaomisum.mstar.service.track.plan.PlanCaseService;
 import com.github.xiaomisum.mstar.service.track.plan.PlanService;
@@ -49,6 +48,8 @@ import xyz.migoo.framework.security.core.annotation.CurrentUser;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.github.xiaomisum.mstar.enums.TestStatus.Prepare;
 
 @RestController
 @RequestMapping("/track/plan")
@@ -139,13 +140,13 @@ public class PlanController {
         execute.setExecutor(user.getName());
         // 设置实际开始时间
         List<PlanCase> total = caseService.getList(execute.getPlanId());
-        List<PlanCase> notStart = caseService.getList(execute.getPlanId(), ResultEnum.NOTSTARTED);
+        List<PlanCase> notStart = caseService.getList(execute.getPlanId(), Prepare);
         if (total.size() == notStart.size()) {
             service.setStartTime(execute.getPlanId());
         }
         caseService.execute(execute);
         testcaseService.update((Testcase) new Testcase().setReviewed(execute.getResult()).setId(execute.getId()));
-        List<PlanCase> notStart2 = caseService.getList(execute.getPlanId(), ResultEnum.NOTSTARTED);
+        List<PlanCase> notStart2 = caseService.getList(execute.getPlanId(), Prepare);
         // 设置实际结束时间
         if (notStart2.isEmpty()) {
             service.setEndTime(execute.getPlanId());

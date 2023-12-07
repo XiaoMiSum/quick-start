@@ -27,6 +27,7 @@ package com.github.xiaomisum.mstar.dal.dataobject.track;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.farmework.mybatis.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,6 +46,8 @@ public class Plan extends Id {
     private String stage;
 
     private String executor;
+
+    private TestStatus status;
 
     private Date expectedStartTime;
 

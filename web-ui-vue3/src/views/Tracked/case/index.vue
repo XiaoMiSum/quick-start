@@ -3,7 +3,7 @@
     <!-- 左侧部门树 -->
     <el-col :span="5" :xs="24">
       <ContentWrap class="h-1/1">
-        <DefaultNodeTree @node-click="handleNodeClick" :readonly="readonly" />
+        <DefaultNodeTree :readonly="readonly" @node-click="handleNodeClick" />
       </ContentWrap>
     </el-col>
 
@@ -63,7 +63,7 @@
               style="width: 100%"
             >
               <el-option
-                v-for="item in TESTCASE_REVIEWED_ENUMS"
+                v-for="item in REVIEW_TESTCASE_STATUS"
                 :key="item.key"
                 :label="item.label"
                 :value="item.key"
@@ -179,7 +179,7 @@
             width="80"
           >
             <template #default="scope">
-              <EnumTag :enums="TESTCASE_REVIEWED_ENUMS" :value="scope.row.reviewed" />
+              <EnumTag :enums="REVIEW_TESTCASE_STATUS" :value="scope.row.reviewed" />
             </template>
           </el-table-column>
           <el-table-column
@@ -207,7 +207,7 @@
           >
             <template #default="scope">
               <el-tooltip content="编辑" placement="top">
-                <el-button plain circle type="primary" @click="handleEditCase(scope.row.id)">
+                <el-button circle plain type="primary" @click="handleEditCase(scope.row.id)">
                   <Icon icon="ep:edit" />
                 </el-button>
               </el-tooltip>
@@ -267,7 +267,7 @@ import CaseImports from './CaseImports.vue'
 import { dateFormatter } from '@/utils/formatTime'
 import { handleTree } from '@/utils/tree'
 import download from '@/utils/download'
-import { CASE_LEVEL_ENUMS, TESTCASE_REVIEWED_ENUMS } from '@/utils/enums'
+import { CASE_LEVEL_ENUMS, REVIEW_TESTCASE_STATUS } from '@/utils/enums'
 
 import * as MHTTP from '@/api/track/node'
 import * as HTTP from '@/api/track/testcase'

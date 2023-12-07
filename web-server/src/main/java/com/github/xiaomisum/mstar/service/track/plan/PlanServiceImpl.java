@@ -27,19 +27,30 @@ package com.github.xiaomisum.mstar.service.track.plan;
 
 import com.github.xiaomisum.mstar.controller.track.plan.vo.PlanQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.track.Plan;
+import com.github.xiaomisum.mstar.dal.dataobject.track.PlanCase;
+import com.github.xiaomisum.mstar.dal.mapper.track.PlanCaseMapper;
 import com.github.xiaomisum.mstar.dal.mapper.track.PlanMapper;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import jakarta.annotation.Resource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.github.xiaomisum.mstar.enums.TestStatus.*;
+import static com.github.xiaomisum.mstar.service.track.review.ReviewServiceImpl.CRON;
 
 @Service
 public class PlanServiceImpl implements PlanService {
 
     @Resource
     private PlanMapper mapper;
+    @Resource
+    private PlanCaseMapper planCaseMapper;
 
     @Override
     public PageResult<Plan> getPage(PlanQueryReqVO req) {
@@ -74,11 +85,35 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public void setStartTime(String planId) {
-        mapper.updateById((Plan) new Plan().setActualStartTime(new Date()).setId(planId));
+        mapper.updateStartTime(planId);
     }
 
     @Override
     public void setEndTime(String planId) {
         mapper.updateById((Plan) new Plan().setActualEndTime(new Date()).setId(planId));
+    }
+
+
+    @Scheduled(cron = CRON)
+    public void scheduleUpdateStatus() {
+        mapper.selectByStatus(Prepare).forEach(review -> {
+            List<PlanCase> cases = planCaseMapper.selectList(review.getId());
+            Map<TestStatus, List<PlanCase>> group = cases.stream()
+                    .collect(Collectors.groupingBy(PlanCase::getExecuteResult));
+            List<PlanCase> prepareList = Prepare.get(group);
+            List<PlanCase> passList = Pass.get(group);
+            List<PlanCase> failureList = Failure.get(group);
+            List<PlanCase> blockingList = Blocking.get(group);
+            List<PlanCase> skipList = Skip.get(group);
+            List<PlanCase> underwayList = Underway.get(group);
+            if (prepareList.isEmpty() && underwayList.isEmpty()) {
+                // 进行中和未开始的都为空，评审完成
+                mapper.updateStatus(review.getId(), complete);
+            } else if ((passList.size() + failureList.size() +
+                    blockingList.size() + skipList.size() + underwayList.size()) < cases.size()) {
+                // 成功数量 + 失败数量 + 阻塞数量 + 跳过数量 + 进行中数量 之和 小于 总数，评审进行中
+                mapper.updateStatus(review.getId(), Underway);
+            }
+        });
     }
 }

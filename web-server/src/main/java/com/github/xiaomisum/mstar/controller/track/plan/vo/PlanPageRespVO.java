@@ -25,6 +25,7 @@
 
 package com.github.xiaomisum.mstar.controller.track.plan.vo;
 
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.model.dto.Statistics;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,4 +48,6 @@ public class PlanPageRespVO extends PlanBaseVO {
 
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private Date actualEndTime;
+
+    private TestStatus status;
 }

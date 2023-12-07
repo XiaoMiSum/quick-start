@@ -27,7 +27,7 @@ package com.github.xiaomisum.mstar.dal.mapper.track;
 
 import com.github.xiaomisum.mstar.controller.track.review.vo.ReviewCaseQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.track.ReviewCase;
-import com.github.xiaomisum.mstar.enums.ResultEnum;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.model.dto.Statistics;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -89,13 +89,13 @@ public interface ReviewCaseMapper extends BaseMapperX<ReviewCase> {
     default Statistics statistics(String reviewId) {
         return selectJoinOne(Statistics.class, new MPJLambdaWrapperX<ReviewCase>()
                 .select("ifNull(count(id), 0) total",
-                        "sum(case when review_result = 'PASSED' then 1 else 0 end) passed",
+                        "sum(case when review_result = 'Pass' then 1 else 0 end) passed",
                         "sum(case when review_result = 'UNREVIEWED' then 1 else 0 end) notstarted",
-                        "sum(case when review_result = 'SKIPPED' then 1 else 0 end) skipped")
+                        "sum(case when review_result = 'Skip' then 1 else 0 end) skipped")
                 .eq("review_id", reviewId));
     }
 
-    default List<ReviewCase> selectList(String reviewId, ResultEnum result) {
+    default List<ReviewCase> selectList(String reviewId, TestStatus result) {
         return selectList(new LambdaQueryWrapperX<ReviewCase>()
                 .eq(ReviewCase::getReviewId, reviewId)
                 .eq(ReviewCase::getReviewResult, result)

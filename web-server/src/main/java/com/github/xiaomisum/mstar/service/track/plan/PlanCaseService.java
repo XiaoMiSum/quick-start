@@ -28,7 +28,7 @@ package com.github.xiaomisum.mstar.service.track.plan;
 import com.github.xiaomisum.mstar.controller.track.plan.vo.PlanCaseExecuteVO;
 import com.github.xiaomisum.mstar.controller.track.plan.vo.PlanCaseQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.track.PlanCase;
-import com.github.xiaomisum.mstar.enums.ResultEnum;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.model.dto.Statistics;
 import xyz.migoo.framework.common.pojo.PageResult;
 
@@ -42,7 +42,7 @@ public interface PlanCaseService {
 
     List<PlanCase> getList(String planId);
 
-    List<PlanCase> getList(String planId, ResultEnum result);
+    List<PlanCase> getList(String planId, TestStatus result);
 
     List<PlanCase> getListGtId(String opt, String planId, String id);
 

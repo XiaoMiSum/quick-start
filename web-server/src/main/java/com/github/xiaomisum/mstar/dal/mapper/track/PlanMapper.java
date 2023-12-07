@@ -25,13 +25,16 @@
 
 package com.github.xiaomisum.mstar.dal.mapper.track;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.xiaomisum.mstar.controller.track.plan.vo.PlanQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.track.Plan;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -52,5 +55,22 @@ public interface PlanMapper extends BaseMapperX<Plan> {
         return selectOne(new LambdaQueryWrapperX<Plan>()
                 .eq(Plan::getId, planId)
                 .eq(Plan::getProjectId, projectId));
+    }
+
+    default void updateStartTime(String PlanId) {
+        update(new Plan().setActualStartTime(new Date()),
+                new LambdaUpdateWrapper<Plan>()
+                        .eq(Plan::getId, PlanId)
+                        .isNull(Plan::getActualStartTime));
+    }
+
+    default void updateStatus(String reviewId, TestStatus status) {
+        update(new Plan().setStatus(status),
+                new LambdaUpdateWrapper<Plan>()
+                        .eq(Plan::getId, reviewId));
+    }
+
+    default List<Plan> selectByStatus(TestStatus status) {
+        return selectList(Plan::getStatus, status.name());
     }
 }

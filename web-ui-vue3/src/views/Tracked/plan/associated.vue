@@ -91,7 +91,7 @@
             </el-table-column>
             <el-table-column align="center" label="执行结果" prop="executeResult">
               <template #default="scope">
-                <EnumTag :enums="TESTCASE_EXECUTE_ENUMS" :value="scope.row.executeResult" />
+                <EnumTag :enums="TESTPLAN_TESTCASE_STATUS" :value="scope.row.executeResult" />
               </template>
             </el-table-column>
             <el-table-column align="center" label="执行人" prop="executor" show-overflow-tooltip />
@@ -145,11 +145,11 @@
   <CaseAssociated
     ref="caseAssociated"
     :data-id="currentPlanId"
-    :enums="TESTCASE_REVIEWED_ENUMS"
+    :enums="REVIEW_TESTCASE_STATUS"
     source="plan"
     @close="handleQuery"
   />
-  <CaseViewer ref="caseViewer" :enums="TESTCASE_EXECUTE_ENUMS" @close="handleQuery" />
+  <CaseViewer ref="caseViewer" :enums="TESTPLAN_TESTCASE_STATUS" @close="handleQuery" />
   <CaseImports ref="caseImports" @close="getList" />
 </template>
 
@@ -161,7 +161,7 @@ import CaseViewer from './CaseViewer.vue'
 
 import { dateFormatter } from '@/utils/formatTime'
 
-import { CASE_LEVEL_ENUMS, TESTCASE_EXECUTE_ENUMS, TESTCASE_REVIEWED_ENUMS } from '@/utils/enums'
+import { CASE_LEVEL_ENUMS, REVIEW_TESTCASE_STATUS, TESTPLAN_TESTCASE_STATUS } from '@/utils/enums'
 
 import * as HTTP from '@/api/track/plan'
 

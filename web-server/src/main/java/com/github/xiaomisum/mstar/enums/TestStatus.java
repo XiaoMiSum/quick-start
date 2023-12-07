@@ -25,12 +25,22 @@
 
 package com.github.xiaomisum.mstar.enums;
 
-public enum TestcaseStatusEnum {
+import com.google.common.collect.Lists;
 
-    UNREVIEWED, // 未评审
-    NOTSTARTED, // 未开始
-    PASSED, // 测试通过
-    UNPASSED, // 测试不通过
-    SKIPPED, // 跳过测试
-    OBSTRUCTED, // 阻塞测试
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+public enum TestStatus {
+    Prepare, // 准备中
+    Pass, // 通过
+    Failure, // 失败
+    Blocking, // 阻塞
+    Skip, // 跳过
+    Underway, // 进行中
+    complete; // 完成
+
+    public <T> List<T> get(Map<TestStatus, List<T>> group) {
+        return Optional.ofNullable(group.get(this)).orElse(Lists.newArrayList());
+    }
 }

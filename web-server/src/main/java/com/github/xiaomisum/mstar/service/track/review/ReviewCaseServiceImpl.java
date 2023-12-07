@@ -30,7 +30,7 @@ import com.github.xiaomisum.mstar.controller.track.review.vo.ReviewCaseExecuteVO
 import com.github.xiaomisum.mstar.controller.track.review.vo.ReviewCaseQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.track.ReviewCase;
 import com.github.xiaomisum.mstar.dal.mapper.track.ReviewCaseMapper;
-import com.github.xiaomisum.mstar.enums.ResultEnum;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.model.dto.Statistics;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -62,7 +62,7 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     }
 
     @Override
-    public List<ReviewCase> getList(String reviewId, ResultEnum result) {
+    public List<ReviewCase> getList(String reviewId, TestStatus result) {
         return mapper.selectList(reviewId, result);
     }
 

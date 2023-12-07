@@ -30,7 +30,7 @@ import com.github.xiaomisum.mstar.controller.track.plan.vo.PlanCaseExecuteVO;
 import com.github.xiaomisum.mstar.controller.track.plan.vo.PlanCaseQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.track.PlanCase;
 import com.github.xiaomisum.mstar.dal.mapper.track.PlanCaseMapper;
-import com.github.xiaomisum.mstar.enums.ResultEnum;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.model.dto.Statistics;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -62,7 +62,7 @@ public class PlanCaseServiceImpl implements PlanCaseService {
     }
 
     @Override
-    public List<PlanCase> getList(String planId, ResultEnum result) {
+    public List<PlanCase> getList(String planId, TestStatus result) {
         return mapper.selectList(planId, result);
     }
 

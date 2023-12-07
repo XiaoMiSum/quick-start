@@ -25,6 +25,7 @@
 
 package com.github.xiaomisum.mstar.controller.track.review.vo;
 
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,7 +41,7 @@ public class ReviewCaseExecuteVO {
 
     private String reviewId;
 
-    private String result;
+    private TestStatus result;
 
     private String reviewer;
 }
