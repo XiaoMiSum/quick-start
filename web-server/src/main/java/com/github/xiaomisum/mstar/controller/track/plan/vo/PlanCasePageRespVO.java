@@ -45,5 +45,5 @@ public class PlanCasePageRespVO extends PlanCaseBaseVO {
 
     private TestStatus executeResult;
 
-    private String reviewed;
+    private TestStatus reviewed;
 }

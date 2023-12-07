@@ -37,7 +37,7 @@ public class ReviewCasePageRespVO extends ReviewCaseBaseVO {
 
     private String id;
 
-    private String reviewed;
+    private TestStatus reviewed;
 
     private String path;
 
