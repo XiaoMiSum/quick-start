@@ -28,6 +28,7 @@ package com.github.xiaomisum.mstar.dal.dataobject.project;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.farmework.mybatis.Id;
 import com.github.xiaomisum.mstar.model.dto.TestcaseStep;
 import lombok.Data;
@@ -64,6 +65,6 @@ public class ArchiveTestcase extends Id {
 
     private String maintainer;
 
-    private String reviewed;
+    private TestStatus reviewed;
 
 }
