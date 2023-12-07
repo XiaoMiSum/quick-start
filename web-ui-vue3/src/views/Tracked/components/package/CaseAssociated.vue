@@ -4,7 +4,7 @@
       <!-- 左侧模块树 -->
       <el-col :span="5" :xs="24">
         <ContentWrap class="h-1/1">
-          <DefaultModuleTree @node-click="handleNodeClick" />
+          <DefaultNodeTree @node-click="handleNodeClick" />
         </ContentWrap>
       </el-col>
       <el-col :span="19" :xs="24">
@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DefaultModuleTree } from '@/views/components/module'
+import { DefaultNodeTree } from '@/views/components/node'
 import { CASE_LEVEL_ENUMS } from '@/utils/enums'
 
 import * as REVIEW from '@/api/track/review'

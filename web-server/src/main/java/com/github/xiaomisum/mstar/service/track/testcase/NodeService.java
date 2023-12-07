@@ -35,9 +35,9 @@ public interface NodeService {
 
     List<TestcaseNode> getList(String projectId);
 
-    void add(TestcaseNode module);
+    void add(TestcaseNode node);
 
-    void update(TestcaseNode module);
+    void update(TestcaseNode node);
 
     void remove(String id);
 }

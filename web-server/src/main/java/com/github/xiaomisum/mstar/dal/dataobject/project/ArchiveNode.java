@@ -31,9 +31,9 @@ import lombok.EqualsAndHashCode;
 import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "project_archive_module", autoResultMap = true)
+@TableName(value = "project_archive_node", autoResultMap = true)
 @Data
-public class ArchiveModule extends BaseDO {
+public class ArchiveNode extends BaseDO {
 
     private String projectId;
 

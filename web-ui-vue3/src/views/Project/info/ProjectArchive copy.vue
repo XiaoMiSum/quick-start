@@ -1,52 +1,30 @@
 <template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <el-form ref="queryFormRef" :inline="true" :model="queryParams">
-      <el-form-item label="" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          class="!w-240px"
-          clearable
-          placeholder="请输入归档名称"
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleQuery">
-          <Icon class="mr-5px" icon="ep:search" />
-          搜索
+  <Card>
+    <template #header>
+      <span class="text-16px font-700">归档历史</span>
+      <el-tooltip content="编辑" placement="top">
+        <el-button circle plain type="primary" @click="openForm('create')">
+          <Icon icon="ep:plus" />
         </el-button>
-        <el-button @click="resetQuery">
-          <Icon class="mr-5px" icon="ep:refresh" />
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
-    <!-- 操作工具栏 -->
-    <el-row :gutter="10">
-      <el-col :span="1.5">
-        <el-button plain type="primary" @click="openForm('create')">
-          <Icon class="mr-5px" icon="ep:plus" />
-          新增
-        </el-button>
-      </el-col>
-    </el-row>
-  </ContentWrap>
+      </el-tooltip>
+    </template>
 
-  <!-- 列表 -->
-  <ContentWrap>
-    <el-table v-loading="loading" :data="list" highlight-current-row stripe>
-      <el-table-column align="center" label="归档名称" prop="name" />
-      <el-table-column align="center" label="创建人" prop="creator" />
-      <el-table-column
-        :formatter="dateFormatter"
-        align="center"
-        label="归档时间"
-        prop="createTime"
-        show-overflow-tooltip
-        width="170"
-      />
-      <el-table-column :width="300" align="center" label="操作">
+    <el-table v-loading="loading" :data="list" highlight-current-row stripe :show-header="false">
+      <el-table-column>
+        <template #default="scope">
+          <span>
+            {{
+              formatDate(scope.row.createTime) +
+              ' ' +
+              scope.row.creator +
+              ' 创建归档：' +
+              scope.row.name
+            }}
+          </span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" width="200">
         <template #default="scope">
           <el-tooltip content="编辑" placement="top">
             <el-button circle plain type="primary" @click="openForm('update', scope.row)">
@@ -78,15 +56,15 @@
       :total="total"
       @pagination="getList"
     />
-  </ContentWrap>
+  </Card>
 
-  <ArchiveForm ref="formRef" @success="handleQuery" />
+  <ArchiveForm ref="formRef" @success="getList" />
 </template>
 
 <script lang="ts" setup>
-import { ArchiveForm } from './components'
+import { ArchiveForm } from '@/views/Project/archive/components'
 
-import { dateFormatter } from '@/utils/formatTime'
+import { formatDate } from '@/utils/formatTime'
 import download from '@/utils/download'
 
 import * as HTTP from '@/api/project/archive'
@@ -98,19 +76,22 @@ const { push } = useRouter() // 路由
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
-defineOptions({ name: 'ProjectTag' })
+defineOptions({ name: 'ProjectArchive' })
+
+const props = defineProps({
+  modelValue: {
+    required: true,
+    type: Object
+  }
+})
 
 const queryParams = reactive({
   pageNo: 1,
-  pageSize: 10,
-  name: '',
-  status: undefined
+  pageSize: 5
 })
 const loading = ref(false)
 const list = ref<any>([])
 const total = ref(0)
-
-const queryFormRef = ref() // 搜索的表单
 
 const getList = async () => {
   loading.value = true
@@ -121,16 +102,6 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const handleQuery = async () => {
-  queryParams.pageNo = 1
-  getList()
-}
-
-const resetQuery = async () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
 }
 
 /** 添加/修改操作 */

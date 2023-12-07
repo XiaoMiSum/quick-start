@@ -10,9 +10,15 @@ export const getPage = (params: any) => {
   })
 }
 
-export const getModule = (archiveId: any) => {
+export const getData = (archiveId: any) => {
   return request.get({
-    url: url + '/module',
+    url: url + '/' + archiveId
+  })
+}
+
+export const getNode = (archiveId: any) => {
+  return request.get({
+    url: url + '/node',
     params: { archiveId }
   })
 }

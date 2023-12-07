@@ -63,7 +63,7 @@ import java.util.List;
 import static cn.afterturn.easypoi.excel.entity.enmus.ExcelType.XSSF;
 
 @RestController
-@RequestMapping("/track/case")
+@RequestMapping("/track/testcase")
 public class CaseController {
 
     @Resource
@@ -132,7 +132,7 @@ public class CaseController {
         List<TestcaseNode> modules = moduleService.getList(projectId);
         // 指定单元格转换字典
         TestcaseExportVO.TestcaseExcelDictHandler handler = new TestcaseExportVO.TestcaseExcelDictHandler();
-        handler.add("module", modules);
+        handler.add("node", modules);
         ExportParams params = new ExportParams();
         params.setDictHandler(handler);
         params.setSheetName("测试用例");
@@ -153,7 +153,7 @@ public class CaseController {
         List<TestcaseNode> modules = moduleService.getList(projectId);
         // 指定单元格转换字典
         TestcaseExportVO.TestcaseExcelDictHandler handler = new TestcaseExportVO.TestcaseExcelDictHandler();
-        handler.add("module", modules);
+        handler.add("node", modules);
         ImportParams params = new ImportParams();
         params.setDictHandler(handler);
         params.setHeadRows(2);

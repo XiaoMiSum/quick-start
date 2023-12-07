@@ -28,7 +28,7 @@ package com.github.xiaomisum.mstar.service.project.archive;
 import com.github.xiaomisum.mstar.controller.project.archive.vo.ArchiveQueryReqVO;
 import com.github.xiaomisum.mstar.controller.project.archive.vo.ArchiveTestcaseQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.project.Archive;
-import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveModule;
+import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveNode;
 import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveTestcase;
 import xyz.migoo.framework.common.pojo.PageResult;
 
@@ -37,17 +37,19 @@ import java.util.List;
 public interface ArchiveService {
 
 
+    Archive get(String projectId, String archiveId);
+
     PageResult<Archive> getPage(ArchiveQueryReqVO req);
 
-    List<ArchiveModule> getModules(String archiveId);
+    List<ArchiveNode> getModules(String archiveId);
 
-    ArchiveModule getModule(String archiveId, String originalId);
+    ArchiveNode getModule(String archiveId, String originalId);
 
     PageResult<ArchiveTestcase> getTestcasePage(ArchiveTestcaseQueryReqVO req);
 
     List<ArchiveTestcase> getTestcases(String archiveId);
 
-    void add(Archive archive, List<ArchiveModule> modules, List<ArchiveTestcase> testcases);
+    void add(Archive archive, List<ArchiveNode> modules, List<ArchiveTestcase> testcases);
 
     void update(Archive archive);
 

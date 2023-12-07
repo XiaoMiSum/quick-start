@@ -25,25 +25,25 @@
 
 package com.github.xiaomisum.mstar.dal.mapper.project;
 
+import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveNode;
 import org.apache.ibatis.annotations.Mapper;
-import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveModule;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
 import java.util.List;
 
 @Mapper
-public interface ArchiveModuleMapper extends BaseMapperX<ArchiveModule> {
+public interface ArchiveNodeMapper extends BaseMapperX<ArchiveNode> {
 
-    default List<ArchiveModule> selectList(String archiveId) {
-        return selectList(new LambdaQueryWrapperX<ArchiveModule>()
-                .eq(ArchiveModule::getArchiveId, archiveId));
+    default List<ArchiveNode> selectList(String archiveId) {
+        return selectList(new LambdaQueryWrapperX<ArchiveNode>()
+                .eq(ArchiveNode::getArchiveId, archiveId));
     }
 
-    default ArchiveModule selectOne(String archiveId, String originalId) {
-        return selectOne(new LambdaQueryWrapperX<ArchiveModule>()
-                .eq(ArchiveModule::getArchiveId, archiveId)
-                .eq(ArchiveModule::getOriginalId, originalId));
+    default ArchiveNode selectOne(String archiveId, String originalId) {
+        return selectOne(new LambdaQueryWrapperX<ArchiveNode>()
+                .eq(ArchiveNode::getArchiveId, archiveId)
+                .eq(ArchiveNode::getOriginalId, originalId));
     }
 
 }

@@ -125,8 +125,8 @@ const submitForm = async () => {
 const getTree = async () => {
   dataTree.value = []
   const data = await HTTP.getSimple()
-  let module: Tree = { id: '0', name: '根节点', children: [] }
-  module.children = handleTree(data)
-  dataTree.value.push(module)
+  let node: Tree = { id: '0', name: '根节点', children: [] }
+  node.children = handleTree(data)
+  dataTree.value.push(node)
 }
 </script>

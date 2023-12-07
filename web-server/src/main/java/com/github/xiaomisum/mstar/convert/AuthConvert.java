@@ -77,7 +77,7 @@ public interface AuthConvert {
                 .setId(user.getId())
                 .setName(user.getName())
                 .setAvatar(user.getAvatar())
-                .setDefaultProject("1732381555864678402")
+                .setDefaultProject(user.getLastProject())
                 .setPermissions(CollectionUtils.convertSet(menus, Menu::getPermission));
     }
 

@@ -76,10 +76,12 @@ public class ReviewController {
         return Result.getSuccessful(result);
     }
 
-    @GetMapping("/{id}")
-    public Result<?> get(@PathVariable String id) {
-        ReviewRespVO result = ReviewConvert.INSTANCE.convert(service.get(id));
-        result.setStatistics(caseService.statistics(result.getId()));
+    @GetMapping("/{reviewId}")
+    public Result<?> get(@RequestHeader("x-project-id") String projectId, @PathVariable String reviewId) {
+        ReviewRespVO result = ReviewConvert.INSTANCE.convert(service.get(projectId, reviewId));
+        if (Objects.nonNull(result)) {
+            result.setStatistics(caseService.statistics(result.getId()));
+        }
         return Result.getSuccessful(result);
     }
 

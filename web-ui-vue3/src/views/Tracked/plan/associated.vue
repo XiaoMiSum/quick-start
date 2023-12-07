@@ -1,10 +1,10 @@
 <template>
-  <ContentWrap :title="'测试计划：' + title">
+  <ContentWrap :statistics="statistics" :title="'测试计划：' + title">
     <el-row :gutter="20">
       <!-- 左侧模块树 -->
       <el-col :span="5" :xs="24">
         <ContentWrap class="h-1/1">
-          <DefaultModuleTree @node-click="handleNodeClick" />
+          <DefaultNodeTree @node-click="handleNodeClick" />
         </ContentWrap>
       </el-col>
       <el-col :span="19" :xs="24">
@@ -154,7 +154,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DefaultModuleTree } from '@/views/components/module'
+import { DefaultNodeTree } from '@/views/components/node'
 import { CaseAssociated } from '../components'
 import CaseImports from './CaseImports.vue'
 import CaseViewer from './CaseViewer.vue'
@@ -165,14 +165,21 @@ import { CASE_LEVEL_ENUMS, TESTCASE_EXECUTE_ENUMS, TESTCASE_REVIEWED_ENUMS } fro
 
 import * as HTTP from '@/api/track/plan'
 
+import { useTagsViewStore } from '@/store/modules/tagsView'
 import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 import { useAppStore } from '@/store/modules/app'
+import { useUserStore } from '@/store/modules/user'
 
+const userStore = useUserStore()
 const { params } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 
 const message = useMessage() // 消息弹窗
 
 const appStore = useAppStore()
+
+const { currentRoute, push } = useRouter()
+
+const tagsViewStore = useTagsViewStore()
 
 defineOptions({ name: 'PlanAssociated' })
 
@@ -184,12 +191,28 @@ const queryParams = ref<any>({
 })
 
 const checked = ref<any>([])
-const currentPlanId = ref<any>(-1)
+const currentPlanId = ref<any>(null)
 const title = ref('')
 const loading = ref(false)
 const list = ref<any>([])
 const total = ref(0)
 const queryFormRef = ref() // 搜索的表单
+const statistics = ref<any>(null)
+
+const handleGetData = async () => {
+  if (!currentPlanId.value) {
+    return
+  }
+  const data = await HTTP.getData(currentPlanId.value)
+  if (!data) {
+    tagsViewStore.delView(unref(currentRoute))
+    push('/track/plan')
+    return
+  }
+  title.value = data.name
+  statistics.value = data.statistics
+  statistics.value.name = '执行进度'
+}
 
 const getList = async () => {
   loading.value = true
@@ -261,15 +284,23 @@ const handleOpenImportCase = () => {
   caseImports.value.open(currentPlanId.value)
 }
 
+// 监听当前项目变化，刷新列表数据
+watch(
+  computed(() => userStore.getProject),
+  () => {
+    handleGetData()
+  },
+  { immediate: true, deep: true }
+)
+
 /** 初始化 **/
 onMounted(async () => {
   appStore.setProjectPick(false)
   if (params && params.planId) {
     currentPlanId.value = params.planId
-    const data = await HTTP.getData(params.planId)
-    title.value = data.name
+    await handleGetData()
+    await getList()
   }
-  await getList()
 })
 </script>
 

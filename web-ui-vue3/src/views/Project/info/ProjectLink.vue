@@ -1,27 +1,27 @@
 <template>
   <Card>
     <template #header>
-      <span class="text-16px font-700">项目主页</span>
-      <el-tooltip content="新增" placement="top">
+      <span class="text-16px font-700">主页</span>
+      <el-tooltip content="编辑" placement="top">
         <el-button circle plain type="primary" @click="handleShowFrom()">
           <Icon icon="ep:plus" />
         </el-button>
       </el-tooltip>
     </template>
-    <el-table v-if="modelValue && modelValue.length > 0" :data="modelValue">
-      <el-table-column label="链接类型" width="200">
+    <el-table :data="modelValue" :show-header="false">
+      <el-table-column label="链接类型" width="100">
         <template #default="scope">
           <EnumTag :enums="LINK_ENUMS" :value="scope.row.type" />
         </template>
       </el-table-column>
-      <el-table-column label="链接地址" prop="link">
+      <el-table-column label="链接地址" prop="link" show-overflow-tooltip>
         <template #default="scope">
           <el-link :href="scope.row.link" :underline="false" target="_blank" type="primary">
             {{ scope.row.link }}
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column label="备注" prop="memo" />
+
       <el-table-column align="center" label="" width="110">
         <template #default="scope">
           <el-tooltip content="编辑" placement="top">
@@ -66,8 +66,6 @@
 </template>
 
 <script lang="ts" setup>
-import { Card } from '@/components/Card'
-
 import { LINK_ENUMS } from '@/utils/enums'
 
 const visible = ref(false)
@@ -78,15 +76,16 @@ const props = defineProps({
   modelValue: {
     required: true,
     type: Array
-  },
-  readonly: {
-    required: false,
-    type: Boolean,
-    default: false
   }
 })
 
 const { modelValue } = toRefs(props)
+
+const handleAddClick = () => {
+  handleShowFrom()
+}
+
+defineExpose({ handleAddClick }) // 提供 handleAddClick 方法，用于打开弹窗
 
 const handleShowFrom = async (data?: any) => {
   if (data) {

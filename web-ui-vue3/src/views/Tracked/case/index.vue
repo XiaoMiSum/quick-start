@@ -3,7 +3,7 @@
     <!-- 左侧部门树 -->
     <el-col :span="5" :xs="24">
       <ContentWrap class="h-1/1">
-        <DefaultModuleTree @node-click="handleNodeClick" :readonly="false" />
+        <DefaultNodeTree @node-click="handleNodeClick" :readonly="readonly" />
       </ContentWrap>
     </el-col>
 
@@ -207,7 +207,7 @@
           >
             <template #default="scope">
               <el-tooltip content="编辑" placement="top">
-                <el-button circle plain type="primary" @click="handleEditCase(scope.row.id)">
+                <el-button plain circle type="primary" @click="handleEditCase(scope.row.id)">
                   <Icon icon="ep:edit" />
                 </el-button>
               </el-tooltip>
@@ -261,7 +261,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DefaultModuleTree } from '@/views/components/module'
+import { DefaultNodeTree } from '@/views/components/node'
 import CaseImports from './CaseImports.vue'
 
 import { dateFormatter } from '@/utils/formatTime'
@@ -293,6 +293,7 @@ const queryParams = ref<any>({
 })
 
 const activeName = ref('Testcase')
+const readonly = ref(false)
 
 const loading = ref(false)
 const list = ref<any>([])
@@ -390,11 +391,10 @@ const getTree = async () => {
   modules.value = handleTree(data)
 }
 
-const getTags = async () => {
-  tags.value = await TAG.getSimple()
-}
+const getTags = async () => {}
 
 const tabChange = async () => {
+  readonly.value = activeName.value !== 'Testcase'
   checked.value = []
   list.value = []
   total.value = 0
@@ -419,6 +419,8 @@ watch(
   computed(() => userStore.getProject),
   () => {
     getList()
+    getTree()
+    getTags()
   },
   { immediate: true, deep: true }
 )

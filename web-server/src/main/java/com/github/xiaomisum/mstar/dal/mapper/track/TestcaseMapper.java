@@ -25,6 +25,7 @@
 
 package com.github.xiaomisum.mstar.dal.mapper.track;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.xiaomisum.mstar.controller.track.testcase.vo.testcase.TestcaseQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.track.Testcase;
 import org.apache.ibatis.annotations.Mapper;
@@ -74,4 +75,10 @@ public interface TestcaseMapper extends BaseMapperX<Testcase> {
             </script>
             """)
     void recover(@Param("ids") List<String> ids);
+
+    default void updateNodeIdByNodeId(String nodeId) {
+        update(new Testcase().setNodeId("-1"),
+                new LambdaUpdateWrapper<Testcase>()
+                        .eq(Testcase::getNodeId, nodeId));
+    }
 }

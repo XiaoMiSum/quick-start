@@ -48,9 +48,9 @@ public interface PlanMapper extends BaseMapperX<Plan> {
         return selectList(new LambdaQueryWrapperX<Plan>().eq(Plan::getProjectId, projectId));
     }
 
-    default Plan selectOne(String projectId, String id) {
+    default Plan selectOne(String projectId, String planId) {
         return selectOne(new LambdaQueryWrapperX<Plan>()
-                .eq(Plan::getId, id)
+                .eq(Plan::getId, planId)
                 .eq(Plan::getProjectId, projectId));
     }
 }

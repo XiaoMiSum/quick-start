@@ -69,4 +69,10 @@ public class ProjectServiceImpl implements ProjectService {
     public void remove(String id) {
         mapper.deleteById(id);
     }
+
+    @Override
+    public Project getFirstProject() {
+        List<Project> list = getList();
+        return list.isEmpty() ? null : list.get(0);
+    }
 }

@@ -67,6 +67,8 @@ public class User extends BaseDO {
 
     private Integer status;
 
+    private String lastProject;
+
     @Override
     public String toString() {
         return JsonUtils.toJsonString(this);

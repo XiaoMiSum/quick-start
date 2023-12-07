@@ -1,6 +1,6 @@
 import request from '@/config/axios'
 
-const url = '/track/case'
+const url = '/track/testcase'
 
 // 查询详细
 export const getPage = (params: any) => {

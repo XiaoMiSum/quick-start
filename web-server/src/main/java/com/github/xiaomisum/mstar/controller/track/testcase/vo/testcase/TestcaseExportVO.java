@@ -48,7 +48,7 @@ public class TestcaseExportVO {
     @Excel(name = "标题", needMerge = true, width = 25)
     private String name;
 
-    @Excel(name = "所属模块", needMerge = true, width = 20, dict = "module", addressList = true)
+    @Excel(name = "所属模块", needMerge = true, width = 20, dict = "node", addressList = true)
     private String nodeId;
 
     @Excel(name = "用例等级", needMerge = true, dict = "level", addressList = true)
@@ -80,8 +80,8 @@ public class TestcaseExportVO {
         public void add(String dict, List<?> values) {
             Map<Object, String> map = Maps.newHashMap();
             values.forEach(item -> {
-                if (item instanceof TestcaseNode module) {
-                    map.put(module.getId(), module.getPath());
+                if (item instanceof TestcaseNode node) {
+                    map.put(node.getId(), node.getPath());
                 }
             });
 

@@ -28,7 +28,7 @@ package com.github.xiaomisum.mstar.convert.project;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaomisum.mstar.controller.project.archive.vo.*;
 import com.github.xiaomisum.mstar.dal.dataobject.project.Archive;
-import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveModule;
+import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveNode;
 import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveTestcase;
 import com.github.xiaomisum.mstar.dal.dataobject.track.Testcase;
 import com.github.xiaomisum.mstar.dal.dataobject.track.TestcaseNode;
@@ -48,13 +48,15 @@ public interface ArchiveConvert {
 
     PageResult<ArchivePageRespVO> convert(PageResult<Archive> beans);
 
+    ArchiveBaseVO convert(Archive archive);
+
     Archive convert(ArchiveAddReqVO bean);
 
     Archive convert(ArchiveUpdateReqVO bean);
 
-    List<SimpleResp> convert(List<ArchiveModule> beans);
+    List<SimpleResp> convert(List<ArchiveNode> beans);
 
-    default SimpleResp convert(ArchiveModule bean) {
+    default SimpleResp convert(ArchiveNode bean) {
         return new SimpleResp(bean.getOriginalId(), bean.getName(), bean.getParentId());
     }
 
@@ -70,10 +72,10 @@ public interface ArchiveConvert {
 
     ArchiveTestcasePageRespVO convert1(ArchiveTestcase bean);
 
-    List<ArchiveModule> convert2(List<TestcaseNode> beans);
+    List<ArchiveNode> convert2(List<TestcaseNode> beans);
 
-    default ArchiveModule convert2(TestcaseNode bean) {
-        return new ArchiveModule()
+    default ArchiveNode convert2(TestcaseNode bean) {
+        return new ArchiveNode()
                 .setOriginalId(bean.getId())
                 .setName(bean.getName())
                 .setPath(bean.getPath())

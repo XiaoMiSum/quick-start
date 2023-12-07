@@ -52,8 +52,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review get(String id) {
-        return mapper.selectById(id);
+    public Review get(String projectId, String reviewId) {
+        return mapper.selectOne(projectId, reviewId);
     }
 
     @Override

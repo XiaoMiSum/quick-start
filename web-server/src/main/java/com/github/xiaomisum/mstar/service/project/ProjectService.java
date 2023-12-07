@@ -44,4 +44,8 @@ public interface ProjectService {
     void update(Project project);
 
     void remove(String id);
+
+    Project getFirstProject();
+
+
 }

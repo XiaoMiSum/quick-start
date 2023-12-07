@@ -44,7 +44,7 @@
 import { ElTree } from 'element-plus'
 import { defaultProps } from '@/utils/tree'
 
-defineOptions({ name: 'ModuleTree' })
+defineOptions({ name: 'NodeTree' })
 
 const props = defineProps({
   modelValue: {
@@ -103,11 +103,11 @@ watch(name, (val) => {
 
 <style scoped>
 .custom-tree-node {
-  flex: 1;
   display: flex;
+  padding-right: 8px;
+  font-size: 14px;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
-  font-size: 14px;
-  padding-right: 8px;
 }
 </style>

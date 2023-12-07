@@ -26,15 +26,19 @@
 package com.github.xiaomisum.mstar.service.track.testcase;
 
 import com.github.xiaomisum.mstar.dal.dataobject.track.TestcaseNode;
+import com.github.xiaomisum.mstar.dal.mapper.track.TestcaseMapper;
 import com.github.xiaomisum.mstar.dal.mapper.track.TestcaseNodeMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class NodeServiceImpl implements NodeService {
 
+    @Resource
+    private TestcaseMapper testcaseMapper;
     @Resource
     private TestcaseNodeMapper mapper;
 
@@ -49,25 +53,27 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void add(TestcaseNode module) {
-        module.setPath("/" + module.getName());
-        if (module.getParentId().length() > 10) {
-            module.setPath(mapper.selectById(module.getParentId()).getPath() + module.getPath());
+    public void add(TestcaseNode node) {
+        node.setPath("/" + node.getName());
+        if (node.getParentId().length() > 10) {
+            node.setPath(mapper.selectById(node.getParentId()).getPath() + node.getPath());
         }
-        mapper.insert(module);
+        mapper.insert(node);
     }
 
     @Override
-    public void update(TestcaseNode module) {
-        module.setPath("/" + module.getName());
-        if (module.getParentId().length() > 10) {
-            module.setPath(mapper.selectById(module.getParentId()).getPath() + module.getPath());
+    public void update(TestcaseNode node) {
+        node.setPath("/" + node.getName());
+        if (node.getParentId().length() > 10) {
+            node.setPath(mapper.selectById(node.getParentId()).getPath() + node.getPath());
         }
-        mapper.updateById(module);
+        mapper.updateById(node);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void remove(String id) {
         mapper.deleteById(id);
+        testcaseMapper.updateNodeIdByNodeId(id);
     }
 }

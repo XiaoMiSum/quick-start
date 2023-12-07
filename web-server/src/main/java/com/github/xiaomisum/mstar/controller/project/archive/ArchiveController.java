@@ -68,8 +68,13 @@ public class ArchiveController {
         return Result.getSuccessful(ArchiveConvert.INSTANCE.convert(service.getPage(req)));
     }
 
-    @GetMapping("/module")
-    public Result<?> getModules(String archiveId) {
+    @GetMapping("/{archiveId}")
+    public Result<?> get(@RequestHeader("x-project-id") String projectId, @PathVariable String archiveId) {
+        return Result.getSuccessful(ArchiveConvert.INSTANCE.convert(service.get(projectId, archiveId)));
+    }
+
+    @GetMapping("/node")
+    public Result<?> getNodes(String archiveId) {
         return Result.getSuccessful(ArchiveConvert.INSTANCE.convert(service.getModules(archiveId)));
     }
 

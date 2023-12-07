@@ -25,18 +25,20 @@
 
 package com.github.xiaomisum.mstar.controller.login;
 
-import jakarta.annotation.Resource;
 import com.github.xiaomisum.mstar.controller.login.vo.AuthLoginReqVO;
 import com.github.xiaomisum.mstar.controller.login.vo.AuthLoginRespVO;
 import com.github.xiaomisum.mstar.controller.login.vo.AuthMenuRespVO;
 import com.github.xiaomisum.mstar.controller.login.vo.PasswordVO;
 import com.github.xiaomisum.mstar.convert.AuthConvert;
+import com.github.xiaomisum.mstar.dal.dataobject.project.Project;
 import com.github.xiaomisum.mstar.dal.dataobject.sys.Menu;
 import com.github.xiaomisum.mstar.dal.dataobject.sys.User;
 import com.github.xiaomisum.mstar.enums.MenuTypeEnum;
 import com.github.xiaomisum.mstar.service.login.TokenService;
+import com.github.xiaomisum.mstar.service.project.ProjectService;
 import com.github.xiaomisum.mstar.service.sys.permission.PermissionService;
 import com.github.xiaomisum.mstar.service.sys.user.UserService;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,6 +51,7 @@ import xyz.migoo.framework.security.core.annotation.CurrentUser;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.github.xiaomisum.mstar.enums.ErrorCodeConstants.USER_PASSWORD_OLD_NEW;
@@ -63,6 +66,8 @@ public class LoginController {
     private UserService userService;
     @Resource
     private PermissionService permissionService;
+    @Resource
+    private ProjectService projectService;
 
     @PostMapping("/sign-in")
     public Result<AuthLoginRespVO> login(@RequestBody AuthLoginReqVO req) {
@@ -78,6 +83,9 @@ public class LoginController {
                 SetUtils.asSet(MenuTypeEnum.DIR.getType(), MenuTypeEnum.MENU.getType(), MenuTypeEnum.BUTTON.getType()),
                 SetUtils.asSet(ENABLE.getStatus()),
                 true);
+        if (Objects.isNull(user.getLastProject())) {
+            user.setLastProject(Optional.ofNullable(projectService.getFirstProject()).orElse(new Project()).getId());
+        }
         return Result.getSuccessful(AuthConvert.INSTANCE.convert(user, menuList));
     }
 

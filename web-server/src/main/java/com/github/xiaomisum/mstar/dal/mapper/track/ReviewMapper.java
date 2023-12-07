@@ -37,6 +37,12 @@ import java.util.List;
 @Mapper
 public interface ReviewMapper extends BaseMapperX<Review> {
 
+    default Review selectOne(String projectId, String reviewId) {
+        return selectOne(new LambdaQueryWrapperX<Review>()
+                .eq(Review::getId, reviewId)
+                .eq(Review::getProjectId, projectId)
+                .orderByDesc(Review::getId));
+    }
 
     default PageResult<Review> selectPage(ReviewQueryReqVO req) {
         return selectPage(req, new LambdaQueryWrapperX<Review>()

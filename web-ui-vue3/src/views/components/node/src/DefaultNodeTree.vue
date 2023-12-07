@@ -1,5 +1,5 @@
 <template>
-  <ModuleTree
+  <NodeTree
     v-model="dataTree"
     :readonly="readonly"
     @node-click="handleNodeClick"
@@ -11,14 +11,17 @@
 </template>
 
 <script lang="ts" setup>
-import ModuleTree from './ModuleTree.vue'
+import NodeTree from './NodeTree.vue'
 import NodeForm from './NodeForm.vue'
 import * as HTTP from '@/api/track/node'
 import { handleTree } from '@/utils/tree'
 
+import { useUserStore } from '@/store/modules/user'
+
+const userStore = useUserStore()
 const message = useMessage() // 消息弹窗
 
-defineOptions({ name: 'ModuleTree' })
+defineOptions({ name: 'NodeTree' })
 
 defineProps({
   readonly: {
@@ -34,10 +37,10 @@ const dataTree = ref<Tree[]>([]) // 树形结构
 const getTree = async () => {
   dataTree.value = []
   const data = await HTTP.getSimple()
-  let module: Tree = { id: '0', name: '根节点', children: [] }
-  module.children = handleTree(data)
-  module.children.splice(0, 0, { id: '-1', name: '未分组用例', children: [] })
-  dataTree.value.push(module)
+  let node: Tree = { id: '0', name: '根节点', children: [] }
+  node.children = handleTree(data)
+  node.children.splice(0, 0, { id: '-1', name: '未分组用例', children: [] })
+  dataTree.value.push(node)
 }
 
 /** 新增节点 */
@@ -64,8 +67,14 @@ const handleNodeClick = async (row: { [key: string]: any }) => {
 }
 const emits = defineEmits(['node-click'])
 
+/** 监听当前项目变化，刷新列表数据 */
+watch(
+  computed(() => userStore.getProject),
+  () => {
+    getTree()
+  },
+  { immediate: true, deep: true }
+)
+
 /** 初始化 */
-onMounted(async () => {
-  await getTree()
-})
 </script>

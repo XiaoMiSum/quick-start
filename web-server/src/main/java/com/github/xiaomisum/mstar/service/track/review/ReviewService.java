@@ -37,7 +37,7 @@ public interface ReviewService {
 
     List<Review> getList(String projectId);
 
-    Review get(String id);
+    Review get(String projectId, String reviewId);
 
     String add(Review review);
 

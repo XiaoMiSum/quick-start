@@ -28,10 +28,10 @@ package com.github.xiaomisum.mstar.service.project.archive;
 import com.github.xiaomisum.mstar.controller.project.archive.vo.ArchiveQueryReqVO;
 import com.github.xiaomisum.mstar.controller.project.archive.vo.ArchiveTestcaseQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.project.Archive;
-import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveModule;
+import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveNode;
 import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveTestcase;
 import com.github.xiaomisum.mstar.dal.mapper.project.ArchiveMapper;
-import com.github.xiaomisum.mstar.dal.mapper.project.ArchiveModuleMapper;
+import com.github.xiaomisum.mstar.dal.mapper.project.ArchiveNodeMapper;
 import com.github.xiaomisum.mstar.dal.mapper.project.ArchiveTestcaseMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -46,9 +46,14 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Resource
     private ArchiveMapper archiveMapper;
     @Resource
-    private ArchiveModuleMapper archiveModuleMapper;
+    private ArchiveNodeMapper archiveNodeMapper;
     @Resource
     private ArchiveTestcaseMapper archiveTestcaseMapper;
+
+    @Override
+    public Archive get(String projectId, String archiveId) {
+        return archiveMapper.selectOne(projectId, archiveId);
+    }
 
     @Override
     public PageResult<Archive> getPage(ArchiveQueryReqVO req) {
@@ -56,13 +61,13 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public List<ArchiveModule> getModules(String archiveId) {
-        return archiveModuleMapper.selectList(archiveId);
+    public List<ArchiveNode> getModules(String archiveId) {
+        return archiveNodeMapper.selectList(archiveId);
     }
 
     @Override
-    public ArchiveModule getModule(String archiveId, String originalId) {
-        return archiveModuleMapper.selectOne(archiveId, originalId);
+    public ArchiveNode getModule(String archiveId, String originalId) {
+        return archiveNodeMapper.selectOne(archiveId, originalId);
     }
 
     @Override
@@ -77,10 +82,10 @@ public class ArchiveServiceImpl implements ArchiveService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(Archive archive, List<ArchiveModule> modules, List<ArchiveTestcase> testcases) {
+    public void add(Archive archive, List<ArchiveNode> modules, List<ArchiveTestcase> testcases) {
         archiveMapper.insert(archive);
         modules.forEach(item -> item.setArchiveId(archive.getId()));
-        archiveModuleMapper.insertBatch(modules);
+        archiveNodeMapper.insertBatch(modules);
         testcases.forEach(item -> item.setArchiveId(archive.getId()));
         archiveTestcaseMapper.insertBatch(testcases);
     }

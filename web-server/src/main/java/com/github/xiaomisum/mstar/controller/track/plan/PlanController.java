@@ -77,7 +77,9 @@ public class PlanController {
     @GetMapping("/{id}")
     public Result<?> get(@RequestHeader("x-project-id") String projectId, @PathVariable String id) {
         PlanRespVO result = PlanConvert.INSTANCE.convert(service.get(projectId, id));
-        result.setStatistics(caseService.statistics(result.getId()));
+        if (Objects.nonNull(result)) {
+            result.setStatistics(caseService.statistics(result.getId()));
+        }
         return Result.getSuccessful(result);
     }
 

@@ -35,6 +35,13 @@ import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 @Mapper
 public interface ArchiveMapper extends BaseMapperX<Archive> {
 
+    default Archive selectOne(String projectId, String archiveId) {
+        return selectOne(new LambdaQueryWrapperX<Archive>()
+                .eq(Archive::getProjectId, projectId)
+                .eq(Archive::getId, archiveId)
+                .orderByDesc(Archive::getId));
+    }
+
     default PageResult<Archive> selectPage(ArchiveQueryReqVO req) {
         return selectPage(req, new LambdaQueryWrapperX<Archive>()
                 .eq(Archive::getProjectId, req.getProjectId())
