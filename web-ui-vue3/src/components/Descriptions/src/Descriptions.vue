@@ -126,9 +126,6 @@ const toggleClick = () => {
                   data[item.field] !== null ? dayjs(data[item.field]).format(item.dateFormat) : ''
                 }}
               </slot>
-              <slot v-else-if="item.dictType">
-                <DictTag :type="item.dictType" :value="data[item.field] + ''" />
-              </slot>
               <slot v-else :name="item.field" :row="data">{{ data[item.field] }}</slot>
             </template>
           </ElDescriptionsItem>

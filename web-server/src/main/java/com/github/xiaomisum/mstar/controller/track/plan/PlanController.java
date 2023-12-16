@@ -28,9 +28,9 @@ package com.github.xiaomisum.mstar.controller.track.plan;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaomisum.mstar.controller.track.plan.vo.*;
 import com.github.xiaomisum.mstar.controller.track.testcase.vo.testcase.TestcaseQueryReqVO;
+import com.github.xiaomisum.mstar.convert.track.PlanCaseConvert;
 import com.github.xiaomisum.mstar.convert.track.PlanConvert;
 import com.github.xiaomisum.mstar.convert.track.TestcaseConvert;
-import com.github.xiaomisum.mstar.dal.dataobject.track.Plan;
 import com.github.xiaomisum.mstar.dal.dataobject.track.PlanCase;
 import com.github.xiaomisum.mstar.dal.dataobject.track.Testcase;
 import com.github.xiaomisum.mstar.model.dto.TestcaseDTO;
@@ -40,6 +40,7 @@ import com.github.xiaomisum.mstar.service.track.review.ReviewCaseService;
 import com.github.xiaomisum.mstar.service.track.testcase.NodeService;
 import com.github.xiaomisum.mstar.service.track.testcase.TestcaseService;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
@@ -85,15 +86,17 @@ public class PlanController {
     }
 
     @PostMapping
-    public Result<?> add(@RequestHeader("x-project-id") String projectId, @RequestBody Plan data) {
+    public Result<?> add(@RequestHeader("x-project-id") String projectId,
+                         @RequestBody @Valid PlanAddReqVO data) {
         data.setProjectId(projectId);
-        return Result.getSuccessful(service.add(data));
+        return Result.getSuccessful(service.add(PlanConvert.INSTANCE.convert(data)));
     }
 
     @PutMapping
-    public Result<?> update(@RequestHeader("x-project-id") String projectId, @RequestBody Plan data) {
+    public Result<?> update(@RequestHeader("x-project-id") String projectId,
+                            @RequestBody @Valid PlanUpdateReqVO data) {
         data.setProjectId(projectId);
-        service.update(data);
+        service.update(PlanConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
     }
 
@@ -105,7 +108,7 @@ public class PlanController {
 
     @GetMapping("/case")
     public Result<?> getCasePage(PlanCaseQueryReqVO req) {
-        PageResult<PlanCasePageRespVO> result = PlanConvert.INSTANCE.convert1(caseService.getPage(req));
+        PageResult<PlanCasePageRespVO> result = PlanCaseConvert.INSTANCE.convert(caseService.getPage(req));
         result.getList().forEach(item -> {
             if (item.getNodeId().length() > 10) {
                 item.setPath(nodeService.get(item.getNodeId()).getPath());
@@ -116,9 +119,9 @@ public class PlanController {
 
     @PostMapping("/case/sync")
     public Result<?> syncReviewCase(@RequestHeader("x-project-id") String projectId,
-                                    @RequestBody PlanCaseExecuteVO req) {
+                                    @RequestBody @Valid PlanCaseSyncVO req) {
         TestcaseDTO testcase = TestcaseConvert.INSTANCE.convert(testcaseService.get(req.getCaseId()));
-        PlanCase planCase = PlanConvert.INSTANCE.convert(testcase);
+        PlanCase planCase = PlanCaseConvert.INSTANCE.convert(testcase);
         planCase.setPlanId(req.getPlanId()).setId(req.getId());
         caseService.update(planCase);
         return Result.getSuccessful(planCase);
@@ -126,7 +129,7 @@ public class PlanController {
 
     @GetMapping("/case/execute")
     public Result<?> getPlanCase(String id) {
-        PlanCaseRespVO result = PlanConvert.INSTANCE.convert(caseService.get(id));
+        PlanCaseRespVO result = PlanCaseConvert.INSTANCE.convert(caseService.get(id));
         if (Objects.nonNull(result)) {
             if (result.getNodeId().length() > 10) {
                 result.setPath(nodeService.get(result.getNodeId()).getPath());
@@ -136,7 +139,7 @@ public class PlanController {
     }
 
     @PostMapping("/case/execute")
-    public Result<?> reviewCase(@CurrentUser LoginUser user, @RequestBody PlanCaseExecuteVO execute) {
+    public Result<?> reviewCase(@CurrentUser LoginUser user, @RequestBody @Valid PlanCaseExecuteVO execute) {
         execute.setExecutor(user.getName());
         // 设置实际开始时间
         List<PlanCase> total = caseService.getList(execute.getPlanId());
@@ -169,7 +172,7 @@ public class PlanController {
         if (results.isEmpty()) {
             return Result.getSuccessful(null);
         }
-        PlanCaseRespVO result = PlanConvert.INSTANCE.convert(results.get(0));
+        PlanCaseRespVO result = PlanCaseConvert.INSTANCE.convert(results.get(0));
         if (result.getNodeId().length() > 10) {
             result.setPath(nodeService.get(result.getNodeId()).getPath());
         }
@@ -183,7 +186,7 @@ public class PlanController {
                 .setProjectId(projectId)
                 .setName(req.getCaseName())
                 .setNodeId(req.getNodeId());
-        PageResult<PlanCasePageRespVO> result = PlanConvert.INSTANCE.convert2(testcaseService.getPage(caseQuery, ids));
+        PageResult<PlanCasePageRespVO> result = PlanCaseConvert.INSTANCE.convert1(testcaseService.getPage(caseQuery, ids));
         result.getList().forEach(item -> {
             if (item.getNodeId().length() > 10) {
                 item.setPath(nodeService.get(item.getNodeId()).getPath());
@@ -193,20 +196,20 @@ public class PlanController {
     }
 
     @PostMapping("/case")
-    public Result<?> addPlanCase(@RequestBody PlanCaseAddReqVO data) {
+    public Result<?> addPlanCase(@RequestBody @Valid PlanCaseAddReqVO data) {
         List<TestcaseDTO> testcases = TestcaseConvert.INSTANCE.convert(testcaseService.getList(data.getTestcases()));
-        List<PlanCase> list = PlanConvert.INSTANCE.convert(testcases);
+        List<PlanCase> list = PlanCaseConvert.INSTANCE.convert(testcases);
         list.forEach(item -> item.setPlanId(data.getPlanId()));
         caseService.add(list);
         return Result.getSuccessful();
     }
 
     @PostMapping("/imports")
-    public Result<?> importPlanCase(@RequestBody PlanCaseImportReqVO data) {
+    public Result<?> importPlanCase(@RequestBody @Valid PlanCaseImportReqVO data) {
         List<String> caseIds = caseService.getList(data.getPlanId())
                 .stream().map(PlanCase::getCaseId)
                 .toList();
-        List<PlanCase> list = PlanConvert.INSTANCE.convert1(
+        List<PlanCase> list = PlanCaseConvert.INSTANCE.convert(
                 reviewCaseService.getListNotInCaseIds(data.getReviewId(), caseIds), data.getPlanId()
         );
         list.forEach(item -> item.setPlanId(data.getPlanId()));

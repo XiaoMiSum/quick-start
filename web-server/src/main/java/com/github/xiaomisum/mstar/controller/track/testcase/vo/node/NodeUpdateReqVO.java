@@ -25,11 +25,15 @@
 
 package com.github.xiaomisum.mstar.controller.track.testcase.vo.node;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class NodeUpdateReqVO extends NodeBaseVO {
+
+
+    @NotNull(message = "节点编号不能为空")
     private String id;
 }

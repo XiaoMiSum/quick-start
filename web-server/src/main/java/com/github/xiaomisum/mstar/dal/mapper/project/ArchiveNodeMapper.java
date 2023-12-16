@@ -35,14 +35,14 @@ import java.util.List;
 @Mapper
 public interface ArchiveNodeMapper extends BaseMapperX<ArchiveNode> {
 
-    default List<ArchiveNode> selectList(String archiveId) {
+    default List<ArchiveNode> selectList(String iterationId) {
         return selectList(new LambdaQueryWrapperX<ArchiveNode>()
-                .eq(ArchiveNode::getArchiveId, archiveId));
+                .eq(ArchiveNode::getIterationId, iterationId));
     }
 
-    default ArchiveNode selectOne(String archiveId, String originalId) {
+    default ArchiveNode selectOne(String iterationId, String originalId) {
         return selectOne(new LambdaQueryWrapperX<ArchiveNode>()
-                .eq(ArchiveNode::getArchiveId, archiveId)
+                .eq(ArchiveNode::getIterationId, iterationId)
                 .eq(ArchiveNode::getOriginalId, originalId));
     }
 

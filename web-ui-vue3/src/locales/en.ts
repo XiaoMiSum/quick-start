@@ -55,7 +55,8 @@ export default {
     updateTime: 'Update Time',
     copy: 'Copy',
     copySuccess: 'Copy Success',
-    copyError: 'Copy Error'
+    copyError: 'Copy Error',
+    archiveSuccess: 'archive Success'
   },
   error: {
     noPermission: `Sorry, you don't have permission to access this page.`,

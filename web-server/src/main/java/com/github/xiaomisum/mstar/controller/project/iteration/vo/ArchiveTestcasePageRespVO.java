@@ -23,32 +23,39 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.github.xiaomisum.mstar.controller.track.testcase.vo.testcase;
+package com.github.xiaomisum.mstar.controller.project.iteration.vo;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.github.xiaomisum.mstar.model.dto.TestcaseStep;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class TestcaseBaseVO {
+public class ArchiveTestcasePageRespVO {
 
-    private String projectId;
+    private String id;
+    // 原始用例id
+    private String originalId;
 
-    @NotNull(message = "所属模块不能为空")
     private String nodeId;
 
-    @NotEmpty(message = "用例名称不能为空")
+    private String path;
+
     private String name;
 
-    @NotEmpty(message = "用例等级不能为空")
     private String level;
 
     private String prerequisite;
 
+    @TableField(typeHandler = TestcaseStep.TestcaseStepTypeHandler.class)
+    private List<TestcaseStep> steps;
+
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> tags;
 
-    @NotEmpty(message = "责任人不能为空")
     private String maintainer;
+
+    private String reviewed;
 }

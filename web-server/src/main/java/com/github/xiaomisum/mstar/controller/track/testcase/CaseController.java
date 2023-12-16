@@ -45,6 +45,7 @@ import com.github.xiaomisum.mstar.service.track.testcase.TestcaseService;
 import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.*;
@@ -94,14 +95,16 @@ public class CaseController {
     }
 
     @PostMapping
-    public Result<?> add(@RequestHeader("x-project-id") String projectId, @RequestBody TestcaseAddReqVO data) {
+    public Result<?> add(@RequestHeader("x-project-id") String projectId,
+                         @RequestBody @Valid TestcaseAddReqVO data) {
         data.setProjectId(projectId);
         String id = service.add(TestcaseConvert.INSTANCE.convert(data));
         return Result.getSuccessful(id);
     }
 
     @PutMapping
-    public Result<?> update(@RequestHeader("x-project-id") String projectId, @RequestBody TestcaseUpdateReqVO data) {
+    public Result<?> update(@RequestHeader("x-project-id") String projectId,
+                            @RequestBody @Valid TestcaseUpdateReqVO data) {
         data.setProjectId(projectId);
         service.update(TestcaseConvert.INSTANCE.convert(data));
         return Result.getSuccessful();

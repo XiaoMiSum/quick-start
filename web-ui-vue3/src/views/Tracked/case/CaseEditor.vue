@@ -107,7 +107,7 @@
               <el-button circle plain type="primary" @click="insertList(scope.$index + 1)">
                 <Icon icon="ep:plus" />
               </el-button>
-              <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
+              <el-button circle plain type="danger" @click="handleDelete(scope.$index)">
                 <Icon icon="ep:delete" />
               </el-button>
             </el-form-item>

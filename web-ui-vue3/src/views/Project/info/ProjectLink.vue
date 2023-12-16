@@ -25,12 +25,12 @@
       <el-table-column align="center" label="" width="110">
         <template #default="scope">
           <el-tooltip content="编辑" placement="top">
-            <el-button circle plain type="primary" @click="handleShowFrom(scope.row)">
+            <el-button link type="primary" @click="handleShowFrom(scope.row)">
               <Icon icon="ep:edit" />
             </el-button>
           </el-tooltip>
           <el-tooltip content="删除" placement="top">
-            <el-button circle plain type="danger" @click="handleDeleteLink(scope.row)">
+            <el-button link type="danger" @click="handleDeleteLink(scope.row)">
               <Icon icon="ep:delete" />
             </el-button>
           </el-tooltip>

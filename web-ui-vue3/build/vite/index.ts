@@ -47,8 +47,7 @@ export function createVitePlugins() {
           '@/hooks/web/useMessage': ['useMessage'],
           '@/hooks/web/useTable': ['useTable'],
           '@/hooks/web/useCrudSchemas': ['useCrudSchemas'],
-          '@/utils/formRules': ['required'],
-          '@/utils/dict': ['DICT_TYPE']
+          '@/utils/formRules': ['required']
         }
       ],
       dts: 'src/types/auto-imports.d.ts',

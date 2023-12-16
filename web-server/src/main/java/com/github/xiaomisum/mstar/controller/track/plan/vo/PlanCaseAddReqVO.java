@@ -25,6 +25,8 @@
 
 package com.github.xiaomisum.mstar.controller.track.plan.vo;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -32,7 +34,10 @@ import java.util.List;
 @Data
 public class PlanCaseAddReqVO {
 
+    @NotEmpty(message = "测试计划编号不能为空")
     private String planId;
 
+    @NotEmpty(message = "关联测试用例编号不能为空")
+    @NotNull(message = "关联测试用例编号不能为空")
     private List<String> testcases;
 }

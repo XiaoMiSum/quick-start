@@ -55,7 +55,8 @@ export default {
     updateTime: '更新时间',
     copy: '复制',
     copySuccess: '复制成功',
-    copyError: '复制失败'
+    copyError: '复制失败',
+    archiveSuccess: '归档成功'
   },
   error: {
     noPermission: `抱歉，您无权访问此页面。`,

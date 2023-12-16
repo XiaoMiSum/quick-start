@@ -3,13 +3,13 @@
   <ContentWrap>
     <div class="relative">
       <el-tabs v-model="active" :tab-change="tabChange">
-        <el-tab-pane label="主页 & 归档">
+        <el-tab-pane label="主页 & 迭代">
           <div class="flex">
             <div class="mr-8 w-49%">
               <ProjectLink ref="link" @save="handleSaveLink" v-model="data.links" />
             </div>
             <div class="w-49%">
-              <ProjectArchive ref="archive" />
+              <ProjectIteration ref="archive" />
             </div>
           </div>
         </el-tab-pane>
@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import ProjectInfo from './ProjectInfo.vue'
 import ProjectLink from './ProjectLink.vue'
-import ProjectArchive from './ProjectArchive.vue'
+import ProjectIteration from './ProjectIteration.vue'
 
 import * as HTTP from '@/api/project'
 

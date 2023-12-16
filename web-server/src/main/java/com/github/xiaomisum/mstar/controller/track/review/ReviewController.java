@@ -39,6 +39,7 @@ import com.github.xiaomisum.mstar.service.track.review.ReviewService;
 import com.github.xiaomisum.mstar.service.track.testcase.NodeService;
 import com.github.xiaomisum.mstar.service.track.testcase.TestcaseService;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
@@ -87,13 +88,15 @@ public class ReviewController {
     }
 
     @PostMapping
-    public Result<?> add(@RequestHeader("x-project-id") String projectId, @RequestBody ReviewAddReqVO data) {
+    public Result<?> add(@RequestHeader("x-project-id") String projectId,
+                         @RequestBody @Valid ReviewAddReqVO data) {
         data.setProjectId(projectId);
         return Result.getSuccessful(service.add(ReviewConvert.INSTANCE.convert(data)));
     }
 
     @PutMapping
-    public Result<?> update(@RequestHeader("x-project-id") String projectId, @RequestBody ReviewUpdateReqVO data) {
+    public Result<?> update(@RequestHeader("x-project-id") String projectId,
+                            @RequestBody @Valid ReviewUpdateReqVO data) {
         data.setProjectId(projectId);
         service.update(ReviewConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
@@ -117,7 +120,7 @@ public class ReviewController {
     }
 
     @PostMapping("/case/sync")
-    public Result<?> syncReviewCase(@RequestBody ReviewCaseExecuteVO req) {
+    public Result<?> syncReviewCase(@RequestBody @Valid ReviewCaseSyncVO req) {
         TestcaseDTO testcase = TestcaseConvert.INSTANCE.convert(testcaseService.get(req.getCaseId()));
         ReviewCase reviewCase = ReviewConvert.INSTANCE.convert(testcase);
         reviewCase.setReviewId(req.getReviewId()).setId(req.getId());
@@ -137,7 +140,8 @@ public class ReviewController {
     }
 
     @PostMapping("/case/execute")
-    public Result<?> reviewCase(@CurrentUser LoginUser user, @RequestBody ReviewCaseExecuteVO execute) {
+    public Result<?> reviewCase(@CurrentUser LoginUser user,
+                                @RequestBody @Valid ReviewCaseExecuteVO execute) {
         execute.setReviewer(user.getName());
         // 设置实际开始时间
         service.setStartTime(execute.getReviewId());
@@ -190,7 +194,7 @@ public class ReviewController {
     }
 
     @PostMapping("/case")
-    public Result<?> addReviewCase(@RequestBody ReviewCaseAddReqVO data) {
+    public Result<?> addReviewCase(@RequestBody @Valid ReviewCaseAddReqVO data) {
         List<TestcaseDTO> testcases = TestcaseConvert.INSTANCE.convert(testcaseService.getList(data.getTestcases()));
         List<ReviewCase> list = ReviewConvert.INSTANCE.convert(testcases);
         list.forEach(item -> item.setReviewId(data.getReviewId()));

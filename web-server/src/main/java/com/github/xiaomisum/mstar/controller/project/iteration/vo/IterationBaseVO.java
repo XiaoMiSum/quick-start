@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.github.xiaomisum.mstar.controller.track.testcase.vo.testcase;
+package com.github.xiaomisum.mstar.controller.project.iteration.vo;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -32,23 +32,17 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class TestcaseBaseVO {
+public class IterationBaseVO {
 
     private String projectId;
 
-    @NotNull(message = "所属模块不能为空")
-    private String nodeId;
+    @NotEmpty(message = "迭代版本号不能为空")
+    private String version;
 
-    @NotEmpty(message = "用例名称不能为空")
+    @NotEmpty(message = "迭代名称不能为空")
     private String name;
 
-    @NotEmpty(message = "用例等级不能为空")
-    private String level;
-
-    private String prerequisite;
-
-    private List<String> tags;
-
-    @NotEmpty(message = "责任人不能为空")
-    private String maintainer;
+    @NotEmpty(message = "迭代需求不能为空")
+    @NotNull(message = "迭代需求不能为空")
+    private List<String> requirements;
 }

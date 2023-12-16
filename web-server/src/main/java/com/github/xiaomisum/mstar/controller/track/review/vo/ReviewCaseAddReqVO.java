@@ -25,6 +25,8 @@
 
 package com.github.xiaomisum.mstar.controller.track.review.vo;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -32,7 +34,11 @@ import java.util.List;
 @Data
 public class ReviewCaseAddReqVO {
 
+
+    @NotEmpty(message = "测试评审编号不能为空")
     private String reviewId;
 
+    @NotNull(message = "关联测试用例不能为空")
+    @NotEmpty(message = "关联测试用例不能为空")
     private List<String> testcases;
 }

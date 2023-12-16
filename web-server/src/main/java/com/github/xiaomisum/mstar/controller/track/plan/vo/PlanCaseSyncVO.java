@@ -23,32 +23,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.github.xiaomisum.mstar.controller.track.testcase.vo.testcase;
+package com.github.xiaomisum.mstar.controller.track.plan.vo;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Data
-public class TestcaseBaseVO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PlanCaseSyncVO {
 
-    private String projectId;
+    @NotEmpty(message = "测试计划关联用例记录编号不能为空")
+    private String id;
 
-    @NotNull(message = "所属模块不能为空")
-    private String nodeId;
+    @NotEmpty(message = "关联用例原始编号不能为空")
+    private String caseId;
 
-    @NotEmpty(message = "用例名称不能为空")
-    private String name;
-
-    @NotEmpty(message = "用例等级不能为空")
-    private String level;
-
-    private String prerequisite;
-
-    private List<String> tags;
-
-    @NotEmpty(message = "责任人不能为空")
-    private String maintainer;
+    @NotEmpty(message = "测试计划编号不能为空")
+    private String planId;
 }

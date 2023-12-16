@@ -23,32 +23,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.github.xiaomisum.mstar.controller.track.testcase.vo.testcase;
+package com.github.xiaomisum.mstar.controller.project.iteration.vo;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import xyz.migoo.framework.common.pojo.PageParam;
 
-import java.util.List;
+@Getter
+@Setter
+public class ArchiveTestcaseQueryReqVO extends PageParam {
 
-@Data
-public class TestcaseBaseVO {
+    private String iterationId;
 
-    private String projectId;
-
-    @NotNull(message = "所属模块不能为空")
     private String nodeId;
 
-    @NotEmpty(message = "用例名称不能为空")
-    private String name;
-
-    @NotEmpty(message = "用例等级不能为空")
-    private String level;
-
-    private String prerequisite;
-
-    private List<String> tags;
-
-    @NotEmpty(message = "责任人不能为空")
-    private String maintainer;
+    private String caseName;
 }

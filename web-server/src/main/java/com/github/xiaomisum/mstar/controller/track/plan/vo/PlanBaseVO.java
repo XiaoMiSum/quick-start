@@ -56,6 +56,4 @@ public class PlanBaseVO {
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private Date expectedEndTime;
 
-    private String memo;
-
 }

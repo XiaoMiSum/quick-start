@@ -1,3 +1,9 @@
+export interface EnumType {
+  key: string
+  label: string
+  tag: string
+}
+
 export const ROLE_TYPE_ENUMS = [
   { key: 1, label: '系统内置', tag: 'info' },
   { key: 2, label: '自定义', tag: 'info' }

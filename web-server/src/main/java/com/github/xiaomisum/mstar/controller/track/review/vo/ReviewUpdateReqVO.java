@@ -25,6 +25,7 @@
 
 package com.github.xiaomisum.mstar.controller.track.review.vo;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -32,6 +33,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ReviewUpdateReqVO extends ReviewBaseVO {
 
+    @NotNull(message = "测试评审编号不能为空")
     private String id;
 
     private String memo;

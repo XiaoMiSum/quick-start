@@ -25,7 +25,7 @@
 
 package com.github.xiaomisum.mstar.dal.mapper.project;
 
-import com.github.xiaomisum.mstar.controller.project.archive.vo.ArchiveTestcaseQueryReqVO;
+import com.github.xiaomisum.mstar.controller.project.iteration.vo.ArchiveTestcaseQueryReqVO;
 import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveTestcase;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -39,13 +39,19 @@ public interface ArchiveTestcaseMapper extends BaseMapperX<ArchiveTestcase> {
 
     default PageResult<ArchiveTestcase> selectPage(ArchiveTestcaseQueryReqVO req) {
         return selectPage(req, new LambdaQueryWrapperX<ArchiveTestcase>()
-                .eq(ArchiveTestcase::getArchiveId, req.getArchiveId())
+                .eq(ArchiveTestcase::getIterationId, req.getIterationId())
                 .eqIfPresent(ArchiveTestcase::getNodeId, req.getNodeId()));
     }
 
-    default List<ArchiveTestcase> selectList(String archiveId) {
+    default List<ArchiveTestcase> selectList(String iterationId) {
         return selectList(new LambdaQueryWrapperX<ArchiveTestcase>()
-                .eq(ArchiveTestcase::getArchiveId, archiveId));
+                .eq(ArchiveTestcase::getIterationId, iterationId));
+    }
+
+    default List<ArchiveTestcase> selectList(String iterationId, String nodeId) {
+        return selectList(new LambdaQueryWrapperX<ArchiveTestcase>()
+                .eq(ArchiveTestcase::getIterationId, iterationId)
+                .eq(ArchiveTestcase::getNodeId, nodeId));
     }
 
 }

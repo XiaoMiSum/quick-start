@@ -25,6 +25,8 @@
 
 package com.github.xiaomisum.mstar.controller.track.testcase.vo.node;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -32,8 +34,10 @@ public class NodeBaseVO {
 
     private String projectId;
 
+    @NotNull(message = "父目录不能为空")
     private String parentId;
 
+    @NotEmpty(message = "节点名称不能为空")
     private String name;
 
     private Integer sort;

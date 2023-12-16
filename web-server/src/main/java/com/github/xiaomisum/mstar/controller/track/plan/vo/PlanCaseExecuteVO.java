@@ -27,6 +27,8 @@ package com.github.xiaomisum.mstar.controller.track.plan.vo;
 
 import com.github.xiaomisum.mstar.enums.TestStatus;
 import com.github.xiaomisum.mstar.model.dto.TestcaseStep;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,15 +40,20 @@ import java.util.List;
 @AllArgsConstructor
 public class PlanCaseExecuteVO {
 
+    @NotEmpty(message = "测试计划关联用例记录编号不能为空")
     private String id;
 
+    @NotEmpty(message = "关联测试用例原始编号不能为空")
     private String caseId;
 
+    @NotEmpty(message = "测试计划编号不能为空")
     private String planId;
 
+    @NotNull(message = "测试用例执行结果不能为空")
     private TestStatus result;
 
     private String executor;
 
+    @NotNull(message = "测试用例执行步骤不能为空")
     private List<TestcaseStep> steps;
 }

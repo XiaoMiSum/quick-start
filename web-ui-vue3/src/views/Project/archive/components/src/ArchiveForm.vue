@@ -7,12 +7,22 @@
       :rules="formRules"
       label-width="80px"
     >
-      <el-form-item label="归档名称" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入归档名称" />
+      <el-form-item label="版本号" prop="version">
+        <el-input v-model="formData.version" placeholder="请输入版本号,如：v1.0.0" />
       </el-form-item>
-
-      <el-form-item v-if="!formData.id">
-        <el-text type="success">系统将以当前项目模块&用例创建快照</el-text>
+      <el-form-item label="迭代名称" prop="name">
+        <el-input v-model="formData.name" placeholder="请输入迭代名称" />
+      </el-form-item>
+      <el-form-item label="需求列表" prop="requirements">
+        <div class="flex" v-for="(item, index) in formData.requirements" :key="index">
+          <el-input v-model="formData.requirements[index]" placeholder="请输入迭代需求" />
+          <el-button link type="primary" @click="insertList(index + 1)">
+            <Icon icon="ep:plus" />
+          </el-button>
+          <el-button :disabled="index === 0" link type="danger" @click="handleDelete(index)">
+            <Icon icon="ep:delete" />
+          </el-button>
+        </div>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -36,10 +46,13 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref<any>({
   id: undefined,
-  name: ''
+  name: '',
+  version: '',
+  requirements: ['']
 })
 const formRules = reactive({
-  name: [{ required: true, message: '归档名称不能为空', trigger: 'blur' }]
+  name: [{ required: true, message: '迭代名称不能为空', trigger: 'blur' }],
+  version: [{ required: true, message: '版本号不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 
@@ -59,7 +72,9 @@ const open = async (type: string, data?: any) => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    name: ''
+    name: '',
+    version: '',
+    requirements: ['']
   }
   formRef.value?.resetFields()
 }
@@ -88,6 +103,18 @@ const submitForm = async () => {
     emit('success')
   } finally {
     formLoading.value = false
+  }
+}
+
+const insertList = async (index) => {
+  ;(formData.value.requirements as string[]).splice(index, 0, '')
+}
+
+const handleDelete = async (index: number) => {
+  const steps = formData.value.requirements as string[]
+  steps.splice(index, 1)
+  if (!steps || steps.length < 1) {
+    formData.value.requirements = ['']
   }
 }
 </script>

@@ -25,12 +25,14 @@
 
 package com.github.xiaomisum.mstar.controller.track.plan.vo;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
 public class PlanCaseImportReqVO {
 
+    @NotEmpty(message = "测试计划编号不能为空")
     private String planId;
-
+    @NotEmpty(message = "来源测试评审编号不能为空")
     private String reviewId;
 }

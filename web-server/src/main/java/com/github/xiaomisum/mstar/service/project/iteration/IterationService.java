@@ -23,32 +23,39 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.github.xiaomisum.mstar.controller.track.testcase.vo.testcase;
+package com.github.xiaomisum.mstar.service.project.iteration;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import com.github.xiaomisum.mstar.controller.project.iteration.vo.ArchiveTestcaseQueryReqVO;
+import com.github.xiaomisum.mstar.controller.project.iteration.vo.IterationQueryReqVO;
+import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveNode;
+import com.github.xiaomisum.mstar.dal.dataobject.project.ArchiveTestcase;
+import com.github.xiaomisum.mstar.dal.dataobject.project.Iteration;
+import xyz.migoo.framework.common.pojo.PageResult;
 
 import java.util.List;
 
-@Data
-public class TestcaseBaseVO {
+public interface IterationService {
 
-    private String projectId;
+    Iteration get(String iterationId);
 
-    @NotNull(message = "所属模块不能为空")
-    private String nodeId;
+    PageResult<Iteration> getPage(IterationQueryReqVO req);
 
-    @NotEmpty(message = "用例名称不能为空")
-    private String name;
+    void add(Iteration iteration);
 
-    @NotEmpty(message = "用例等级不能为空")
-    private String level;
+    void update(Iteration iteration);
 
-    private String prerequisite;
+    void remove(String id);
 
-    private List<String> tags;
+    List<ArchiveNode> getNodes(String iterationId);
 
-    @NotEmpty(message = "责任人不能为空")
-    private String maintainer;
+    ArchiveNode getNode(String iterationId, String originalId);
+
+    PageResult<ArchiveTestcase> getTestcasePage(ArchiveTestcaseQueryReqVO req);
+
+    ArchiveTestcase getTestcase(String id);
+
+    List<ArchiveTestcase> getTestcases(String iterationId, String nodeId);
+
+    void archive(String iterationId, List<ArchiveNode> archiveNodes, List<ArchiveTestcase> archiveTestcases);
+
 }

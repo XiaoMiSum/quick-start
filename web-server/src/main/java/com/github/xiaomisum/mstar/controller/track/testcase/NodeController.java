@@ -36,6 +36,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.Result;
 
+import javax.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
 
@@ -60,14 +61,16 @@ public class NodeController {
     }
 
     @PostMapping
-    public Result<?> add(@RequestHeader("x-project-id") String projectId, @RequestBody NodeAddReqVO data) {
+    public Result<?> add(@RequestHeader("x-project-id") String projectId,
+                         @RequestBody @Valid NodeAddReqVO data) {
         data.setProjectId(projectId);
         service.add(TestcaseNodeConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
     }
 
     @PutMapping
-    public Result<?> update(@RequestHeader("x-project-id") String projectId, @RequestBody NodeUpdateReqVO data) {
+    public Result<?> update(@RequestHeader("x-project-id") String projectId,
+                            @RequestBody @Valid NodeUpdateReqVO data) {
         data.setProjectId(projectId);
         service.update(TestcaseNodeConvert.INSTANCE.convert(data));
         return Result.getSuccessful();

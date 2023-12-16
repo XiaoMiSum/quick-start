@@ -39,8 +39,6 @@ public class TestcaseUpdateReqVO extends TestcaseBaseVO {
     @NotNull(message = "用例编号不能为空")
     private String id;
 
-    private String reviewed;
-
     @NotNull(message = "执行步骤不能为空")
     private List<TestcaseStep> steps;
 }

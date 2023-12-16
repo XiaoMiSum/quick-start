@@ -41,13 +41,11 @@ import java.util.List;
 @Data
 public class ArchiveTestcase extends Id {
 
-    // 归档id
-    private String archiveId;
+    // 迭代id
+    private String iterationId;
 
     // 原始用例id
     private String originalId;
-
-    private String projectId;
 
     private String nodeId;
 

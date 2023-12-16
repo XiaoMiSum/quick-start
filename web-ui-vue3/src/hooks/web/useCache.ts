@@ -13,8 +13,7 @@ export const CACHE_KEY = {
   LANG: 'lang',
   THEME: 'theme',
   LAYOUT: 'layout',
-  ROLE_ROUTERS: 'roleRouters',
-  DICT_CACHE: 'dictCache'
+  ROLE_ROUTERS: 'roleRouters'
 }
 
 export const useCache = (type: CacheType = 'localStorage') => {

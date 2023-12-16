@@ -23,32 +23,41 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.github.xiaomisum.mstar.controller.track.testcase.vo.testcase;
+package com.github.xiaomisum.mstar.controller.project.iteration.vo;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
+import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
+import com.github.xiaomisum.mstar.model.dto.TestcaseStep;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
-public class TestcaseBaseVO {
+@AllArgsConstructor
+@NoArgsConstructor
+@ExcelTarget("Testcase")
+public class ArchiveTestcaseExportVO {
 
-    private String projectId;
-
-    @NotNull(message = "所属模块不能为空")
-    private String nodeId;
-
-    @NotEmpty(message = "用例名称不能为空")
+    @Excel(name = "标题", needMerge = true, width = 25)
     private String name;
 
-    @NotEmpty(message = "用例等级不能为空")
+    private String nodeId;
+
+    @Excel(name = "所属模块", needMerge = true, width = 20)
+    private String path;
+
+    @Excel(name = "用例等级", needMerge = true)
     private String level;
 
+    @Excel(name = "标签", needMerge = true, width = 20)
+    private String tags;
+
+    @Excel(name = "前置条件", needMerge = true, width = 20)
     private String prerequisite;
 
-    private List<String> tags;
-
-    @NotEmpty(message = "责任人不能为空")
-    private String maintainer;
+    @ExcelCollection(name = "执行步骤")
+    private List<TestcaseStep> steps;
 }

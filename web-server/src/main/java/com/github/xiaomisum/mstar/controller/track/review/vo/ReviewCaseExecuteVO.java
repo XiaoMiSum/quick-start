@@ -26,6 +26,7 @@
 package com.github.xiaomisum.mstar.controller.track.review.vo;
 
 import com.github.xiaomisum.mstar.enums.TestStatus;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,12 +36,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewCaseExecuteVO {
 
+    @NotEmpty(message = "评审关联用例记录编号不能为空")
     private String id;
 
+    @NotEmpty(message = "用例原始编号不能为空")
     private String caseId;
 
+    @NotEmpty(message = "测试评审编号不能为空")
     private String reviewId;
 
+    @NotEmpty(message = "评审结果不能为空")
     private TestStatus result;
 
     private String reviewer;

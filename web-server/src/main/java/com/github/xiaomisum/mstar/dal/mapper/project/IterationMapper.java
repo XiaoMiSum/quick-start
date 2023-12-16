@@ -23,32 +23,30 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.github.xiaomisum.mstar.controller.track.testcase.vo.testcase;
+package com.github.xiaomisum.mstar.dal.mapper.project;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import com.github.xiaomisum.mstar.controller.project.iteration.vo.IterationQueryReqVO;
+import com.github.xiaomisum.mstar.dal.dataobject.project.Iteration;
+import org.apache.ibatis.annotations.Mapper;
+import xyz.migoo.framework.common.pojo.PageResult;
+import xyz.migoo.framework.mybatis.core.BaseMapperX;
+import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
-import java.util.List;
+@Mapper
+public interface IterationMapper extends BaseMapperX<Iteration> {
 
-@Data
-public class TestcaseBaseVO {
+    default Iteration selectOne(String projectId, String iterationId) {
+        return selectOne(new LambdaQueryWrapperX<Iteration>()
+                .eq(Iteration::getProjectId, projectId)
+                .eq(Iteration::getId, iterationId)
+                .orderByDesc(Iteration::getId));
+    }
 
-    private String projectId;
+    default PageResult<Iteration> selectPage(IterationQueryReqVO req) {
+        return selectPage(req, new LambdaQueryWrapperX<Iteration>()
+                .eq(Iteration::getProjectId, req.getProjectId())
+                .likeIfPresent(Iteration::getName, req.getName())
+                .orderByDesc(Iteration::getId));
+    }
 
-    @NotNull(message = "所属模块不能为空")
-    private String nodeId;
-
-    @NotEmpty(message = "用例名称不能为空")
-    private String name;
-
-    @NotEmpty(message = "用例等级不能为空")
-    private String level;
-
-    private String prerequisite;
-
-    private List<String> tags;
-
-    @NotEmpty(message = "责任人不能为空")
-    private String maintainer;
 }
