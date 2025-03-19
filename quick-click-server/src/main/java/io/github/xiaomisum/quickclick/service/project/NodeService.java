@@ -23,22 +23,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.service.qualitycenter.testcase;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
-import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import java.util.List;
 
-@Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+public interface NodeService {
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
+    TestcaseNode get(Long id);
 
+    List<TestcaseNode> getList(Long projectId);
+
+    void add(TestcaseNode node);
+
+    void update(TestcaseNode node);
+
+    void remove(Long id);
 }

@@ -23,22 +23,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
-import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
-@Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+import java.util.List;
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
+@Data
+public class PlanCaseAddReqVO {
 
+    @NotEmpty(message = "测试计划编号不能为空")
+    private Long planId;
+
+    @NotEmpty(message = "关联测试用例编号不能为空")
+    @NotNull(message = "关联测试用例编号不能为空")
+    private List<Long> testcases;
 }

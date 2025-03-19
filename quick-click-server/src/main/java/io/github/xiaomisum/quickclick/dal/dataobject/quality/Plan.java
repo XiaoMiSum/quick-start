@@ -23,22 +23,44 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
-import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.xiaomisum.quickclick.enums.TestStatus;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
-@Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+import java.time.LocalDateTime;
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
+@EqualsAndHashCode(callSuper = true)
+@TableName(value = "qc_test_plan", autoResultMap = true)
+@Data
+public class Plan extends BaseDO<String> {
 
+    private String projectId;
+
+    private String title;
+
+    /**
+     * 测试阶段
+     */
+    private String stage;
+
+    /**
+     * 执行人 user_id
+     */
+    private Long executor;
+
+    private TestStatus status;
+
+    private LocalDateTime expectedStartTime;
+
+    private LocalDateTime expectedEndTime;
+
+    private LocalDateTime actualStartTime;
+
+    private LocalDateTime actualEndTime;
+
+    private String memo;
 }

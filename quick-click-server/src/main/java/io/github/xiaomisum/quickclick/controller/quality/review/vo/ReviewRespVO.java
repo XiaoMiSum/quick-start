@@ -23,22 +23,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.controller.qualitycenter.review.vo;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
-import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import io.github.xiaomisum.quickclick.enums.TestStatus;
+import io.github.xiaomisum.quickclick.model.dto.Statistics;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class ReviewRespVO extends ReviewBaseVO {
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
+    private Long Id;
+
+    private String memo;
+
+    private Statistics statistics;
+
+    private TestStatus status;
 
 }

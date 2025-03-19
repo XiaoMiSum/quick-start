@@ -23,22 +23,37 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
-import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import io.github.xiaomisum.quickclick.enums.TestStatus;
+import io.github.xiaomisum.quickclick.model.dto.CaseStep;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+import java.util.List;
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class PlanCaseExecuteVO {
 
+    @NotEmpty(message = "测试计划关联用例记录编号不能为空")
+    private Long id;
+
+    @NotEmpty(message = "关联测试用例原始编号不能为空")
+    private Long caseId;
+
+    @NotEmpty(message = "测试计划编号不能为空")
+    private Long planId;
+
+    @NotNull(message = "测试用例执行结果不能为空")
+    private TestStatus result;
+
+    private String executor;
+
+    @NotNull(message = "测试用例执行步骤不能为空")
+    private List<CaseStep> steps;
 }

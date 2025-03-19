@@ -23,22 +23,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.controller.qualitycenter.review.vo;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
-import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ReviewCaseSyncVO {
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
+    @NotEmpty(message = "评审关联用例记录编号不能为空")
+    private Long Id;
 
+    @NotEmpty(message = "用例原始编号不能为空")
+    private Long caseId;
+
+    @NotEmpty(message = "测试评审编号不能为空")
+    private Long reviewId;
 }

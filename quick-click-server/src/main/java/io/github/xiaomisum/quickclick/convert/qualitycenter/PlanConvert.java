@@ -23,22 +23,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.convert.track;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
+import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.PlanAddReqVO;
+import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.PlanPageRespVO;
+import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.PlanRespVO;
+import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.PlanUpdateReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter.Plan;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
 @Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+public interface PlanConvert {
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
+    PlanConvert INSTANCE = Mappers.getMapper(PlanConvert.class);
+
+    Plan convert(PlanAddReqVO req);
+
+    Plan convert(PlanUpdateReqVO req);
+
+    PlanRespVO convert(Plan plan);
+
+    PageResult<PlanPageRespVO> convert(PageResult<Plan> beans);
 
 }

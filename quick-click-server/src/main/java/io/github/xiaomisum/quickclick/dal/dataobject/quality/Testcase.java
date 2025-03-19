@@ -23,22 +23,50 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
-import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import io.github.xiaomisum.quickclick.model.dto.CaseStep;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
-@Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+import java.time.LocalDateTime;
+import java.util.List;
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
+@EqualsAndHashCode(callSuper = true)
+@TableName(value = "qc_test_case", autoResultMap = true)
+@Data
+public class Testcase extends BaseDO<String> {
+
+    private String projectId;
+
+    private String nodeId;
+
+    private String title;
+
+    private String priority;
+
+    private String prerequisite;
+
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<CaseStep> steps;
+
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<String> tags;
+
+    /**
+     * 负责人 user_id
+     */
+    private Long supervisor;
+
+    /**
+     * 最后一次评审结果
+     */
+    private String lastReviewResult;
+
+    private LocalDateTime lastReviewTime;
 
 }

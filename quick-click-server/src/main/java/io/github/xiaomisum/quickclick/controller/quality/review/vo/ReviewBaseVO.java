@@ -23,22 +23,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.controller.qualitycenter.review.vo;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
-import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
-@Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+import java.util.Date;
+import java.util.List;
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
+@Data
+public class ReviewBaseVO {
+
+    private Long projectId;
+
+    @NotBlank(message = "评审名称不能为空")
+    private String name;
+
+    @NotBlank(message = "主讲人不能为空")
+    private String speaker;
+
+    private List<String> reviewers;
+
+    @NotNull(message = "预计开始时间不能为空")
+    private Date expectedStartTime;
+
+    @NotNull(message = "预计结束时间不能为空")
+    private Date expectedEndTime;
 
 }

@@ -23,22 +23,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.convert.qualitycenter;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
+import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.node.NodeAddReqVO;
+import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.node.NodeRespVO;
+import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.node.NodeUpdateReqVO;
+import io.github.xiaomisum.quickclick.model.dto.SimpleResp;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+
+import java.util.List;
 
 @Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+public interface TestcaseNodeConvert {
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
+    TestcaseNodeConvert INSTANCE = Mappers.getMapper(TestcaseNodeConvert.class);
 
+    NodeRespVO convert(TestcaseNode bean);
+
+    TestcaseNode convert(NodeAddReqVO bean);
+
+    TestcaseNode convert(NodeUpdateReqVO bean);
+
+    PageResult<NodeRespVO> convert(PageResult<TestcaseNode> beans);
+
+    List<NodeRespVO> convert(List<TestcaseNode> beans);
+
+    List<SimpleResp> convert1(List<TestcaseNode> beans);
 }

@@ -23,22 +23,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.dal.dataobject.project;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
-import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
-@Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+@EqualsAndHashCode(callSuper = true)
+@TableName(value = "qc_project_archive_node", autoResultMap = true)
+@Data
+public class ArchiveNode extends BaseDO<Long> {
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
-    }
 
+    // 原始模块id
+    private Long originalId;
+
+    // 原始模块父id
+    private Long parentId;
+
+    private String name;
+
+    private String path;
+
+    private Integer sort;
 }

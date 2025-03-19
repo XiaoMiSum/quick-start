@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021.  Lorem XiaoMiSum (mi_xiao@qq.com)
+ * Copyright (c) 2025.  Lorem XiaoMiSum (mi_xiao@qq.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -26,19 +26,26 @@
 package io.github.xiaomisum.quickclick.dal.mapper.project;
 
 import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
+import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectMember;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
-@Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+import java.util.List;
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
+@Mapper
+public interface MemberMapper extends BaseMapperX<ProjectMember> {
+
+    default PageResult<ProjectMember> selectPage(ProjectQueryReqVO req) {
+        return selectPage(req, new LambdaQueryWrapperX<ProjectMember>()
+                .eq(ProjectMember::getProjectId, req.getName())
+                .orderByDesc(ProjectMember::getId));
     }
+
+    default List<ProjectMember> selectListByUserId(Long userId) {
+        return selectList(new LambdaQueryWrapperX<ProjectMember>().eq(ProjectMember::getUserId, userId));
+    }
+
 
 }

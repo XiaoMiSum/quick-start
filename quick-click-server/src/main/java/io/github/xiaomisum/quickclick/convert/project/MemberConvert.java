@@ -23,22 +23,36 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.project;
+package io.github.xiaomisum.quickclick.convert.project;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
-import org.apache.ibatis.annotations.Mapper;
+import com.google.common.collect.Lists;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectAddReqVO;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectRespVO;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectUpdateReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
-import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import xyz.migoo.framework.common.pojo.SimpleData;
+
+import java.util.List;
 
 @Mapper
-public interface ArchiveMapper extends BaseMapperX<Archive> {
+public interface ProjectConvert {
 
-    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
-                .orderByDesc(Archive::getId));
+    ProjectConvert INSTANCE = Mappers.getMapper(ProjectConvert.class);
+
+    Project convert(ProjectAddReqVO bean);
+
+    Project convert(ProjectUpdateReqVO bean);
+
+    ProjectRespVO convert(Project bean);
+
+    PageResult<ProjectRespVO> convert(PageResult<Project> beans);
+
+    default List<SimpleData> convert(List<Project> projects) {
+        List<SimpleData> result = Lists.newArrayList();
+        projects.forEach(item -> result.add(new SimpleData(item.getId(), item.getName())));
+        return result;
     }
-
 }
