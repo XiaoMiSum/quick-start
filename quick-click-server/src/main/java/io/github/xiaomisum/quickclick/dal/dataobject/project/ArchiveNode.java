@@ -26,17 +26,16 @@
 package io.github.xiaomisum.quickclick.dal.dataobject.project;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.github.xiaomisum.quickclick.farmework.mybatis.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "project_archive_node", autoResultMap = true)
+@TableName(value = "qc_project_archive_node", autoResultMap = true)
 @Data
-public class ArchiveNode extends Id {
+public class ArchiveNode extends BaseDO<Long> {
 
-    // 迭代id
-    private String iterationId;
+    private String archiveId;
 
     // 原始模块id
     private String originalId;

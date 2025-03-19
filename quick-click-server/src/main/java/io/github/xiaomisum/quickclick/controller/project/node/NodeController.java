@@ -23,12 +23,69 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.project.archive;
+package io.github.xiaomisum.quickclick.controller.project.node;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.github.xiaomisum.quickclick.controller.project.node.vo.NodeAddReqVO;
+import io.github.xiaomisum.quickclick.controller.project.node.vo.NodeRespVO;
+import io.github.xiaomisum.quickclick.controller.project.node.vo.NodeUpdateReqVO;
+import io.github.xiaomisum.quickclick.convert.project.NodeConvert;
+import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
+import io.github.xiaomisum.quickclick.service.project.NodeService;
+import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.*;
+import xyz.migoo.framework.common.pojo.Result;
 
+import java.util.List;
+
+/**
+ * 项目模块
+ */
 @RestController
-@RequestMapping("/project/archive")
-public class ArchiveController {
+@RequestMapping("/project/node")
+public class NodeController {
+
+    @Resource
+    private NodeService service;
+
+    @GetMapping
+    public Result<List<NodeRespVO>> getList(@RequestParam String projectId) {
+        List<ProjectNode> results = service.getList(projectId);
+        return Result.getSuccessful(NodeConvert.INSTANCE.convert(results));
+    }
+
+    /**
+     * 新增模块
+     *
+     * @param data 模块信息
+     * @return 处理结果
+     */
+    @PostMapping
+    public Result<?> add(@RequestBody NodeAddReqVO data) {
+        service.add(NodeConvert.INSTANCE.convert(data));
+        return Result.getSuccessful();
+    }
+
+    /**
+     * 更新模块
+     *
+     * @param data 模块信息
+     * @return 处理结果
+     */
+    @PutMapping
+    public Result<?> update(@RequestBody NodeUpdateReqVO data) {
+        service.update(NodeConvert.INSTANCE.convert(data));
+        return Result.getSuccessful();
+    }
+
+    /**
+     * 删除模块
+     *
+     * @param ids 模块编号
+     * @return 处理结果
+     */
+    @DeleteMapping
+    public Result<?> remove(@RequestParam List<String> ids) {
+        service.remove(ids);
+        return Result.getSuccessful();
+    }
 }

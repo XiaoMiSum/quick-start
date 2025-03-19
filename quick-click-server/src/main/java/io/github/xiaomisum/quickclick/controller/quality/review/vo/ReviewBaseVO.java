@@ -23,32 +23,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.review.vo;
+package io.github.xiaomisum.quickclick.controller.quality.review.vo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 public class ReviewBaseVO {
 
-    private Long projectId;
+    private String projectId;
 
     @NotBlank(message = "评审名称不能为空")
-    private String name;
+    private String title;
 
     @NotBlank(message = "主讲人不能为空")
-    private String speaker;
+    private Long speaker;
 
-    private List<String> reviewers;
+    private List<Long> reviewer;
 
     @NotNull(message = "预计开始时间不能为空")
-    private Date expectedStartTime;
+    private LocalDateTime expectedStartTime;
 
     @NotNull(message = "预计结束时间不能为空")
-    private Date expectedEndTime;
+    private LocalDateTime expectedEndTime;
 
 }

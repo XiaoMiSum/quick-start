@@ -23,10 +23,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.track.review;
+package io.github.xiaomisum.quickclick.service.qualitycenter.review;
 
-import io.github.xiaomisum.quickclick.controller.track.review.vo.ReviewQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.Review;
+import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Review;
 import xyz.migoo.framework.common.pojo.PageResult;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public interface ReviewService {
 
     List<Review> getList(String projectId);
 
-    Review get(String projectId, String reviewId);
+    Review get(String reviewId);
 
     String add(Review review);
 

@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.management.project.vo;
+package io.github.xiaomisum.quickclick.controller.project.management.vo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -42,6 +42,6 @@ public class ProjectBaseVO {
     /**
      * 备注
      */
-    @Size(max = 255, message = "name 最大长度64")
+    @Size(max = 255, message = "memo 最大长度255")
     private String memo;
 }

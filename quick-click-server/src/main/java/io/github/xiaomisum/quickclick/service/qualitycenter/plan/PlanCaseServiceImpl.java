@@ -23,20 +23,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.track.plan;
+package io.github.xiaomisum.quickclick.service.qualitycenter.plan;
 
 import cn.hutool.core.collection.CollectionUtil;
-import io.github.xiaomisum.quickclick.controller.track.plan.vo.PlanCaseExecuteVO;
-import io.github.xiaomisum.quickclick.controller.track.plan.vo.PlanCaseQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.PlanCase;
-import io.github.xiaomisum.quickclick.dal.mapper.track.PlanCaseMapper;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseExecuteVO;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanCaseMapper;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,7 +52,7 @@ public class PlanCaseServiceImpl implements PlanCaseService {
     }
 
     @Override
-    public PlanCase get(String id) {
+    public PlanCase get(Long id) {
         return mapper.selectById(id);
     }
 
@@ -62,12 +62,17 @@ public class PlanCaseServiceImpl implements PlanCaseService {
     }
 
     @Override
+    public PlanCase getFirst(String planId) {
+        return mapper.selectOne(planId);
+    }
+
+    @Override
     public List<PlanCase> getList(String planId, TestStatus result) {
         return mapper.selectList(planId, result);
     }
 
     @Override
-    public List<PlanCase> getListGtId(String opt, String planId, String id) {
+    public List<PlanCase> getListGtId(String opt, String planId, Long id) {
         return (Objects.equals(opt, "next")) ?
                 mapper.selectListByGtId(planId, id) : mapper.selectListByLtId(planId, id);
     }
@@ -76,7 +81,7 @@ public class PlanCaseServiceImpl implements PlanCaseService {
     public void add(List<PlanCase> cases) {
         // 过滤已添加的
         mapper.insertBatch(cases.stream()
-                .filter(item -> CollectionUtil.isEmpty(mapper.selectList(item.getPlanId(), item.getCaseId())))
+                .filter(item -> CollectionUtil.isEmpty(mapper.selectList(item.getPlanId(), item.getOriginalId())))
                 .toList());
     }
 
@@ -86,13 +91,8 @@ public class PlanCaseServiceImpl implements PlanCaseService {
     }
 
     @Override
-    public void remove(String id) {
-        mapper.deleteById(id);
-    }
-
-    @Override
-    public void remove(List<String> ids) {
-        mapper.deleteByIds(ids);
+    public void remove(List<Long> ids) {
+        mapper.removeByIds(ids);
     }
 
     @Override
@@ -105,8 +105,8 @@ public class PlanCaseServiceImpl implements PlanCaseService {
         PlanCase planCase = (PlanCase) new PlanCase()
                 .setSteps(execute.getSteps())
                 .setExecutor(execute.getExecutor())
-                .setExecuteTime(new Date())
-                .setExecuteResult(execute.getResult())
+                .setExecuteTime(LocalDateTime.now())
+                .setResult(execute.getResult())
                 .setId(execute.getId());
         mapper.updateById(planCase);
     }

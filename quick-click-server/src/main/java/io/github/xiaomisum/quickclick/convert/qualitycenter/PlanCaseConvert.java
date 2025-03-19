@@ -23,14 +23,14 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.convert.track;
+package io.github.xiaomisum.quickclick.convert.qualitycenter;
 
 import com.google.common.collect.Lists;
-import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.PlanCasePageRespVO;
-import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.PlanCaseRespVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter.PlanCase;
-import io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter.ReviewCase;
-import io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter.Testcase;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCasePageRespVO;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseRespVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -53,32 +53,21 @@ public interface PlanCaseConvert {
 
     PageResult<PlanCasePageRespVO> convert1(PageResult<Testcase> page);
 
-    default PlanCasePageRespVO convert(Testcase bean) {
-        return (PlanCasePageRespVO) new PlanCasePageRespVO()
-                .setReviewed(bean.getReviewed())
-                .setCaseId(bean.getId())
-                .setName(bean.getName())
-                .setMaintainer(bean.getMaintainer())
-                .setTags(bean.getTags())
-                .setLevel(bean.getLevel())
-                .setNodeId(bean.getNodeId());
-    }
 
-    default List<PlanCase> convert(List<ReviewCase> reviewCases, Long planId) {
+    default List<PlanCase> convert(List<ReviewCase> reviewCases, String planId) {
         List<PlanCase> results = Lists.newArrayList();
         reviewCases.forEach(item -> results.add(convert(item, planId)));
         return results;
     }
 
-    default PlanCase convert(ReviewCase reviewCase, Long planId) {
+    default PlanCase convert(ReviewCase reviewCase, String planId) {
         return new PlanCase()
                 .setPlanId(planId)
-                .setCaseId(reviewCase.getCaseId())
-                .setName(reviewCase.getName())
+                .setOriginalId(reviewCase.getOriginalId())
+                .setTitle(reviewCase.getTitle())
                 .setTags(reviewCase.getTags())
-                .setLevel(reviewCase.getLevel())
+                .setPriority(reviewCase.getPriority())
                 .setNodeId(reviewCase.getNodeId())
-                .setMaintainer(reviewCase.getMaintainer())
                 .setPrerequisite(reviewCase.getPrerequisite())
                 .setSteps(reviewCase.getSteps());
     }

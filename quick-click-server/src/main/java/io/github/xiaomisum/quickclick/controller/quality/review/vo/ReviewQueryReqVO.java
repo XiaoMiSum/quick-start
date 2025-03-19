@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.review.vo;
+package io.github.xiaomisum.quickclick.controller.quality.review.vo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,9 +34,9 @@ import xyz.migoo.framework.common.util.json.JsonUtils;
 @Setter
 public class ReviewQueryReqVO extends PageParam {
 
-    private Long projectId;
+    private String projectId;
 
-    private String name;
+    private String title;
 
     @Override
     public String toString() {

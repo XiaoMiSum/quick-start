@@ -27,11 +27,13 @@ package io.github.xiaomisum.quickclick;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import xyz.migoo.framework.security.utils.PasswordUtils;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"${migoo.framework.package-name}", "${migoo.framework.biz-package-name}"})
 public class BootStart {
 
     public static void main(String[] args) {
         SpringApplication.run(BootStart.class, args);
+        System.out.println(PasswordUtils.encode("123456"));
     }
 }

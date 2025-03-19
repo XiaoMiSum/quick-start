@@ -25,12 +25,14 @@
 
 package io.github.xiaomisum.quickclick.dal.mapper.project;
 
-import io.github.xiaomisum.quickclick.controller.project.vo.ProjectQueryReqVO;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+
+import java.util.List;
 
 @Mapper
 public interface ProjectMapper extends BaseMapperX<Project> {
@@ -39,6 +41,12 @@ public interface ProjectMapper extends BaseMapperX<Project> {
         return selectPage(req, new LambdaQueryWrapperX<Project>()
                 .likeIfPresent(Project::getName, req.getName())
                 .eqIfPresent(Project::getStatus, req.getStatus())
+                .orderByDesc(Project::getId));
+    }
+
+    default List<Project> selectList(List<String> ids) {
+        return selectList(new LambdaQueryWrapperX<Project>()
+                .in(Project::getId, ids)
                 .orderByDesc(Project::getId));
     }
 

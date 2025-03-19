@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.quality.testcase.vo.testcase;
+package io.github.xiaomisum.quickclick.controller.quality.testcase.vo;
 
 import io.github.xiaomisum.quickclick.model.dto.CaseStep;
 import jakarta.validation.constraints.NotNull;

@@ -36,6 +36,7 @@ interface AppState {
   theme: ThemeTypes
   fixedMenu: boolean
   projectPick: boolean
+  aesKey: string
 }
 
 export const useAppStore = defineStore('app', {
@@ -45,6 +46,7 @@ export const useAppStore = defineStore('app', {
       sizeMap: ['default', 'large', 'small'],
       mobile: false, // 是否是移动端
       title: import.meta.env.VITE_APP_TITLE, // 标题
+      aesKey: '', // aes 加密key
       pageLoading: false, // 路由跳转loading
       projectPick: false, // 项目选择
       breadcrumb: true, // 面包屑
@@ -153,6 +155,9 @@ export const useAppStore = defineStore('app', {
     getTitle(): string {
       return this.title
     },
+    getAesKey(): string {
+      return this.aesKey
+    },
     getUserInfo(): string {
       return this.userInfo
     },
@@ -179,6 +184,10 @@ export const useAppStore = defineStore('app', {
     }
   },
   actions: {
+    async setAppConfig(data: any) {
+      this.aesKey = data.kit
+      this.setTitle(data.title)
+    },
     setBreadcrumb(breadcrumb: boolean) {
       this.breadcrumb = breadcrumb
     },

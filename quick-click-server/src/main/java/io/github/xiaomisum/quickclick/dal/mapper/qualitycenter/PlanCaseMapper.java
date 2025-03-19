@@ -23,13 +23,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.track;
+package io.github.xiaomisum.quickclick.dal.mapper.qualitycenter;
 
-import io.github.xiaomisum.quickclick.controller.track.plan.vo.PlanCaseQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.PlanCase;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
@@ -44,7 +46,7 @@ public interface PlanCaseMapper extends BaseMapperX<PlanCase> {
         return selectPage(req, new LambdaQueryWrapperX<PlanCase>()
                 .eq(PlanCase::getPlanId, req.getPlanId())
                 .eqIfPresent(PlanCase::getNodeId, req.getNodeId())
-                .likeIfPresent(PlanCase::getName, req.getCaseName())
+                .likeIfPresent(PlanCase::getTitle, req.getTitle())
         );
     }
 
@@ -56,42 +58,59 @@ public interface PlanCaseMapper extends BaseMapperX<PlanCase> {
     default Statistics statistics(String planId) {
         return selectJoinOne(Statistics.class, new MPJLambdaWrapperX<PlanCase>()
                 .select("ifNull(count(id), 0) total",
-                        "sum(case when execute_result = 'Pass' then 1 else 0 end) passed",
-                        "sum(case when execute_result = 'Prepare' then 1 else 0 end) unstarted",
-                        "sum(case when execute_result = 'Skip' then 1 else 0 end) skipped")
+                        "sum(case when result = 'Pass' then 1 else 0 end) passed",
+                        "sum(case when result = 'Prepare' then 1 else 0 end) unstarted",
+                        "sum(case when result = 'Skip' then 1 else 0 end) skipped")
                 .eq("plan_id", planId));
     }
 
-    default List<PlanCase> selectList(String planId, String caseId) {
+    default List<PlanCase> selectList(String planId, String originalId) {
         return selectList(new LambdaQueryWrapperX<PlanCase>()
                 .eq(PlanCase::getPlanId, planId)
-                .eq(PlanCase::getCaseId, caseId)
-                .orderByAsc(PlanCase::getCaseId)
+                .eq(PlanCase::getOriginalId, originalId)
+                .orderByAsc(PlanCase::getOriginalId)
         );
     }
 
-    default List<PlanCase> selectListByLtId(String planId, String id) {
+    default List<PlanCase> selectListByLtId(String planId, Long id) {
         return selectList(new LambdaQueryWrapperX<PlanCase>()
                 .eq(PlanCase::getPlanId, planId)
                 .lt(PlanCase::getId, id)
-                .orderByAsc(PlanCase::getCaseId)
+                .orderByAsc(PlanCase::getOriginalId)
         );
     }
 
-    default List<PlanCase> selectListByGtId(String planId, String id) {
+    default List<PlanCase> selectListByGtId(String planId, Long id) {
         return selectList(new LambdaQueryWrapperX<PlanCase>()
                 .eq(PlanCase::getPlanId, planId)
                 .gt(PlanCase::getId, id)
-                .orderByAsc(PlanCase::getCaseId)
+                .orderByAsc(PlanCase::getOriginalId)
         );
     }
 
     default List<PlanCase> selectList(String planId, TestStatus result) {
         return selectList(new LambdaQueryWrapperX<PlanCase>()
                 .eq(PlanCase::getPlanId, planId)
-                .eq(PlanCase::getExecuteResult, result)
+                .eq(PlanCase::getResult, result)
         );
     }
 
+    default PlanCase selectOne(String planId) {
+        return selectOne(new LambdaQueryWrapperX<PlanCase>()
+                .eq(PlanCase::getPlanId, planId)
+                .orderByAsc(PlanCase::getId)
+                .last("limit 1")
+        );
+    }
+
+    @Delete("""
+            <script>
+            delete from qc_quality_test_plan_case where id in
+            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=", ">
+              #{id}
+            </foreach>
+            </script>
+            """)
+    void removeByIds(@Param("ids") List<Long> ids);
 
 }

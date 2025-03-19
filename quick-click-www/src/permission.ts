@@ -6,6 +6,10 @@ import { usePageLoading } from '@/hooks/web/usePageLoading'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { hasToken } from '@/utils/auth'
+import { useAppStore } from '@/store/modules/app'
+import { getConfig } from '@/api/login'
+
+const appStore = useAppStore()
 
 const nprogress = useNProgress()
 
@@ -17,6 +21,11 @@ const whiteList = ['/login', '/register']
 router.beforeEach(async (to, from, next) => {
   nprogress.start()
   loader.loadStart()
+  if (!appStore.aesKey) {
+    const data = await getConfig()
+    await appStore.setAppConfig(data)
+  }
+
   if (hasToken()) {
     const path = to.path.toString()
     if (path.includes('404')) {

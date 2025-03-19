@@ -23,56 +23,57 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.qualitycenter.testcase;
+package io.github.xiaomisum.quickclick.service.project;
 
-import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.TestcaseMapper;
-import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.TestcaseNodeMapper;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
+import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
+import io.github.xiaomisum.quickclick.dal.mapper.project.NodeMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class NodeServiceImpl implements NodeService {
-
+    
     @Resource
-    private TestcaseMapper testcaseMapper;
-    @Resource
-    private TestcaseNodeMapper mapper;
+    private NodeMapper mapper;
 
     @Override
-    public TestcaseNode get(Long id) {
+    public ProjectNode get(String id) {
         return mapper.selectById(id);
     }
 
     @Override
-    public List<TestcaseNode> getList(String projectId) {
+    public List<ProjectNode> getList(String projectId) {
         return mapper.selectList(projectId);
     }
 
     @Override
-    public void add(TestcaseNode node) {
+    public void add(ProjectNode node) {
         node.setPath("/" + node.getName());
-        if (node.getParentId().length() > 10) {
+        if (StrUtil.isNotBlank(node.getParentId())) {
             node.setPath(mapper.selectById(node.getParentId()).getPath() + node.getPath());
         }
         mapper.insert(node);
     }
 
     @Override
-    public void update(TestcaseNode node) {
+    public void update(ProjectNode node) {
         node.setPath("/" + node.getName());
-        if (node.getParentId().length() > 10) {
+        if (StrUtil.isNotBlank(node.getParentId())) {
             node.setPath(mapper.selectById(node.getParentId()).getPath() + node.getPath());
         }
         mapper.updateById(node);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void remove(Long id) {
-        mapper.deleteById(id);
-        testcaseMapper.updateNodeIdByNodeId(id);
+    public void remove(List<String> ids) {
+        List<String> canRemoveIds = ids.stream()
+                .filter(parentId -> CollectionUtil.isEmpty(mapper.selectChildren(parentId)))
+                .toList();
+        // todo 验证是否有用例
+        mapper.deleteByIds(canRemoveIds);
     }
 }

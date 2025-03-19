@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter;
+package io.github.xiaomisum.quickclick.dal.dataobject.quality;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
@@ -34,7 +34,7 @@ import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "qc_test_plan", autoResultMap = true)
+@TableName(value = "qc_quality_test_plan", autoResultMap = true)
 @Data
 public class Plan extends BaseDO<String> {
 

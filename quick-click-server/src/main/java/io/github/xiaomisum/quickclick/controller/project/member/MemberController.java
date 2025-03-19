@@ -23,12 +23,86 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.project.node;
+package io.github.xiaomisum.quickclick.controller.project.member;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.github.xiaomisum.quickclick.controller.project.member.vo.MemberAddReqVO;
+import io.github.xiaomisum.quickclick.controller.project.member.vo.MemberPageReqVO;
+import io.github.xiaomisum.quickclick.controller.project.member.vo.MemberPageRespVO;
+import io.github.xiaomisum.quickclick.controller.project.member.vo.MemberUpdateReqVO;
+import io.github.xiaomisum.quickclick.convert.project.MemberConvert;
+import io.github.xiaomisum.quickclick.service.project.ProjectMemberService;
+import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.*;
+import xyz.migoo.framework.common.pojo.PageResult;
+import xyz.migoo.framework.common.pojo.Result;
+import xyz.migoo.framework.common.pojo.SimpleData;
 
+import java.util.List;
+
+/**
+ * 项目成员
+ */
 @RestController
-@RequestMapping("/project/node")
-public class NodeController {
+@RequestMapping("/project/member")
+public class MemberController {
+
+    @Resource
+    private ProjectMemberService service;
+
+    /**
+     * 成员列表
+     */
+    @GetMapping
+    public Result<PageResult<MemberPageRespVO>> getPage(MemberPageReqVO req) {
+        return Result.getSuccessful(service.getPage(req));
+    }
+
+    /**
+     * 新增项目成员
+     *
+     * @param data 项目成员信息
+     * @return 处理结果
+     */
+    @PostMapping
+    public Result<?> add(@RequestBody MemberAddReqVO data) {
+        service.add(MemberConvert.INSTANCE.convert(data));
+        return Result.getSuccessful();
+    }
+
+    /**
+     * 更新项目成员
+     *
+     * @param data 项目成员信息
+     * @return 处理结果
+     */
+    @PutMapping
+    public Result<?> add(@RequestBody MemberUpdateReqVO data) {
+        service.update(MemberConvert.INSTANCE.convert(data));
+        return Result.getSuccessful();
+    }
+
+    /**
+     * 删除项目成员
+     *
+     * @param ids 待删除的数据编号
+     * @return 处理结果
+     */
+    @DeleteMapping
+    public Result<?> remove(@RequestParam("ids") List<String> ids) {
+        service.remove(ids);
+        return Result.getSuccessful();
+    }
+
+    /**
+     * 获取项目成员下拉
+     *
+     * @param projectId 项目编号
+     * @return 项目成员下拉
+     */
+    @GetMapping("simple")
+    public Result<List<SimpleData>> getSimpleList(@RequestParam String projectId) {
+        List<MemberPageRespVO> members = service.getList(projectId);
+        return Result.getSuccessful(MemberConvert.INSTANCE.convert(members));
+    }
+
 }

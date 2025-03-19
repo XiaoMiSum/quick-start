@@ -42,8 +42,8 @@ migoo:
     api-prefix: /${spring.application.name}
   security:
     token:
-      secret: aabfb634c6e8300e2062a74850c4232a
-    password-secret: 17c553e34228909b1f8cef6d1de0b53d
+      secret: 75cc36a82345f49075293bcd8d3e547a
+    password-secret: a72d2eb27a174306a8deca837bc81876
     logout-url: /${spring.application.name}/logout
     permit-all-urls:
       - /${spring.application.name}/login

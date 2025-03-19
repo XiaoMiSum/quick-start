@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.management.project.vo;
+package io.github.xiaomisum.quickclick.controller.project.management.vo;
 
 import lombok.Getter;
 import lombok.Setter;

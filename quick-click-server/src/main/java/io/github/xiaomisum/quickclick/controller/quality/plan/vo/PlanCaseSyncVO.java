@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -39,8 +39,8 @@ public class PlanCaseSyncVO {
     private Long Id;
 
     @NotEmpty(message = "关联用例原始编号不能为空")
-    private Long caseId;
+    private String originalId;
 
     @NotEmpty(message = "测试计划编号不能为空")
-    private Long planId;
+    private String planId;
 }

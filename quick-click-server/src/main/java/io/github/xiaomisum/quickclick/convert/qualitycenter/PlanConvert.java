@@ -23,13 +23,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.convert.track;
+package io.github.xiaomisum.quickclick.convert.qualitycenter;
 
-import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.PlanAddReqVO;
-import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.PlanPageRespVO;
-import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.PlanRespVO;
-import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.PlanUpdateReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter.Plan;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanAddReqVO;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanPageRespVO;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanRespVO;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanUpdateReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;

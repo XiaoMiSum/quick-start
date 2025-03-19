@@ -23,10 +23,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.track.testcase;
+package io.github.xiaomisum.quickclick.service.qualitycenter.testcase;
 
-import io.github.xiaomisum.quickclick.controller.track.testcase.vo.testcase.TestcaseQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.Testcase;
+import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import xyz.migoo.framework.common.pojo.PageResult;
 
 import java.util.List;
@@ -51,6 +51,7 @@ public interface TestcaseService {
 
     void remove(List<String> ids);
 
-    void recover(List<String> ids);
+    void recover(List<String> ids, String projectId);
 
+    void removeTrash(List<String> ids, String projectId);
 }

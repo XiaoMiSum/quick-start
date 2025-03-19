@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.review.vo;
+package io.github.xiaomisum.quickclick.controller.quality.review.vo;
 
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
@@ -31,7 +31,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 
@@ -39,15 +39,15 @@ import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_D
 @Data
 public class ReviewPageRespVO extends ReviewBaseVO {
 
-    private Long Id;
+    private String Id;
 
     private Statistics statistics;
 
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
-    private Date actualStartTime;
+    private LocalDateTime actualStartTime;
 
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
-    private Date actualEndTime;
+    private LocalDateTime actualEndTime;
 
     private TestStatus status;
 }

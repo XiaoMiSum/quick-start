@@ -23,19 +23,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.convert.track;
+package io.github.xiaomisum.quickclick.convert.qualitycenter;
 
 import com.google.common.collect.Lists;
-import io.github.xiaomisum.quickclick.controller.qualitycenter.review.vo.*;
-import io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter.Review;
-import io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter.ReviewCase;
-import io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter.Testcase;
+import io.github.xiaomisum.quickclick.controller.quality.review.vo.*;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Review;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
+import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.SimpleData;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -57,10 +59,10 @@ public interface ReviewConvert {
                 .setActualStartTime(bean.getActualStartTime())
                 .setProjectId(bean.getProjectId())
                 .setSpeaker(bean.getSpeaker())
-                .setName(bean.getName())
+                .setTitle(bean.getTitle())
                 .setExpectedStartTime(bean.getExpectedStartTime())
                 .setExpectedEndTime(bean.getExpectedEndTime())
-                .setReviewers(bean.getReviewers());
+                .setReviewer(bean.getReviewer());
     }
 
     default List<ReviewPageRespVO> convert1(List<Review> beans) {
@@ -69,25 +71,8 @@ public interface ReviewConvert {
         return result;
     }
 
-    default ReviewCasePageRespVO convert2(Testcase bean) {
-        return (ReviewCasePageRespVO) new ReviewCasePageRespVO()
-                .setReviewed(bean.getReviewed())
-                .setCaseId(bean.getId())
-                .setName(bean.getName())
-                .setMaintainer(bean.getMaintainer())
-                .setTags(bean.getTags())
-                .setLevel(bean.getLevel())
-                .setNodeId(bean.getNodeId())
-                .setProjectId(bean.getProjectId());
-    }
 
     ReviewCaseRespVO convert(ReviewCase bean);
-
-    default List<ReviewCasePageRespVO> convert2(List<Testcase> beans) {
-        List<ReviewCasePageRespVO> result = Lists.newArrayList();
-        beans.forEach(item -> result.add(convert2(item)));
-        return result;
-    }
 
     PageResult<ReviewPageRespVO> convert(PageResult<Review> beans);
 
@@ -99,7 +84,14 @@ public interface ReviewConvert {
 
     default List<SimpleData> convert3(List<Review> list) {
         List<SimpleData> result = Lists.newArrayList();
-        list.forEach(item -> result.add(new SimpleData(item.getId(), item.getName(), false)));
+        list.forEach(item -> result.add(new SimpleData(item.getId(), item.getTitle(), false)));
         return result;
+    }
+
+    default Testcase convert(@Valid ReviewCaseExecuteVO execute) {
+        return (Testcase) new Testcase()
+                .setLastReviewResult(execute.getResult())
+                .setLastReviewTime(LocalDateTime.now())
+                .setId(execute.getOriginalId());
     }
 }

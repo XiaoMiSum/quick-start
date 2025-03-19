@@ -25,40 +25,19 @@
 
 package io.github.xiaomisum.quickclick.dal.dataobject.project;
 
-
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import io.github.xiaomisum.quickclick.farmework.mybatis.Id;
-import io.github.xiaomisum.quickclick.model.dto.Link;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.List;
+import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "project", autoResultMap = true)
+@TableName(value = "qc_project", autoResultMap = true)
 @Data
-public class Project extends Id {
+public class Project extends BaseDO<String> {
 
     private String name;
 
     private Integer status;
-
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> productManagers;
-
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> developers;
-
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> testers;
-
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<Link> links;
-
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> versions;
 
     private String memo;
 }

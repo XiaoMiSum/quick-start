@@ -34,10 +34,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SimpleResp {
 
-    private String id;
+    private Long id;
 
     private String name;
 
-    private String parentId;
+    private Long parentId;
 
 }

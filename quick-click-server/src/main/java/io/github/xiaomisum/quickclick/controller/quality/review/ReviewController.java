@@ -23,22 +23,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.review;
+package io.github.xiaomisum.quickclick.controller.quality.review;
 
-import io.github.xiaomisum.quickclick.controller.qualitycenter.review.vo.*;
-import io.github.xiaomisum.quickclick.controller.qualitycenter.testcase.vo.testcase.TestcaseQueryReqVO;
+import cn.hutool.core.util.StrUtil;
+import io.github.xiaomisum.quickclick.controller.quality.review.vo.*;
+import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.ReviewConvert;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.TestcaseConvert;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
-import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
+import io.github.xiaomisum.quickclick.service.project.NodeService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.review.ReviewCaseService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.review.ReviewService;
-import io.github.xiaomisum.quickclick.service.qualitycenter.testcase.NodeService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.testcase.TestcaseService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import xyz.migoo.framework.common.exception.ErrorCode;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
 import xyz.migoo.framework.common.pojo.SimpleData;
@@ -50,95 +51,159 @@ import java.util.Objects;
 
 import static io.github.xiaomisum.quickclick.enums.TestStatus.Prepare;
 
+/**
+ * 测试评审
+ */
 @RestController
-@RequestMapping("/track/review")
+@RequestMapping("/quality-center/review")
 public class ReviewController {
 
     @Resource
     private ReviewService service;
-
     @Resource
-    private ReviewCaseService caseService;
-
+    private ReviewCaseService reviewCaseService;
     @Resource
     private TestcaseService testcaseService;
     @Resource
     private NodeService nodeService;
 
+    /**
+     * 评审列表
+     *
+     * @param req 查询条件
+     * @return 评审列表
+     */
     @GetMapping
     public Result<?> getPage(ReviewQueryReqVO req) {
         // 获得测试用例分页列表
         PageResult<ReviewPageRespVO> result = ReviewConvert.INSTANCE.convert(service.getPage(req));
-        result.getList().forEach(item -> item.setStatistics(caseService.statistics(item.getId())));
+        result.getList().forEach(item -> item.setStatistics(reviewCaseService.statistics(item.getId())));
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 评审明细
+     *
+     * @param reviewId 评审编号
+     * @return 评审明细
+     */
     @GetMapping("/{reviewId}")
-    public Result<?> get(@PathVariable Long reviewId) {
+    public Result<?> get(@PathVariable String reviewId) {
         ReviewRespVO result = ReviewConvert.INSTANCE.convert(service.get(reviewId));
         if (Objects.nonNull(result)) {
-            result.setStatistics(caseService.statistics(result.getId()));
+            result.setStatistics(reviewCaseService.statistics(result.getId()));
         }
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 新增评审
+     *
+     * @param data 评审信息
+     * @return 处理结果
+     */
     @PostMapping
     public Result<?> add(@RequestBody @Valid ReviewAddReqVO data) {
         return Result.getSuccessful(service.add(ReviewConvert.INSTANCE.convert(data)));
     }
 
+    /**
+     * 更新评审
+     *
+     * @param data 评审信息
+     * @return 处理结果
+     */
     @PutMapping
     public Result<?> update(@RequestBody @Valid ReviewUpdateReqVO data) {
         service.update(ReviewConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
     }
 
+    /**
+     * 删除评审
+     *
+     * @param id 评审编号
+     * @return 处理结果
+     */
     @DeleteMapping("/{id}")
-    public Result<?> remove(@PathVariable Long id) {
+    public Result<?> remove(@PathVariable String id) {
         service.remove(id);
         return Result.getSuccessful();
     }
 
+    /**
+     * 评审明细
+     *
+     * @param req 查询条件
+     * @return 用例明细
+     */
     @GetMapping("/case")
     public Result<?> getCasePage(ReviewCaseQueryReqVO req) {
-        PageResult<ReviewCasePageRespVO> result = ReviewConvert.INSTANCE.convert1(caseService.getPage(req));
+        PageResult<ReviewCasePageRespVO> result = ReviewConvert.INSTANCE.convert1(reviewCaseService.getPage(req));
         result.getList().forEach(item -> {
-            if (item.getNodeId() > 0) {
+            if (StrUtil.isNotBlank(item.getNodeId())) {
                 item.setPath(nodeService.get(item.getNodeId()).getPath());
             }
         });
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 同步用例
+     * <p>
+     * 将评审中的用例副本更新为测试用例最新版本
+     *
+     * @param req 请求参数
+     * @return 处理结果
+     */
     @PostMapping("/case/sync")
     public Result<?> syncReviewCase(@RequestBody @Valid ReviewCaseSyncVO req) {
-        TestcaseDTO testcase = TestcaseConvert.INSTANCE.convert(testcaseService.get(req.getCaseId()));
+        TestcaseDTO testcase = TestcaseConvert.INSTANCE.convert(testcaseService.get(req.getOriginalId()));
+        if (Objects.isNull(testcase)) {
+            return Result.getError(new ErrorCode(-1, "原始用例不存在"));
+        }
         ReviewCase reviewCase = ReviewConvert.INSTANCE.convert(testcase);
         reviewCase.setReviewId(req.getReviewId()).setId(req.getId());
-        caseService.update(reviewCase);
+        reviewCaseService.update(reviewCase);
         return Result.getSuccessful(reviewCase);
     }
 
-    @GetMapping("/case/execute")
-    public Result<?> getReviewCase(Long id) {
-        ReviewCaseRespVO result = ReviewConvert.INSTANCE.convert(caseService.get(id));
+    /**
+     * 获取评审用例信息
+     *
+     * @param id 评审用例编号
+     * @return 评审用例信息
+     */
+    @GetMapping("/case/{id}")
+    public Result<?> getReviewCase(@PathVariable String id) {
+        ReviewCaseRespVO result = ReviewConvert.INSTANCE.convert(reviewCaseService.get(id));
         if (Objects.nonNull(result)) {
-            if (result.getNodeId() > 10) {
+            if (StrUtil.isNotBlank(result.getNodeId())) {
                 result.setPath(nodeService.get(result.getNodeId()).getPath());
             }
         }
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 评审用例
+     *
+     * @param execute 评审用例信息
+     * @return 处理结果
+     */
     @PostMapping("/case/execute")
     public Result<?> reviewCase(@CurrentUser LoginUser user,
                                 @RequestBody @Valid ReviewCaseExecuteVO execute) {
-        execute.setReviewer(user.getName());
+        execute.setReviewer(user.getId());
         // 设置实际开始时间
-        service.setStartTime(execute.getReviewId());
-        caseService.reviewed(execute);
-        testcaseService.update((Testcase) new Testcase().setReviewed(execute.getResult()).setId(execute.getCaseId()));
-        List<ReviewCase> prepares = caseService.getList(execute.getReviewId(), Prepare);
+        List<ReviewCase> total = reviewCaseService.getList(execute.getReviewId());
+        List<ReviewCase> notStart = reviewCaseService.getList(execute.getReviewId(), Prepare);
+        if (total.size() == notStart.size()) {
+            service.setStartTime(execute.getReviewId());
+        }
+        reviewCaseService.reviewed(execute);
+        testcaseService.update(ReviewConvert.INSTANCE.convert(execute));
+        List<ReviewCase> prepares = reviewCaseService.getList(execute.getReviewId(), Prepare);
         // 设置实际结束时间
         if (prepares.isEmpty()) {
             service.setEndTime(execute.getReviewId());
@@ -146,67 +211,92 @@ public class ReviewController {
         return Result.getSuccessful();
     }
 
+    /**
+     * 获取评审明细首个用例
+     *
+     * @param reviewId 评审编号
+     * @return 用例明细
+     */
     @GetMapping("/case/first")
-    public Result<?> getReviewCaseStart(Long reviewId) {
-        List<ReviewCase> results = caseService.getList(reviewId);
-        if (results.isEmpty()) {
-            return Result.getSuccessful(null);
+    public Result<?> getReviewCaseStart(@RequestParam String reviewId) {
+        ReviewCase result = reviewCaseService.getFirst(reviewId);
+        if (Objects.isNull(result)) {
+            return Result.getSuccessful();
         }
-        return Result.getSuccessful(results.get(0).getId());
+        return Result.getSuccessful(result.getId());
     }
 
+    /**
+     * 上/下一条用例
+     *
+     * @param reviewId 评审编号
+     * @param id       关联用例数据编号
+     * @param opt      操作
+     * @return 用例明细
+     */
     @GetMapping("/case/{opt}")
-    public Result<?> getReviewCase(Long reviewId, Long id, @PathVariable String opt) {
-        List<ReviewCase> results = caseService.getListGtId(opt, reviewId, id);
+    public Result<?> getReviewCase(@RequestParam String reviewId, @RequestParam Long id, @PathVariable String opt) {
+        List<ReviewCase> results = reviewCaseService.getListGtId(opt, reviewId, id);
         if (results.isEmpty()) {
             return Result.getSuccessful(null);
         }
-        ReviewCaseRespVO result = ReviewConvert.INSTANCE.convert(results.get(0));
-        if (result.getNodeId() > 0) {
+        ReviewCaseRespVO result = ReviewConvert.INSTANCE.convert(results.getFirst());
+        if (StrUtil.isNotBlank(result.getNodeId())) {
             result.setPath(nodeService.get(result.getNodeId()).getPath());
         }
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 获取未关联到当前评审的用例列表
+     *
+     * @param req 查询参数
+     * @return 未关联到当前评审的用例列表
+     */
     @GetMapping("/case/unassociated")
     public Result<?> getUnAssociatedCasePage(ReviewCaseQueryReqVO req) {
-        List<Long> ids = caseService.getList(req.getReviewId()).stream().map(ReviewCase::getCaseId).toList();
+        List<String> ids = reviewCaseService.getList(req.getReviewId()).stream().map(ReviewCase::getOriginalId).toList();
         TestcaseQueryReqVO caseQuery = new TestcaseQueryReqVO(req.getPageNo(), req.getPageSize())
-                .setName(req.getCaseName())
+                .setTitle(req.getTitle())
                 .setNodeId(req.getNodeId());
         PageResult<ReviewCasePageRespVO> result = ReviewConvert.INSTANCE.convert2(testcaseService.getPage(caseQuery, ids));
         result.getList().forEach(item -> {
-            if (item.getNodeId() > 10) {
+            if (StrUtil.isNotBlank(item.getNodeId())) {
                 item.setPath(nodeService.get(item.getNodeId()).getPath());
             }
         });
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 关联用例到
+     *
+     * @param data 用例列表
+     * @return 处理结果
+     */
     @PostMapping("/case")
     public Result<?> addReviewCase(@RequestBody @Valid ReviewCaseAddReqVO data) {
         List<TestcaseDTO> testcases = TestcaseConvert.INSTANCE.convert(testcaseService.getList(data.getTestcases()));
         List<ReviewCase> list = ReviewConvert.INSTANCE.convert(testcases);
         list.forEach(item -> item.setReviewId(data.getReviewId()));
-        caseService.add(list);
+        reviewCaseService.add(list);
         return Result.getSuccessful();
     }
 
-    @DeleteMapping("/case/{id}")
-    public Result<?> unassociatedCase(@PathVariable Long id) {
-        caseService.remove(id);
-        return Result.getSuccessful();
-    }
-
+    /**
+     * 取消关联用例
+     *
+     * @param ids 数据编号
+     * @return 处理结果
+     */
     @DeleteMapping("/case")
     public Result<?> removeCase(@RequestParam("ids") List<Long> ids) {
-        caseService.remove(ids);
+        reviewCaseService.remove(ids);
         return Result.getSuccessful();
     }
 
     @GetMapping("/simple")
-    public Result<List<SimpleData>> getSimple(@RequestParam("projectId") Long projectId) {
-
+    public Result<List<SimpleData>> getSimple(@RequestParam("projectId") String projectId) {
         return Result.getSuccessful(ReviewConvert.INSTANCE.convert3(service.getList(projectId)));
     }
 }

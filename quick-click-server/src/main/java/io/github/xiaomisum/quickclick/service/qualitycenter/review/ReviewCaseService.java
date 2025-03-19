@@ -23,11 +23,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.track.review;
+package io.github.xiaomisum.quickclick.service.qualitycenter.review;
 
-import io.github.xiaomisum.quickclick.controller.track.review.vo.ReviewCaseExecuteVO;
-import io.github.xiaomisum.quickclick.controller.track.review.vo.ReviewCaseQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.ReviewCase;
+import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseExecuteVO;
+import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -42,21 +42,21 @@ public interface ReviewCaseService {
 
     List<ReviewCase> getList(String reviewId);
 
+    ReviewCase getFirst(String reviewId);
+
     List<ReviewCase> getList(String reviewId, TestStatus result);
 
-    List<ReviewCase> getListNotInCaseIds(String reviewId, List<String> notInCaseIds);
-
-    List<ReviewCase> getListGtId(String opt, String reviewId, String id);
+    List<ReviewCase> getListGtId(String opt, String reviewId, Long id);
 
     void add(List<ReviewCase> data);
 
     void update(ReviewCase reviewCase);
 
-    void remove(String id);
-
-    void remove(List<String> ids);
+    void remove(List<Long> ids);
 
     void reviewed(ReviewCaseExecuteVO execute);
 
     Statistics statistics(String reviewId);
+
+    List<ReviewCase> getListNotInOriginalIds(String reviewId, List<String> caseIds);
 }

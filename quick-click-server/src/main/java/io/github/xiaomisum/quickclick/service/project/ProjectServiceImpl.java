@@ -25,7 +25,7 @@
 
 package io.github.xiaomisum.quickclick.service.project;
 
-import io.github.xiaomisum.quickclick.controller.project.vo.ProjectQueryReqVO;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
 import io.github.xiaomisum.quickclick.dal.mapper.project.ProjectMapper;
 import jakarta.annotation.Resource;
@@ -46,8 +46,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getList() {
-        return mapper.selectList();
+    public List<Project> getList(List<String> ids) {
+        return mapper.selectList(ids);
     }
 
     @Override
@@ -66,13 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void remove(String id) {
-        mapper.deleteById(id);
-    }
-
-    @Override
-    public Project getFirstProject() {
-        List<Project> list = getList();
-        return list.isEmpty() ? null : list.get(0);
+    public void remove(List<String> ids) {
+        mapper.deleteByIds(ids);
     }
 }

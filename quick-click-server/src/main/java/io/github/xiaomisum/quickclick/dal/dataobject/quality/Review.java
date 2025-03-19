@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter;
+package io.github.xiaomisum.quickclick.dal.dataobject.quality;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -37,9 +37,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "tracked_review", autoResultMap = true)
+@TableName(value = "qc_quality_test_review", autoResultMap = true)
 @Data
-public class Review extends BaseDO<Long> {
+public class Review extends BaseDO<String> {
 
     private String projectId;
 

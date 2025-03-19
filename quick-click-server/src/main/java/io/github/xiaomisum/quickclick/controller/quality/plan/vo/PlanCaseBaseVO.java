@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import lombok.Data;
 
@@ -32,17 +32,16 @@ import java.util.List;
 @Data
 public class PlanCaseBaseVO {
 
-    private Long planId;
+    private String planId;
 
-    private Long nodeId;
+    private String nodeId;
 
-    private Long caseId;
+    private String originalId;
 
-    private String name;
+    private String title;
 
-    private String level;
+    private String priority;
 
     private List<String> tags;
 
-    private String maintainer;
 }

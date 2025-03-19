@@ -23,20 +23,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan;
+package io.github.xiaomisum.quickclick.controller.quality.plan;
 
-import io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo.*;
-import io.github.xiaomisum.quickclick.controller.qualitycenter.testcase.vo.testcase.TestcaseQueryReqVO;
+import cn.hutool.core.util.StrUtil;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.*;
+import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.PlanCaseConvert;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.PlanConvert;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.TestcaseConvert;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
-import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
+import io.github.xiaomisum.quickclick.service.project.NodeService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.plan.PlanCaseService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.plan.PlanService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.review.ReviewCaseService;
-import io.github.xiaomisum.quickclick.service.qualitycenter.testcase.NodeService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.testcase.TestcaseService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -51,6 +51,9 @@ import java.util.Objects;
 
 import static io.github.xiaomisum.quickclick.enums.TestStatus.Prepare;
 
+/**
+ * 测试计划
+ */
 @RestController
 @RequestMapping("/quality-center/plan")
 public class PlanController {
@@ -58,7 +61,7 @@ public class PlanController {
     @Resource
     private PlanService service;
     @Resource
-    private PlanCaseService caseService;
+    private PlanCaseService planCaseService;
     @Resource
     private ReviewCaseService reviewCaseService;
     @Resource
@@ -66,159 +69,246 @@ public class PlanController {
     @Resource
     private NodeService nodeService;
 
+    /**
+     * 计划列表
+     *
+     * @param req 查询条件
+     * @return 计划列表
+     */
     @GetMapping
-    public Result<?> getPage(@RequestHeader("x-project-id") String projectId, PlanQueryReqVO req) {
+    public Result<?> getPage(PlanQueryReqVO req) {
         // 获得测试计划分页列表
         PageResult<PlanPageRespVO> result = PlanConvert.INSTANCE.convert(service.getPage(req));
-        result.getList().forEach(item -> item.setStatistics(caseService.statistics(item.getId())));
+        result.getList().forEach(item -> item.setStatistics(planCaseService.statistics(item.getId())));
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 计划详情
+     *
+     * @param planId 测试计划编号
+     * @return 测试计划详情
+     */
     @GetMapping("/{id}")
-    public Result<?> get(@RequestHeader("x-project-id") String projectId, @PathVariable Long id) {
-        PlanRespVO result = PlanConvert.INSTANCE.convert(service.get(projectId, id));
+    public Result<?> get(@PathVariable String planId) {
+        PlanRespVO result = PlanConvert.INSTANCE.convert(service.get(planId));
         if (Objects.nonNull(result)) {
-            result.setStatistics(caseService.statistics(result.getId()));
+            result.setStatistics(planCaseService.statistics(result.getId()));
         }
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 新增计划
+     *
+     * @param data 计划数据
+     * @return 处理结果
+     */
     @PostMapping
     public Result<?> add(@RequestBody @Valid PlanAddReqVO data) {
         return Result.getSuccessful(service.add(PlanConvert.INSTANCE.convert(data)));
     }
 
+    /**
+     * 更新计划
+     *
+     * @param data 计划数据
+     * @return 处理结果
+     */
     @PutMapping
     public Result<?> update(@RequestBody @Valid PlanUpdateReqVO data) {
         service.update(PlanConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
     }
 
+    /**
+     * 删除测试计划
+     *
+     * @param id 计划编号
+     * @return 处理结果
+     */
     @DeleteMapping("/{id}")
-    public Result<?> remove(@PathVariable Long id) {
+    public Result<?> remove(@PathVariable String id) {
         service.remove(id);
         return Result.getSuccessful();
     }
 
+    /**
+     * 获取计划关联用例列表
+     *
+     * @param req 查询条件
+     * @return 测试计划关联用例列表
+     */
     @GetMapping("/case")
     public Result<?> getCasePage(PlanCaseQueryReqVO req) {
-        PageResult<PlanCasePageRespVO> result = PlanCaseConvert.INSTANCE.convert(caseService.getPage(req));
+        PageResult<PlanCasePageRespVO> result = PlanCaseConvert.INSTANCE.convert(planCaseService.getPage(req));
         result.getList().forEach(item -> {
-            if (item.getNodeId() > 0) {
+            if (StrUtil.isNotBlank(item.getNodeId())) {
                 item.setPath(nodeService.get(item.getNodeId()).getPath());
             }
         });
         return Result.getSuccessful(result);
     }
 
+
+    /**
+     * 同步用例
+     * <p>
+     * 将计划中的用例副本更新为测试用例最新版本
+     *
+     * @param req 请求参数
+     * @return 处理结果
+     */
     @PostMapping("/case/sync")
-    public Result<?> syncReviewCase(@RequestHeader("x-project-id") String projectId,
-                                    @RequestBody @Valid PlanCaseSyncVO req) {
-        TestcaseDTO testcase = TestcaseConvert.INSTANCE.convert(testcaseService.get(req.getCaseId()));
+    public Result<?> syncReviewCase(@RequestBody @Valid PlanCaseSyncVO req) {
+        TestcaseDTO testcase = TestcaseConvert.INSTANCE.convert(testcaseService.get(req.getOriginalId()));
         PlanCase planCase = PlanCaseConvert.INSTANCE.convert(testcase);
         planCase.setPlanId(req.getPlanId()).setId(req.getId());
-        caseService.update(planCase);
+        planCaseService.update(planCase);
         return Result.getSuccessful(planCase);
     }
 
-    @GetMapping("/case/execute")
-    public Result<?> getPlanCase(Long id) {
-        PlanCaseRespVO result = PlanCaseConvert.INSTANCE.convert(caseService.get(id));
+    /**
+     * 获取执行用例信息
+     *
+     * @param id 执行用例数据编号
+     * @return 执行用例信息
+     */
+    @GetMapping("/case/{id}")
+    public Result<?> getPlanCase(@PathVariable Long id) {
+        PlanCaseRespVO result = PlanCaseConvert.INSTANCE.convert(planCaseService.get(id));
         if (Objects.nonNull(result)) {
-            if (result.getNodeId() > 0) {
+            if (StrUtil.isNotBlank(result.getNodeId())) {
                 result.setPath(nodeService.get(result.getNodeId()).getPath());
             }
         }
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 执行用例
+     *
+     * @param execute 评审用例信息
+     * @return 处理结果
+     */
     @PostMapping("/case/execute")
     public Result<?> reviewCase(@CurrentUser LoginUser user, @RequestBody @Valid PlanCaseExecuteVO execute) {
-        execute.setExecutor(user.getName());
+        execute.setExecutor(user.getId());
         // 设置实际开始时间
-        List<PlanCase> total = caseService.getList(execute.getPlanId());
-        List<PlanCase> notStart = caseService.getList(execute.getPlanId(), Prepare);
+        List<PlanCase> total = planCaseService.getList(execute.getPlanId());
+        List<PlanCase> notStart = planCaseService.getList(execute.getPlanId(), Prepare);
         if (total.size() == notStart.size()) {
             service.setStartTime(execute.getPlanId());
         }
-        caseService.execute(execute);
-        testcaseService.update((Testcase) new Testcase().setReviewed(execute.getResult()).setId(execute.getId()));
-        List<PlanCase> notStart2 = caseService.getList(execute.getPlanId(), Prepare);
+        planCaseService.execute(execute);
+        List<PlanCase> prepares = planCaseService.getList(execute.getPlanId(), Prepare);
         // 设置实际结束时间
-        if (notStart2.isEmpty()) {
+        if (prepares.isEmpty()) {
             service.setEndTime(execute.getPlanId());
         }
         return Result.getSuccessful();
     }
 
+    /**
+     * 获取计划明细首个用例
+     *
+     * @param reviewId 计划编号
+     * @return 用例明细
+     */
     @GetMapping("/case/first")
-    public Result<?> getFirstReviewCase(Long reviewId) {
-        List<PlanCase> results = caseService.getList(reviewId);
-        if (results.isEmpty()) {
+    public Result<?> getFirstReviewCase(@RequestParam String reviewId) {
+        PlanCase results = planCaseService.getFirst(reviewId);
+        if (Objects.isNull(results)) {
             return Result.getSuccessful(null);
         }
-        return Result.getSuccessful(results.get(0).getId());
+        return Result.getSuccessful(results.getId());
     }
 
+    /**
+     * 上/下一条用例
+     *
+     * @param planId 计划编号
+     * @param id     关联用例数据编号
+     * @param opt    操作
+     * @return 用例明细
+     */
     @GetMapping("/case/{opt}")
-    public Result<?> getReviewCase(Long planId, Long id, @PathVariable String opt) {
-        List<PlanCase> results = caseService.getListGtId(opt, planId, id);
+    public Result<?> getReviewCase(@RequestParam String planId, Long id, @PathVariable String opt) {
+        List<PlanCase> results = planCaseService.getListGtId(opt, planId, id);
         if (results.isEmpty()) {
             return Result.getSuccessful(null);
         }
-        PlanCaseRespVO result = PlanCaseConvert.INSTANCE.convert(results.get(0));
-        if (result.getNodeId() > 0) {
+        PlanCaseRespVO result = PlanCaseConvert.INSTANCE.convert(results.getFirst());
+        if (StrUtil.isNotBlank(result.getNodeId())) {
             result.setPath(nodeService.get(result.getNodeId()).getPath());
         }
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 获取未关联到当前计划的用例列表
+     *
+     * @param req 查询参数
+     * @return 未关联到当前计划的用例列表
+     */
     @GetMapping("/case/unassociated")
     public Result<?> getUnAssociatedCasePage(PlanCaseQueryReqVO req) {
-        List<Long> ids = caseService.getList(req.getPlanId()).stream().map(PlanCase::getCaseId).toList();
+        List<String> ids = planCaseService.getList(req.getPlanId()).stream().map(PlanCase::getOriginalId).toList();
         TestcaseQueryReqVO caseQuery = new TestcaseQueryReqVO(req.getPageNo(), req.getPageSize())
-                .setName(req.getCaseName())
+                .setTitle(req.getTitle())
                 .setNodeId(req.getNodeId());
         PageResult<PlanCasePageRespVO> result = PlanCaseConvert.INSTANCE.convert1(testcaseService.getPage(caseQuery, ids));
         result.getList().forEach(item -> {
-            if (item.getNodeId() > 0) {
+            if (StrUtil.isNotBlank(item.getNodeId())) {
                 item.setPath(nodeService.get(item.getNodeId()).getPath());
             }
         });
         return Result.getSuccessful(result);
     }
 
+    /**
+     * 关联用例
+     *
+     * @param data 用例列表
+     * @return 处理结果
+     */
     @PostMapping("/case")
     public Result<?> addPlanCase(@RequestBody @Valid PlanCaseAddReqVO data) {
         List<TestcaseDTO> testcases = TestcaseConvert.INSTANCE.convert(testcaseService.getList(data.getTestcases()));
         List<PlanCase> list = PlanCaseConvert.INSTANCE.convert(testcases);
         list.forEach(item -> item.setPlanId(data.getPlanId()));
-        caseService.add(list);
+        planCaseService.add(list);
         return Result.getSuccessful();
     }
 
+    /**
+     * 从评审中导入关联用例
+     *
+     * @param data 关联数据
+     * @return 处理结果
+     */
     @PostMapping("/imports")
     public Result<?> importPlanCase(@RequestBody @Valid PlanCaseImportReqVO data) {
-        List<Long> caseIds = caseService.getList(data.getPlanId())
-                .stream().map(PlanCase::getCaseId)
+        List<String> caseIds = planCaseService.getList(data.getPlanId())
+                .stream().map(PlanCase::getOriginalId)
                 .toList();
         List<PlanCase> list = PlanCaseConvert.INSTANCE.convert(
-                reviewCaseService.getListNotInCaseIds(data.getReviewId(), caseIds), data.getPlanId()
+                reviewCaseService.getListNotInOriginalIds(data.getReviewId(), caseIds), data.getPlanId()
         );
         list.forEach(item -> item.setPlanId(data.getPlanId()));
-        caseService.add(list);
+        planCaseService.add(list);
         return Result.getSuccessful(list.size());
     }
 
-    @DeleteMapping("/case/{id}")
-    public Result<?> unassociatedCase(@PathVariable Long id) {
-        caseService.remove(id);
-        return Result.getSuccessful();
-    }
-
+    /**
+     * 取消关联用例
+     *
+     * @param ids 数据编号
+     * @return 处理结果
+     */
     @DeleteMapping("/case")
-    public Result<?> removeCase(@RequestParam("ids") List<Long> ids) {
-        caseService.remove(ids);
+    public Result<?> unassociatedCase(@RequestParam("ids") List<Long> ids) {
+        planCaseService.remove(ids);
         return Result.getSuccessful();
     }
 }

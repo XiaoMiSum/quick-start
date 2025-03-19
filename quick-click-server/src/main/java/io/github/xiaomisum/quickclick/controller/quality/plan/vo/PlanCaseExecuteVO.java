@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.CaseStep;
@@ -44,15 +44,15 @@ public class PlanCaseExecuteVO {
     private Long id;
 
     @NotEmpty(message = "关联测试用例原始编号不能为空")
-    private Long caseId;
+    private String originalId;
 
     @NotEmpty(message = "测试计划编号不能为空")
-    private Long planId;
+    private String planId;
 
     @NotNull(message = "测试用例执行结果不能为空")
     private TestStatus result;
 
-    private String executor;
+    private Long executor;
 
     @NotNull(message = "测试用例执行步骤不能为空")
     private List<CaseStep> steps;

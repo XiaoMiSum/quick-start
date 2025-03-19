@@ -23,24 +23,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.track;
+package io.github.xiaomisum.quickclick.dal.mapper.qualitycenter;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import io.github.xiaomisum.quickclick.controller.track.review.vo.ReviewQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.Review;
+import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Review;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
 public interface ReviewMapper extends BaseMapperX<Review> {
 
-    default Review selectOne(String projectId, String reviewId) {
+    default Review selectOne(String projectId, Long reviewId) {
         return selectOne(new LambdaQueryWrapperX<Review>()
                 .eq(Review::getId, reviewId)
                 .eq(Review::getProjectId, projectId)
@@ -50,16 +50,16 @@ public interface ReviewMapper extends BaseMapperX<Review> {
     default PageResult<Review> selectPage(ReviewQueryReqVO req) {
         return selectPage(req, new LambdaQueryWrapperX<Review>()
                 .eq(Review::getProjectId, req.getProjectId())
-                .eqIfPresent(Review::getName, req.getName())
+                .eqIfPresent(Review::getTitle, req.getTitle())
                 .orderByDesc(Review::getId));
     }
 
     default List<Review> selectList(String projectId) {
-        return selectList(new LambdaQueryWrapperX<Review>().eq(Review::getProjectId, projectId));
+        return selectList(new LambdaQueryWrapperX<Review>().eq(Review::getProjectId, projectId).orderByDesc(Review::getId));
     }
 
     default void updateStartTime(String reviewId) {
-        update(new Review().setActualStartTime(new Date()),
+        update(new Review().setActualStartTime(LocalDateTime.now()),
                 new LambdaUpdateWrapper<Review>()
                         .eq(Review::getId, reviewId)
                         .isNull(Review::getActualStartTime));

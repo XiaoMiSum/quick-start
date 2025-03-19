@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

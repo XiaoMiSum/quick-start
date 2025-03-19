@@ -23,12 +23,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.track.testcase;
+package io.github.xiaomisum.quickclick.service.qualitycenter.testcase;
 
-import io.github.xiaomisum.quickclick.controller.track.testcase.vo.testcase.TestcaseQueryReqVO;
-import io.github.xiaomisum.quickclick.convert.track.TestcaseConvert;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.Testcase;
-import io.github.xiaomisum.quickclick.dal.mapper.track.TestcaseMapper;
+import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.TestcaseMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -40,8 +39,6 @@ public class TestcaseServiceImpl implements TestcaseService {
 
     @Resource
     private TestcaseMapper mapper;
-    @Resource
-    private TestcaseRecycleService recycleService;
 
     @Override
     public PageResult<Testcase> getPage(TestcaseQueryReqVO req) {
@@ -86,16 +83,17 @@ public class TestcaseServiceImpl implements TestcaseService {
 
     @Override
     public void remove(List<String> ids) {
-        List<Testcase> lists = mapper.selectBatchIds(ids);
-        if (!lists.isEmpty()) {
-            TestcaseConvert.INSTANCE.convert3(lists).forEach(item -> recycleService.add(item));
-        }
-        mapper.deleteBatchIds(ids);
+        mapper.deleteByIds(ids);
     }
 
     @Override
-    public void recover(List<String> ids) {
-        mapper.recover(ids);
+    public void recover(List<String> ids, String projectId) {
+        mapper.recover(ids, projectId);
+    }
+
+    @Override
+    public void removeTrash(List<String> ids, String projectId) {
+        mapper.clear(ids, projectId);
     }
 
 

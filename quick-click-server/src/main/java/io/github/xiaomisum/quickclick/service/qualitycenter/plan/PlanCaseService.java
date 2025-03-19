@@ -23,11 +23,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.track.plan;
+package io.github.xiaomisum.quickclick.service.qualitycenter.plan;
 
-import io.github.xiaomisum.quickclick.controller.track.plan.vo.PlanCaseExecuteVO;
-import io.github.xiaomisum.quickclick.controller.track.plan.vo.PlanCaseQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.PlanCase;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseExecuteVO;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -38,21 +38,21 @@ public interface PlanCaseService {
 
     PageResult<PlanCase> getPage(PlanCaseQueryReqVO req);
 
-    PlanCase get(String id);
+    PlanCase get(Long id);
 
     List<PlanCase> getList(String planId);
 
+    PlanCase getFirst(String reviewId);
+
     List<PlanCase> getList(String planId, TestStatus result);
 
-    List<PlanCase> getListGtId(String opt, String planId, String id);
+    List<PlanCase> getListGtId(String opt, String planId, Long id);
 
     void add(List<PlanCase> cases);
 
     void update(PlanCase planCase);
 
-    void remove(String id);
-
-    void remove(List<String> ids);
+    void remove(List<Long> ids);
 
     Statistics statistics(String planId);
 

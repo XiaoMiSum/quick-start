@@ -23,10 +23,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.track.plan;
+package io.github.xiaomisum.quickclick.service.qualitycenter.plan;
 
-import io.github.xiaomisum.quickclick.controller.track.plan.vo.PlanQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.Plan;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
 import xyz.migoo.framework.common.pojo.PageResult;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public interface PlanService {
 
     List<Plan> getList(String projectId);
 
-    Plan get(String projectId, String id);
+    Plan get(String planId);
 
     String add(Plan plan);
 

@@ -26,19 +26,19 @@
 package io.github.xiaomisum.quickclick.dal.mapper.project;
 
 import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
+import io.github.xiaomisum.quickclick.dal.dataobject.project.Archive;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
 @Mapper
-public interface NodeMapper extends BaseMapperX<ProjectNode> {
+public interface ArchiveMapper extends BaseMapperX<Archive> {
 
-    default PageResult<ProjectNode> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<ProjectNode>()
-                .likeIfPresent(ProjectNode::getName, req.getName())
-                .orderByDesc(ProjectNode::getSort));
+    default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
+        return selectPage(req, new LambdaQueryWrapperX<Archive>()
+                .likeIfPresent(Archive::getName, req.getName())
+                .orderByDesc(Archive::getId));
     }
 
 }

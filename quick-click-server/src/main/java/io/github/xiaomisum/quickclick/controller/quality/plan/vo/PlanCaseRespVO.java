@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.CaseStep;
@@ -46,6 +46,6 @@ public class PlanCaseRespVO extends PlanCaseBaseVO {
 
     private List<CaseStep> steps;
 
-    private TestStatus executeResult;
+    private TestStatus result;
 
 }

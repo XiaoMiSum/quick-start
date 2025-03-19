@@ -34,23 +34,26 @@ import java.util.List;
 @Data
 public class TestcaseDTO {
 
-    private String caseId;
+    private String originalId;
 
     private String projectId;
 
     private String nodeId;
 
-    private String name;
+    private String title;
 
-    private String level;
+    private String priority;
 
     private String prerequisite;
 
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<TestcaseStep> steps;
+    private List<CaseStep> steps;
 
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> tags;
 
-    private String maintainer;
+    /**
+     * 负责人 user_id
+     */
+    private Long supervisor;
 }

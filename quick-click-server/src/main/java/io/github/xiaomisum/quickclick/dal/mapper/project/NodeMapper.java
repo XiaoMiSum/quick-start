@@ -25,21 +25,26 @@
 
 package io.github.xiaomisum.quickclick.dal.mapper.project;
 
-import io.github.xiaomisum.quickclick.controller.project.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
+import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
 import org.apache.ibatis.annotations.Mapper;
-import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
-@Mapper
-public interface ProjectMapper extends BaseMapperX<Project> {
+import java.util.List;
 
-    default PageResult<Project> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Project>()
-                .likeIfPresent(Project::getName, req.getName())
-                .eqIfPresent(Project::getStatus, req.getStatus())
-                .orderByDesc(Project::getId));
+@Mapper
+public interface NodeMapper extends BaseMapperX<ProjectNode> {
+
+    default List<ProjectNode> selectList(String projectId) {
+        return selectList(new LambdaQueryWrapperX<ProjectNode>()
+                .eq(ProjectNode::getProjectId, projectId)
+                .orderByDesc(ProjectNode::getId, ProjectNode::getSort));
+    }
+
+    default List<ProjectNode> selectChildren(String parentId) {
+        return selectList(new LambdaQueryWrapperX<ProjectNode>()
+                .eq(ProjectNode::getParentId, parentId)
+                .orderByDesc(ProjectNode::getId, ProjectNode::getSort));
     }
 
 }

@@ -23,11 +23,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.convert.qualitycenter;
+package io.github.xiaomisum.quickclick.convert.project;
 
-import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.node.NodeAddReqVO;
-import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.node.NodeRespVO;
-import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.node.NodeUpdateReqVO;
+import io.github.xiaomisum.quickclick.controller.project.node.vo.NodeAddReqVO;
+import io.github.xiaomisum.quickclick.controller.project.node.vo.NodeRespVO;
+import io.github.xiaomisum.quickclick.controller.project.node.vo.NodeUpdateReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
 import io.github.xiaomisum.quickclick.model.dto.SimpleResp;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -36,19 +37,19 @@ import xyz.migoo.framework.common.pojo.PageResult;
 import java.util.List;
 
 @Mapper
-public interface TestcaseNodeConvert {
+public interface NodeConvert {
 
-    TestcaseNodeConvert INSTANCE = Mappers.getMapper(TestcaseNodeConvert.class);
+    NodeConvert INSTANCE = Mappers.getMapper(NodeConvert.class);
 
-    NodeRespVO convert(TestcaseNode bean);
+    NodeRespVO convert(ProjectNode bean);
 
-    TestcaseNode convert(NodeAddReqVO bean);
+    ProjectNode convert(NodeAddReqVO bean);
 
-    TestcaseNode convert(NodeUpdateReqVO bean);
+    ProjectNode convert(NodeUpdateReqVO bean);
 
-    PageResult<NodeRespVO> convert(PageResult<TestcaseNode> beans);
+    PageResult<NodeRespVO> convert(PageResult<ProjectNode> beans);
 
-    List<NodeRespVO> convert(List<TestcaseNode> beans);
+    List<NodeRespVO> convert(List<ProjectNode> beans);
 
-    List<SimpleResp> convert1(List<TestcaseNode> beans);
+    List<SimpleResp> convert1(List<ProjectNode> beans);
 }

@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
@@ -39,7 +39,7 @@ import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_D
 @Data
 public class PlanPageRespVO extends PlanBaseVO {
 
-    private Long Id;
+    private String id;
 
     private Statistics statistics;
 

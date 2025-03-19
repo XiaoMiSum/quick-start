@@ -25,20 +25,17 @@
 
 package io.github.xiaomisum.quickclick.convert.project;
 
-import io.github.xiaomisum.quickclick.controller.project.vo.ProjectAddReqVO;
-import io.github.xiaomisum.quickclick.controller.project.vo.ProjectRespVO;
-import io.github.xiaomisum.quickclick.controller.project.vo.ProjectUpdateReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
 import com.google.common.collect.Lists;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectAddReqVO;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectRespVO;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectUpdateReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.SimpleData;
 
 import java.util.List;
-import java.util.Objects;
-
-import static xyz.migoo.framework.common.enums.CommonStatusEnum.ENABLE;
 
 @Mapper
 public interface ProjectConvert {
@@ -53,15 +50,9 @@ public interface ProjectConvert {
 
     PageResult<ProjectRespVO> convert(PageResult<Project> beans);
 
-    default List<SimpleData<String>> convert(List<Project> projects) {
-        List<SimpleData<String>> result = Lists.newArrayList();
-
-        projects.forEach(item -> result.add(convert1(item)));
+    default List<SimpleData> convert(List<Project> projects) {
+        List<SimpleData> result = Lists.newArrayList();
+        projects.forEach(item -> result.add(new SimpleData(item.getId(), item.getName())));
         return result;
-    }
-
-    default SimpleData<String> convert1(Project project) {
-        return new SimpleData<>(project.getId(), project.getName(),
-                !Objects.equals(project.getStatus(), ENABLE.getStatus()));
     }
 }

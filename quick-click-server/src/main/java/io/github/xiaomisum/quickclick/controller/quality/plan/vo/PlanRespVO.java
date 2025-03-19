@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
@@ -34,7 +34,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class PlanRespVO extends PlanBaseVO {
 
-    private Long Id;
+    private String Id;
 
     private String memo;
 

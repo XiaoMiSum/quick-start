@@ -82,6 +82,7 @@ import LoginFormTitle from './LoginFormTitle.vue'
 
 import { useIcon } from '@/hooks/web/useIcon'
 
+import { encrypt_aes } from '@/utils/jsencrypt'
 import * as authUtil from '@/utils/auth'
 import * as LoginApi from '@/api/login'
 import { LoginStateEnum, useFormValid, useLoginState } from './useLogin'
@@ -121,7 +122,9 @@ const handleLogin = async () => {
     if (!valid) {
       return
     }
-    const data = await LoginApi.login(loginData.loginForm)
+    const form = { ...loginData.loginForm }
+    form.password = encrypt_aes(loginData.loginForm.password)
+    const data = await LoginApi.login(form)
     token.value = data.token
     if (data.requiredBindAuthenticator) {
       loginLoading.value = false

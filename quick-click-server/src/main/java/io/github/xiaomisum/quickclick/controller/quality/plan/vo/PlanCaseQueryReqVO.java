@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,11 +34,11 @@ import xyz.migoo.framework.common.util.json.JsonUtils;
 @Setter
 public class PlanCaseQueryReqVO extends PageParam {
 
-    private Long planId;
+    private String planId;
 
-    private Long nodeId;
+    private String nodeId;
 
-    private String caseName;
+    private String title;
 
     @Override
     public String toString() {

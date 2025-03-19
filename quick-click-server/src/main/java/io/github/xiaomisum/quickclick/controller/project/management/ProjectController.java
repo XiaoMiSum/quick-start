@@ -23,21 +23,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.management.project;
+package io.github.xiaomisum.quickclick.controller.project.management;
 
-import io.github.xiaomisum.quickclick.controller.management.project.vo.ProjectAddReqVO;
-import io.github.xiaomisum.quickclick.controller.management.project.vo.ProjectQueryReqVO;
-import io.github.xiaomisum.quickclick.controller.management.project.vo.ProjectUpdateReqVO;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectAddReqVO;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectUpdateReqVO;
 import io.github.xiaomisum.quickclick.convert.project.ProjectConvert;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
 import io.github.xiaomisum.quickclick.service.project.ProjectService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.Result;
-import xyz.migoo.framework.common.pojo.SimpleData;
 
 import java.util.List;
 
+/**
+ * 项目管理
+ */
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
@@ -45,38 +46,61 @@ public class ProjectController {
     @Resource
     private ProjectService service;
 
+    /**
+     * 项目列表
+     *
+     * @param req 查询条件
+     * @return 项目列表
+     */
     @GetMapping
     public Result<?> getPage(ProjectQueryReqVO req) {
         return Result.getSuccessful(ProjectConvert.INSTANCE.convert(service.getPage(req)));
     }
 
+    /**
+     * 项目信息
+     *
+     * @param id 项目编号
+     * @return 项目信息
+     */
     @GetMapping("/{id}")
-    public Result<?> get(@PathVariable Long id) {
+    public Result<?> get(@PathVariable String id) {
         return Result.getSuccessful(ProjectConvert.INSTANCE.convert(service.get(id)));
     }
 
+    /**
+     * 新增项目
+     *
+     * @param data 项目信息
+     * @return 处理结果
+     */
     @PostMapping
     public Result<?> add(@RequestBody ProjectAddReqVO data) {
         service.add(ProjectConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
     }
 
+    /**
+     * 更新项目
+     *
+     * @param data 项目信息
+     * @return 处理结果
+     */
     @PutMapping
     public Result<?> update(@RequestBody ProjectUpdateReqVO data) {
         service.update(ProjectConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
     }
 
-    @DeleteMapping("/{id}")
-    public Result<?> remove(@PathVariable Long id) {
-        service.remove(id);
+    /**
+     * 删除项目
+     *
+     * @param ids 待删除的项目
+     * @return 处理结果
+     */
+    @DeleteMapping
+    public Result<?> remove(@RequestParam List<String> ids) {
+        service.remove(ids);
         return Result.getSuccessful();
-    }
-
-    @GetMapping("/simple")
-    public Result<List<SimpleData>> getSimple() {
-        // 获得用户列表，只要开启状态的
-        List<Project> list = service.getList();
-        return Result.getSuccessful(ProjectConvert.INSTANCE.convert(list));
     }
 }

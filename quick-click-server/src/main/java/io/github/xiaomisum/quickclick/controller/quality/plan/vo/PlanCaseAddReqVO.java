@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -35,9 +35,9 @@ import java.util.List;
 public class PlanCaseAddReqVO {
 
     @NotEmpty(message = "测试计划编号不能为空")
-    private Long planId;
+    private String planId;
 
     @NotEmpty(message = "关联测试用例编号不能为空")
     @NotNull(message = "关联测试用例编号不能为空")
-    private List<Long> testcases;
+    private List<String> testcases;
 }

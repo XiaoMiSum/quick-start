@@ -23,19 +23,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.qualitycenter.testcase;
+package io.github.xiaomisum.quickclick.service.project;
+
+import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
 
 import java.util.List;
 
 public interface NodeService {
 
-    TestcaseNode get(Long id);
+    ProjectNode get(String id);
 
-    List<TestcaseNode> getList(Long projectId);
+    List<ProjectNode> getList(String projectId);
 
-    void add(TestcaseNode node);
+    void add(ProjectNode node);
 
-    void update(TestcaseNode node);
+    void update(ProjectNode node);
 
-    void remove(Long id);
+    void remove(List<String> ids);
 }

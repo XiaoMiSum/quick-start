@@ -23,13 +23,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.review.vo;
+package io.github.xiaomisum.quickclick.controller.quality.review.vo;
 
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -41,11 +41,9 @@ public class ReviewCasePageRespVO extends ReviewCaseBaseVO {
 
     private String path;
 
-    private String reviewUser;
+    private Long reviewer;
 
-    private String reviewer;
-
-    private Date reviewTime;
+    private LocalDateTime reviewTime;
 
     private TestStatus reviewResult;
 }

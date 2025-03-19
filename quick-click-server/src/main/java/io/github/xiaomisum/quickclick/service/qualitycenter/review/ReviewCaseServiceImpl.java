@@ -23,20 +23,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.track.review;
+package io.github.xiaomisum.quickclick.service.qualitycenter.review;
 
 import cn.hutool.core.collection.CollectionUtil;
-import io.github.xiaomisum.quickclick.controller.track.review.vo.ReviewCaseExecuteVO;
-import io.github.xiaomisum.quickclick.controller.track.review.vo.ReviewCaseQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.ReviewCase;
-import io.github.xiaomisum.quickclick.dal.mapper.track.ReviewCaseMapper;
+import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseExecuteVO;
+import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.ReviewCaseMapper;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,17 +62,17 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     }
 
     @Override
+    public ReviewCase getFirst(String reviewId) {
+        return mapper.selectOne(reviewId);
+    }
+
+    @Override
     public List<ReviewCase> getList(String reviewId, TestStatus result) {
         return mapper.selectList(reviewId, result);
     }
 
     @Override
-    public List<ReviewCase> getListNotInCaseIds(String reviewId, List<String> notInCaseIds) {
-        return mapper.selectListNotInCaseIds(reviewId, notInCaseIds);
-    }
-
-    @Override
-    public List<ReviewCase> getListGtId(String opt, String reviewId, String id) {
+    public List<ReviewCase> getListGtId(String opt, String reviewId, Long id) {
         return (Objects.equals(opt, "next")) ?
                 mapper.selectListByGtId(reviewId, id) : mapper.selectListByLtId(reviewId, id);
     }
@@ -81,7 +81,7 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     public void add(List<ReviewCase> list) {
         // 过滤已添加的
         mapper.insertBatch(list.stream()
-                .filter(item -> CollectionUtil.isEmpty(mapper.selectList(item.getReviewId(), item.getCaseId())))
+                .filter(item -> CollectionUtil.isEmpty(mapper.selectList(item.getReviewId(), item.getOriginalId())))
                 .toList());
     }
 
@@ -91,21 +91,16 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     }
 
     @Override
-    public void remove(String id) {
-        mapper.deleteById(id);
-    }
-
-    @Override
-    public void remove(List<String> ids) {
-        mapper.deleteBatchIds(ids);
+    public void remove(List<Long> ids) {
+        mapper.removeByIds(ids);
     }
 
     @Override
     public void reviewed(ReviewCaseExecuteVO execute) {
         ReviewCase reviewCase = (ReviewCase) new ReviewCase()
                 .setReviewer(execute.getReviewer())
-                .setReviewTime(new Date())
-                .setReviewResult(execute.getResult())
+                .setReviewTime(LocalDateTime.now())
+                .setResult(execute.getResult())
                 .setId(execute.getId());
         mapper.updateById(reviewCase);
     }
@@ -113,5 +108,10 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     @Override
     public Statistics statistics(String reviewId) {
         return mapper.statistics(reviewId);
+    }
+
+    @Override
+    public List<ReviewCase> getListNotInOriginalIds(String reviewId, List<String> caseIds) {
+        return mapper.selectListNotInOriginalIds(reviewId, caseIds);
     }
 }

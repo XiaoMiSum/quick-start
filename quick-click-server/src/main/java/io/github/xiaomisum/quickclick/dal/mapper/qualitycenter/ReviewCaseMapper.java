@@ -23,13 +23,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.track;
+package io.github.xiaomisum.quickclick.dal.mapper.qualitycenter;
 
-import io.github.xiaomisum.quickclick.controller.track.review.vo.ReviewCaseQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.ReviewCase;
+import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
@@ -44,68 +46,78 @@ public interface ReviewCaseMapper extends BaseMapperX<ReviewCase> {
         return selectPage(req, new LambdaQueryWrapperX<ReviewCase>()
                 .eq(ReviewCase::getReviewId, req.getReviewId())
                 .eqIfPresent(ReviewCase::getNodeId, req.getNodeId())
-                .likeIfPresent(ReviewCase::getName, req.getCaseName())
-                .orderByAsc(ReviewCase::getCaseId)
+                .likeIfPresent(ReviewCase::getTitle, req.getTitle())
+                .orderByAsc(ReviewCase::getOriginalId)
         );
     }
 
     default List<ReviewCase> selectList(String reviewId) {
         return selectList(new LambdaQueryWrapperX<ReviewCase>()
                 .eq(ReviewCase::getReviewId, reviewId)
-                .orderByAsc(ReviewCase::getCaseId));
+                .orderByAsc(ReviewCase::getOriginalId));
     }
 
-    default List<ReviewCase> selectList(String reviewId, String caseId) {
+    default List<ReviewCase> selectList(String reviewId, String originalId) {
         return selectList(new LambdaQueryWrapperX<ReviewCase>()
                 .eq(ReviewCase::getReviewId, reviewId)
-                .eq(ReviewCase::getCaseId, caseId)
-                .orderByAsc(ReviewCase::getCaseId)
+                .eq(ReviewCase::getOriginalId, originalId)
+                .orderByAsc(ReviewCase::getOriginalId)
         );
     }
 
-    default List<ReviewCase> selectListByGtId(String reviewId, String id) {
+    default List<ReviewCase> selectListByGtId(String reviewId, Long id) {
         return selectList(new LambdaQueryWrapperX<ReviewCase>()
                 .eq(ReviewCase::getReviewId, reviewId)
                 .gt(ReviewCase::getId, id)
-                .orderByAsc(ReviewCase::getCaseId)
+                .orderByAsc(ReviewCase::getOriginalId)
         );
     }
 
-    default List<ReviewCase> selectListByLtId(String reviewId, String id) {
+    default List<ReviewCase> selectListByLtId(String reviewId, Long id) {
         return selectList(new LambdaQueryWrapperX<ReviewCase>()
                 .eq(ReviewCase::getReviewId, reviewId)
                 .lt(ReviewCase::getId, id)
-                .orderByAsc(ReviewCase::getCaseId)
-        );
-    }
-
-    default ReviewCase selectOne(String reviewId, String id) {
-        return selectOne(new LambdaQueryWrapperX<ReviewCase>()
-                .eq(ReviewCase::getReviewId, reviewId)
-                .eq(ReviewCase::getId, id)
+                .orderByAsc(ReviewCase::getOriginalId)
         );
     }
 
     default Statistics statistics(String reviewId) {
         return selectJoinOne(Statistics.class, new MPJLambdaWrapperX<ReviewCase>()
                 .select("ifNull(count(id), 0) total",
-                        "sum(case when review_result = 'Pass' then 1 else 0 end) passed",
-                        "sum(case when review_result = 'UNREVIEWED' then 1 else 0 end) notstarted",
-                        "sum(case when review_result = 'Skip' then 1 else 0 end) skipped")
+                        "sum(case when result = 'Pass' then 1 else 0 end) passed",
+                        "sum(case when result = 'UNREVIEWED' then 1 else 0 end) notstarted",
+                        "sum(case when result = 'Skip' then 1 else 0 end) skipped")
                 .eq("review_id", reviewId));
     }
 
     default List<ReviewCase> selectList(String reviewId, TestStatus result) {
         return selectList(new LambdaQueryWrapperX<ReviewCase>()
                 .eq(ReviewCase::getReviewId, reviewId)
-                .eq(ReviewCase::getReviewResult, result)
+                .eq(ReviewCase::getResult, result)
         );
     }
 
-    default List<ReviewCase> selectListNotInCaseIds(String reviewId, List<String> notInCaseIds) {
+    default ReviewCase selectOne(String reviewId) {
+        return selectOne(new LambdaQueryWrapperX<ReviewCase>()
+                .eq(ReviewCase::getReviewId, reviewId)
+                .orderByAsc(ReviewCase::getId)
+                .last("limit 1")
+        );
+    }
+
+    @Delete("""
+            <script>
+            delete from qc_quality_test_review_case where id in
+            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=", ">
+              #{id}
+            </foreach>
+            </script>
+            """)
+    void removeByIds(@Param("ids") List<Long> ids);
+
+    default List<ReviewCase> selectListNotInOriginalIds(String reviewId, List<String> originalIds) {
         return selectList(new LambdaQueryWrapperX<ReviewCase>()
                 .eq(ReviewCase::getReviewId, reviewId)
-                .notInIfPresent(ReviewCase::getCaseId, notInCaseIds)
-        );
+                .notInIfPresent(ReviewCase::getOriginalId, originalIds));
     }
 }

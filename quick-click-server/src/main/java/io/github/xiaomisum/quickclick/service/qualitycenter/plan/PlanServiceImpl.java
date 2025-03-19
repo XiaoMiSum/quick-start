@@ -23,26 +23,26 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.track.plan;
+package io.github.xiaomisum.quickclick.service.qualitycenter.plan;
 
-import io.github.xiaomisum.quickclick.controller.track.plan.vo.PlanQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.Plan;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.PlanCase;
-import io.github.xiaomisum.quickclick.dal.mapper.track.PlanCaseMapper;
-import io.github.xiaomisum.quickclick.dal.mapper.track.PlanMapper;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanCaseMapper;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanMapper;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import jakarta.annotation.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.github.xiaomisum.quickclick.enums.TestStatus.*;
-import static io.github.xiaomisum.quickclick.service.track.review.ReviewServiceImpl.CRON;
+import static io.github.xiaomisum.quickclick.service.qualitycenter.review.ReviewServiceImpl.CRON;
 
 @Service
 public class PlanServiceImpl implements PlanService {
@@ -63,8 +63,8 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public Plan get(String projectId, String id) {
-        return mapper.selectOne(projectId, id);
+    public Plan get(String planId) {
+        return mapper.selectById(planId);
     }
 
     @Override
@@ -90,16 +90,16 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public void setEndTime(String planId) {
-        mapper.updateById((Plan) new Plan().setActualEndTime(new Date()).setId(planId));
+        mapper.updateById((Plan) new Plan().setActualEndTime(LocalDateTime.now()).setId(planId));
     }
 
 
     @Scheduled(cron = CRON)
     public void scheduleUpdateStatus() {
-        mapper.selectByStatus(Prepare).forEach(review -> {
-            List<PlanCase> cases = planCaseMapper.selectList(review.getId());
+        mapper.selectByStatus(Prepare).forEach(plan -> {
+            List<PlanCase> cases = planCaseMapper.selectList(plan.getId());
             Map<TestStatus, List<PlanCase>> group = cases.stream()
-                    .collect(Collectors.groupingBy(PlanCase::getExecuteResult));
+                    .collect(Collectors.groupingBy(PlanCase::getResult));
             List<PlanCase> prepareList = Prepare.get(group);
             List<PlanCase> passList = Pass.get(group);
             List<PlanCase> failureList = Failure.get(group);
@@ -108,11 +108,11 @@ public class PlanServiceImpl implements PlanService {
             List<PlanCase> underwayList = Underway.get(group);
             if (prepareList.isEmpty() && underwayList.isEmpty()) {
                 // 进行中和未开始的都为空，评审完成
-                mapper.updateStatus(review.getId(), complete);
+                mapper.updateStatus(plan.getId(), complete);
             } else if ((passList.size() + failureList.size() +
                     blockingList.size() + skipList.size() + underwayList.size()) < cases.size()) {
                 // 成功数量 + 失败数量 + 阻塞数量 + 跳过数量 + 进行中数量 之和 小于 总数，评审进行中
-                mapper.updateStatus(review.getId(), Underway);
+                mapper.updateStatus(plan.getId(), Underway);
             }
         });
     }

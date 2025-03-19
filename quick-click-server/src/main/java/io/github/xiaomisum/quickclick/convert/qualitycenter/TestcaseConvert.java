@@ -23,14 +23,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.convert.track;
+package io.github.xiaomisum.quickclick.convert.qualitycenter;
 
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
-import io.github.xiaomisum.quickclick.controller.qualitycenter.testcase.vo.recycle.TestcaseRecyclePageRespVO;
-import io.github.xiaomisum.quickclick.controller.qualitycenter.testcase.vo.testcase.*;
-import io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter.Testcase;
-import io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter.TestcaseRecycle;
+import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.*;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -51,18 +49,16 @@ public interface TestcaseConvert {
 
     PageResult<TestcasePageRespVO> convert(PageResult<Testcase> beans);
 
-    PageResult<TestcaseRecyclePageRespVO> convert1(PageResult<TestcaseRecycle> testcases);
-
     default TestcaseDTO convert(Testcase testcase) {
-        return new TestcaseDTO().setCaseId(testcase.getId())
-                .setName(testcase.getName())
-                .setLevel(testcase.getLevel())
+        return new TestcaseDTO().setOriginalId(testcase.getId())
+                .setTitle(testcase.getTitle())
+                .setPriority(testcase.getPriority())
                 .setTags(testcase.getTags())
                 .setPrerequisite(testcase.getPrerequisite())
                 .setSteps(testcase.getSteps())
                 .setNodeId(testcase.getNodeId())
                 .setProjectId(testcase.getProjectId())
-                .setMaintainer(testcase.getMaintainer());
+                .setSupervisor(testcase.getSupervisor());
     }
 
     List<TestcaseDTO> convert(List<Testcase> testcases);
@@ -75,9 +71,9 @@ public interface TestcaseConvert {
 
     default TestcaseExportVO convert2(Testcase testcase) {
         return new TestcaseExportVO()
-                .setName(testcase.getName())
+                .setTitle(testcase.getTitle())
                 .setNodeId(testcase.getNodeId())
-                .setLevel(testcase.getLevel())
+                .setPriority(testcase.getPriority())
                 .setTags(StrUtil.join(",", testcase.getTags()))
                 .setPrerequisite(testcase.getPrerequisite())
                 .setSteps(testcase.getSteps());
@@ -91,27 +87,12 @@ public interface TestcaseConvert {
 
     default Testcase convert2(TestcaseExportVO testcase) {
         return new Testcase()
-                .setName(testcase.getName())
-                .setLevel(testcase.getLevel())
+                .setTitle(testcase.getTitle())
+                .setPriority(testcase.getPriority())
                 .setTags(StrUtil.split(testcase.getTags(), ","))
                 .setPrerequisite(testcase.getPrerequisite())
                 .setSteps(testcase.getSteps())
                 .setNodeId(testcase.getNodeId());
-    }
-
-    List<TestcaseRecycle> convert3(List<Testcase> testcases);
-
-    default TestcaseRecycle convert3(Testcase testcase) {
-        return new TestcaseRecycle()
-                .setCaseId(testcase.getId())
-                .setName(testcase.getName())
-                .setLevel(testcase.getLevel())
-                .setTags(testcase.getTags())
-                .setPrerequisite(testcase.getPrerequisite())
-                .setSteps(testcase.getSteps())
-                .setNodeId(testcase.getNodeId())
-                .setProjectId(testcase.getProjectId())
-                .setMaintainer(testcase.getMaintainer());
     }
 
 }

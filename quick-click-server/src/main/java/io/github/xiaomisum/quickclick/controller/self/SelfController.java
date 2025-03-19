@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.user;
+package io.github.xiaomisum.quickclick.controller.self;
 
 import io.github.xiaomisum.quickclick.convert.project.ProjectConvert;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
@@ -42,8 +42,8 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/self")
+public class SelfController {
 
     @Resource
     private ProjectMemberService projectMemberService;
@@ -57,7 +57,7 @@ public class UserController {
      * @return 操作项目列表
      */
     @GetMapping("/project")
-    public Result<List<SimpleData>> getUserProject(@CurrentUser LoginUser user) {
+    public Result<List<SimpleData>> getProject(@CurrentUser LoginUser user) {
         // 通过过当前登录用户 获取该用户参与的项目列表
         List<String> ids = projectMemberService.getProjectIds(user.getId());
         if (Objects.isNull(ids) || ids.isEmpty()) {

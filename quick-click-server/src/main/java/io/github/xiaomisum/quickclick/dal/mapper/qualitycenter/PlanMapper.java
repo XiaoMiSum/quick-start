@@ -23,18 +23,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.mapper.track;
+package io.github.xiaomisum.quickclick.dal.mapper.qualitycenter;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import io.github.xiaomisum.quickclick.controller.track.plan.vo.PlanQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.Plan;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -43,7 +45,7 @@ public interface PlanMapper extends BaseMapperX<Plan> {
     default PageResult<Plan> selectPage(PlanQueryReqVO req) {
         return selectPage(req, new LambdaQueryWrapperX<Plan>()
                 .eq(Plan::getProjectId, req.getProjectId())
-                .likeIfPresent(Plan::getName, req.getName())
+                .likeIfPresent(Plan::getTitle, req.getTitle())
         );
     }
 
@@ -51,26 +53,30 @@ public interface PlanMapper extends BaseMapperX<Plan> {
         return selectList(new LambdaQueryWrapperX<Plan>().eq(Plan::getProjectId, projectId));
     }
 
-    default Plan selectOne(String projectId, String planId) {
-        return selectOne(new LambdaQueryWrapperX<Plan>()
-                .eq(Plan::getId, planId)
-                .eq(Plan::getProjectId, projectId));
-    }
-
-    default void updateStartTime(String PlanId) {
-        update(new Plan().setActualStartTime(new Date()),
+    default void updateStartTime(String planId) {
+        update(new Plan().setActualStartTime(LocalDateTime.now()),
                 new LambdaUpdateWrapper<Plan>()
-                        .eq(Plan::getId, PlanId)
+                        .eq(Plan::getId, planId)
                         .isNull(Plan::getActualStartTime));
     }
 
-    default void updateStatus(String reviewId, TestStatus status) {
+    default void updateStatus(String planId, TestStatus status) {
         update(new Plan().setStatus(status),
                 new LambdaUpdateWrapper<Plan>()
-                        .eq(Plan::getId, reviewId));
+                        .eq(Plan::getId, planId));
     }
 
     default List<Plan> selectByStatus(TestStatus status) {
         return selectList(Plan::getStatus, status.name());
     }
+
+    @Delete("""
+            <script>
+            delete from qc_quality_test_plan where id in
+            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=", ">
+              #{id}
+            </foreach>
+            </script>
+            """)
+    void removeByIds(@Param("ids") List<Long> ids);
 }

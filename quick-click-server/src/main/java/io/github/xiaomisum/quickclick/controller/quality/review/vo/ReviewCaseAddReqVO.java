@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.review.vo;
+package io.github.xiaomisum.quickclick.controller.quality.review.vo;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -36,9 +36,9 @@ public class ReviewCaseAddReqVO {
 
 
     @NotEmpty(message = "测试评审编号不能为空")
-    private Long reviewId;
+    private String reviewId;
 
     @NotNull(message = "关联测试用例不能为空")
     @NotEmpty(message = "关联测试用例不能为空")
-    private List<Long> testcases;
+    private List<String> testcases;
 }

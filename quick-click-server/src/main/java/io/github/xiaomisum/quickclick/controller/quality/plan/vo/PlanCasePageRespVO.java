@@ -23,13 +23,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -41,9 +41,8 @@ public class PlanCasePageRespVO extends PlanCaseBaseVO {
 
     private String executor;
 
-    private Date executeTime;
+    private LocalDateTime executeTime;
 
-    private TestStatus executeResult;
+    private TestStatus result;
 
-    private TestStatus reviewed;
 }

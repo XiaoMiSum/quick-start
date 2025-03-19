@@ -31,20 +31,12 @@ import lombok.EqualsAndHashCode;
 import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "qc_project_archive_node", autoResultMap = true)
+@TableName(value = "qc_project_archive", autoResultMap = true)
 @Data
-public class ArchiveNode extends BaseDO<Long> {
+public class Archive extends BaseDO<String> {
 
-
-    // 原始模块id
-    private Long originalId;
-
-    // 原始模块父id
-    private Long parentId;
+    private String projectId;
 
     private String name;
 
-    private String path;
-
-    private Integer sort;
 }

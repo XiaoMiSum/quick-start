@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021.  Lorem XiaoMiSum (mi_xiao@qq.com)
+ * Copyright (c) 2025.  Lorem XiaoMiSum (mi_xiao@qq.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -26,10 +26,10 @@
 package io.github.xiaomisum.quickclick.convert.project;
 
 import com.google.common.collect.Lists;
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectAddReqVO;
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectRespVO;
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectUpdateReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
+import io.github.xiaomisum.quickclick.controller.project.member.vo.MemberAddReqVO;
+import io.github.xiaomisum.quickclick.controller.project.member.vo.MemberPageRespVO;
+import io.github.xiaomisum.quickclick.controller.project.member.vo.MemberUpdateReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectMember;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -38,21 +38,19 @@ import xyz.migoo.framework.common.pojo.SimpleData;
 import java.util.List;
 
 @Mapper
-public interface ProjectConvert {
+public interface MemberConvert {
 
-    ProjectConvert INSTANCE = Mappers.getMapper(ProjectConvert.class);
+    MemberConvert INSTANCE = Mappers.getMapper(MemberConvert.class);
 
-    Project convert(ProjectAddReqVO bean);
+    ProjectMember convert(MemberAddReqVO bean);
 
-    Project convert(ProjectUpdateReqVO bean);
+    ProjectMember convert(MemberUpdateReqVO bean);
 
-    ProjectRespVO convert(Project bean);
+    PageResult<MemberPageRespVO> convert(PageResult<ProjectMember> beans);
 
-    PageResult<ProjectRespVO> convert(PageResult<Project> beans);
-
-    default List<SimpleData> convert(List<Project> projects) {
+    default List<SimpleData> convert(List<MemberPageRespVO> members) {
         List<SimpleData> result = Lists.newArrayList();
-        projects.forEach(item -> result.add(new SimpleData(item.getId(), item.getName())));
+        members.forEach(item -> result.add(new SimpleData(item.getUserId(), item.getUsername())));
         return result;
     }
 }

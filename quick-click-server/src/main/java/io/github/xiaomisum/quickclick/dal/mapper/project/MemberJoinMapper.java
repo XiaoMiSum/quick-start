@@ -25,27 +25,39 @@
 
 package io.github.xiaomisum.quickclick.dal.mapper.project;
 
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
+import io.github.xiaomisum.quickclick.controller.project.member.vo.MemberPageReqVO;
+import io.github.xiaomisum.quickclick.controller.project.member.vo.MemberPageRespVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectMember;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
+import xyz.migoo.framework.infra.dal.dataobject.sys.Post;
+import xyz.migoo.framework.infra.dal.dataobject.sys.User;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
-import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import xyz.migoo.framework.mybatis.core.MPJLambdaWrapperX;
 
 import java.util.List;
 
 @Mapper
-public interface MemberMapper extends BaseMapperX<ProjectMember> {
+public interface MemberJoinMapper extends BaseMapperX<MemberPageReqVO> {
 
-    default PageResult<ProjectMember> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<ProjectMember>()
-                .eq(ProjectMember::getProjectId, req.getName())
+    default PageResult<MemberPageRespVO> selectPage(MemberPageReqVO req) {
+        return selectJoinPage(req, MemberPageRespVO.class, new MPJLambdaWrapperX<MemberPageReqVO>()
+                .selectAll(ProjectMember.class)
+                .selectAs(User::getName, "username")
+                .selectAs(Post::getName, "postName")
+                .eq(ProjectMember::getProjectId, req.getProjectId())
+                .leftJoinX(User.class, on -> on.eq(ProjectMember::getUserId, User::getId))
+                .leftJoinX(Post.class, on -> on.eq(ProjectMember::getPostId, Post::getId))
                 .orderByDesc(ProjectMember::getId));
     }
 
-    default List<ProjectMember> selectListByUserId(Long userId) {
-        return selectList(new LambdaQueryWrapperX<ProjectMember>().eq(ProjectMember::getUserId, userId));
+    default List<MemberPageRespVO> selectList(String projectId) {
+        return selectJoinList(MemberPageRespVO.class, new MPJLambdaWrapperX<MemberPageReqVO>()
+                .selectAll(ProjectMember.class)
+                .selectAs(User::getName, "username")
+                .eq(ProjectMember::getProjectId, projectId)
+                .leftJoinX(User.class, on -> on.eq(ProjectMember::getUserId, User::getId))
+                .orderByDesc(ProjectMember::getId));
     }
-
 
 }

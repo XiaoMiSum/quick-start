@@ -27,22 +27,20 @@ package io.github.xiaomisum.quickclick.model.dto;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
-import com.baomidou.mybatisplus.extension.handlers.AbstractJsonTypeHandler;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import xyz.migoo.framework.common.util.json.JsonUtils;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ExcelTarget("TestcaseStep")
-public class TestcaseStep {
+@ExcelTarget("CaseStep")
+public class CaseStep {
 
-    @Excel(name = "步骤描述", width = 40)
-    private String exec;
+    @Excel(name = "执行步骤", width = 40)
+    @NotBlank(message = "执行步骤不能为空")
+    private String step;
 
     @Excel(name = "期望结果", width = 40)
     private String expected;
@@ -50,21 +48,4 @@ public class TestcaseStep {
     @Excel(name = "实际结果")
     private String actual;
 
-
-    public static class TestcaseStepTypeHandler extends AbstractJsonTypeHandler<List<TestcaseStep>> {
-
-        public TestcaseStepTypeHandler(Class<?> type) {
-            super(type);
-        }
-
-        @Override
-        public List<TestcaseStep> parse(String json) {
-            return JsonUtils.parseArray(json, TestcaseStep.class);
-        }
-
-        @Override
-        public String toJson(List<TestcaseStep> obj) {
-            return JsonUtils.toJsonString(obj);
-        }
-    }
 }

@@ -23,11 +23,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.dal.dataobject.qualitycenter;
+package io.github.xiaomisum.quickclick.dal.dataobject.quality;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.CaseStep;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,7 +38,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "qc_test_case", autoResultMap = true)
+@TableName(value = "qc_quality_testcase", autoResultMap = true)
 @Data
 public class Testcase extends BaseDO<String> {
 
@@ -65,7 +66,7 @@ public class Testcase extends BaseDO<String> {
     /**
      * 最后一次评审结果
      */
-    private String lastReviewResult;
+    private TestStatus lastReviewResult;
 
     private LocalDateTime lastReviewTime;
 

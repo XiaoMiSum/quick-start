@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.qualitycenter.plan.vo;
+package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import lombok.Getter;
@@ -35,9 +35,9 @@ import xyz.migoo.framework.common.util.json.JsonUtils;
 @Setter
 public class PlanQueryReqVO extends PageParam {
 
-    private Long projectId;
+    private String projectId;
 
-    private String name;
+    private String title;
 
     private TestStatus result;
 

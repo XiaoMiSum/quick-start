@@ -23,20 +23,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.service.track.review;
+package io.github.xiaomisum.quickclick.service.qualitycenter.review;
 
-import io.github.xiaomisum.quickclick.controller.track.review.vo.ReviewQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.Review;
-import io.github.xiaomisum.quickclick.dal.dataobject.track.ReviewCase;
-import io.github.xiaomisum.quickclick.dal.mapper.track.ReviewCaseMapper;
-import io.github.xiaomisum.quickclick.dal.mapper.track.ReviewMapper;
+import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Review;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.ReviewCaseMapper;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.ReviewMapper;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import jakarta.annotation.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,8 +64,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review get(String projectId, String reviewId) {
-        return mapper.selectOne(projectId, reviewId);
+    public Review get(String reviewId) {
+        return mapper.selectById(reviewId);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void setEndTime(String reviewId) {
-        mapper.updateById((Review) new Review().setActualEndTime(new Date()).setId(reviewId));
+        mapper.updateById((Review) new Review().setActualEndTime(LocalDateTime.now()).setId(reviewId));
     }
 
     @Scheduled(cron = CRON)
@@ -99,7 +99,7 @@ public class ReviewServiceImpl implements ReviewService {
         mapper.selectByStatus(Prepare).forEach(review -> {
             List<ReviewCase> cases = reviewCaseMapper.selectList(review.getId());
             Map<TestStatus, List<ReviewCase>> group = cases.stream()
-                    .collect(Collectors.groupingBy(ReviewCase::getReviewResult));
+                    .collect(Collectors.groupingBy(ReviewCase::getResult));
             List<ReviewCase> prepareList = Prepare.get(group);
             List<ReviewCase> passList = Pass.get(group);
             List<ReviewCase> failureList = Failure.get(group);

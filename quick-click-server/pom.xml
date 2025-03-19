@@ -14,27 +14,22 @@
     <dependencies>
         <dependency>
             <groupId>xyz.migoo.springboot</groupId>
-            <artifactId>migoo-spring-boot-starter-common</artifactId>
+            <artifactId>migoo-webserver-infra-sys</artifactId>
         </dependency>
 
         <dependency>
             <groupId>xyz.migoo.springboot</groupId>
-            <artifactId>migoo-spring-boot-starter-web</artifactId>
+            <artifactId>migoo-webserver-infra-developer</artifactId>
         </dependency>
 
         <dependency>
             <groupId>xyz.migoo.springboot</groupId>
-            <artifactId>migoo-spring-boot-starter-security</artifactId>
+            <artifactId>migoo-webserver-infra-dictionary</artifactId>
         </dependency>
 
         <dependency>
             <groupId>xyz.migoo.springboot</groupId>
-            <artifactId>migoo-spring-boot-starter-mybatis</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>xyz.migoo.springboot</groupId>
-            <artifactId>migoo-spring-boot-starter-redis</artifactId>
+            <artifactId>migoo-webserver-infra-file</artifactId>
         </dependency>
 
         <dependency>
@@ -49,6 +44,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>

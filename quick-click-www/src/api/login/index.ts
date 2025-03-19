@@ -20,6 +20,12 @@ export const getRouters = () => {
   return request.get({ url: '/user-menus' })
 }
 
+export const getConfig = async () => {
+  return request.get({
+    url: '/configurer'
+  })
+}
+
 export const getCodeApi = () => {}
 
 export const reqCheckApi = () => {}

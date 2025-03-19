@@ -28,41 +28,50 @@ package io.github.xiaomisum.quickclick.dal.dataobject.project;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import io.github.xiaomisum.quickclick.enums.TestStatus;
-import io.github.xiaomisum.quickclick.farmework.mybatis.Id;
-import io.github.xiaomisum.quickclick.model.dto.TestcaseStep;
+import io.github.xiaomisum.quickclick.model.dto.CaseStep;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "project_archive_testcase", autoResultMap = true)
+@TableName(value = "qc_project_archive_testcase", autoResultMap = true)
 @Data
-public class ArchiveTestcase extends Id {
+public class ArchiveTestcase extends BaseDO<Long> {
 
-    // 迭代id
-    private String iterationId;
+    private String archiveId;
+
+    private String projectId;
 
     // 原始用例id
     private String originalId;
 
     private String nodeId;
 
-    private String name;
+    private String title;
 
-    private String level;
+    private String priority;
 
     private String prerequisite;
 
-    @TableField(typeHandler = TestcaseStep.TestcaseStepTypeHandler.class)
-    private List<TestcaseStep> steps;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<CaseStep> steps;
 
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> tags;
 
-    private String maintainer;
+    /**
+     * 负责人 user_id
+     */
+    private Long supervisor;
 
-    private TestStatus reviewed;
+    /**
+     * 最后一次评审结果
+     */
+    private String lastReviewResult;
+
+    private LocalDateTime lastReviewTime;
 
 }
