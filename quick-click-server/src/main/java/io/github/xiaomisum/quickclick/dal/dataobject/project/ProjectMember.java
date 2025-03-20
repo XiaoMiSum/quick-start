@@ -33,7 +33,7 @@ import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "qc_project_member", autoResultMap = true)
 @Data
-public class ProjectMember extends BaseDO<String> {
+public class ProjectMember extends BaseDO<Long> {
 
     private Long userId;
 

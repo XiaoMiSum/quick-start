@@ -2,6 +2,8 @@ import { JSEncrypt } from 'jsencrypt'
 import CryptoJS from 'crypto-js'
 import { useAppStore } from '@/store/modules/app'
 
+const appStore = useAppStore()
+
 // 密钥对生成 http://web.chacuo.net/netrsakeypair
 
 const publicKey =
@@ -31,7 +33,6 @@ export const decrypt = (txt: string) => {
   encryptor.setPrivateKey(privateKey) // 设置私钥
   return encryptor.decrypt(txt) // 对数据进行解密
 }
-
 
 /**
  * @word 要加密的内容

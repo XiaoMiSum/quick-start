@@ -2,28 +2,25 @@
   <div class="upload-file">
     <el-upload
       ref="uploadRef"
+      :multiple="props.limit > 1"
+      name="file"
       v-model="valueRef"
       v-model:file-list="fileList"
-      :action="updateUrl"
+      :show-file-list="true"
       :auto-upload="autoUpload"
-      :before-upload="beforeUpload"
-      :drag="drag"
+      :action="updateUrl"
       :headers="uploadHeaders"
       :limit="props.limit"
-      :multiple="props.limit > 1"
-      :on-error="excelUploadError"
+      :drag="drag"
+      :before-upload="beforeUpload"
       :on-exceed="handleExceed"
-      :on-preview="handlePreview"
-      :on-remove="handleRemove"
       :on-success="handleFileSuccess"
-      :show-file-list="true"
+      :on-error="excelUploadError"
+      :on-remove="handleRemove"
+      :on-preview="handlePreview"
       class="upload-file-uploader"
-      name="file"
     >
-      <el-button type="primary">
-        <Icon icon="ep:upload-filled" />
-        选取文件
-      </el-button>
+      <el-button type="primary"><Icon icon="ep:upload-filled" />选取文件</el-button>
       <template v-if="isShowTip" #tip>
         <div style="font-size: 8px">
           大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b>
@@ -39,7 +36,7 @@
 import { PropType } from 'vue'
 
 import { propTypes } from '@/utils/propTypes'
-import { getAccessToken, getTenantId } from '@/utils/auth'
+import { getAccessToken } from '@/utils/auth'
 import type { UploadInstance, UploadUserFile, UploadProps, UploadRawFile } from 'element-plus'
 
 defineOptions({ name: 'UploadFile' })
@@ -68,8 +65,7 @@ const uploadList = ref<UploadUserFile[]>([])
 const fileList = ref<UploadUserFile[]>(props.modelValue)
 const uploadNumber = ref<number>(0)
 const uploadHeaders = ref({
-  Authorization: 'Bearer ' + getAccessToken(),
-  'tenant-id': getTenantId()
+  Authorization: 'Bearer ' + getAccessToken()
 })
 // 文件上传之前判断
 const beforeUpload: UploadProps['beforeUpload'] = (file: UploadRawFile) => {
@@ -144,7 +140,7 @@ const listToString = (list: UploadUserFile[], separator?: string) => {
   return strs != '' ? strs.substr(0, strs.length - 1) : ''
 }
 </script>
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .upload-file-uploader {
   margin-bottom: 5px;
 }

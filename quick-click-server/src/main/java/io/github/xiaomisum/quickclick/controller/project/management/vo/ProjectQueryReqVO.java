@@ -34,9 +34,7 @@ import xyz.migoo.framework.common.util.json.JsonUtils;
 @Setter
 public class ProjectQueryReqVO extends PageParam {
 
-    private String name;
-
-    private Integer status;
+    private String title;
 
     @Override
     public String toString() {

@@ -52,4 +52,4 @@ const componentMap: Recordable<Component, ComponentName> = {
   UploadFile: UploadFile
 }
 
-export {componentMap}
+export { componentMap }

@@ -36,14 +36,15 @@
  * Verify 验证码组件
  * @description 分发验证码使用
  * */
-import { VerifyPoints, VerifySlide } from './Verify'
+import { VerifyIdentity, VerifyPoints, VerifySlide } from './Verify'
 import { computed, getCurrentInstance, ref, toRefs, watchEffect } from 'vue'
 
 export default {
   name: 'Vue3Verify',
   components: {
     VerifySlide,
-    VerifyPoints
+    VerifyPoints,
+    VerifyIdentity
   },
   props: {
     captchaType: {
@@ -127,6 +128,9 @@ export default {
         case 'clickWord':
           verifyType.value = ''
           componentType.value = 'VerifyPoints'
+          break
+        case 'identity':
+          componentType.value = 'VerifyIdentity'
           break
       }
     })
@@ -287,8 +291,6 @@ export default {
   border: 1px solid #ddd;
   border-radius: 8px;
   box-sizing: content-box;
-  box-sizing: content-box;
-  box-sizing: content-box;
 }
 
 .verify-bar-area .verify-move-block {
@@ -299,8 +301,6 @@ export default {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 0 2px #888;
-  box-sizing: content-box;
-  box-sizing: content-box;
   box-sizing: content-box;
 }
 
@@ -318,8 +318,6 @@ export default {
   border: 1px solid #ddd;
   border-radius: 8px;
   box-sizing: content-box;
-  box-sizing: content-box;
-  box-sizing: content-box;
 }
 
 .verify-img-panel {
@@ -328,8 +326,6 @@ export default {
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   border-radius: 3px;
-  box-sizing: content-box;
-  box-sizing: content-box;
   box-sizing: content-box;
 }
 

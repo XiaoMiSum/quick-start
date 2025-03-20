@@ -37,7 +37,7 @@ public class ProjectBaseVO {
      */
     @NotBlank(message = "name 不能为空")
     @Size(max = 64, message = "name 最大长度64")
-    private String name;
+    private String title;
 
     /**
      * 备注

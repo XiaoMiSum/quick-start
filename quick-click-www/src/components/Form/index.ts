@@ -12,4 +12,4 @@ export interface FormExpose {
   getElFormRef: () => ComponentRef<typeof ElForm>
 }
 
-export {Form}
+export { Form }

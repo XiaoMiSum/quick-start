@@ -48,7 +48,7 @@ public class NodeController {
     private NodeService service;
 
     @GetMapping
-    public Result<List<NodeRespVO>> getList(@RequestParam String projectId) {
+    public Result<List<NodeRespVO>> getList(@RequestParam("projectId") String projectId) {
         List<ProjectNode> results = service.getList(projectId);
         return Result.getSuccessful(NodeConvert.INSTANCE.convert(results));
     }
@@ -84,8 +84,8 @@ public class NodeController {
      * @return 处理结果
      */
     @DeleteMapping
-    public Result<?> remove(@RequestParam List<String> ids) {
-        service.remove(ids);
+    public Result<?> remove(@RequestParam("ids") String ids) {
+        service.remove(List.of(ids.split(",")));
         return Result.getSuccessful();
     }
 }

@@ -25,6 +25,7 @@
 
 package io.github.xiaomisum.quickclick.service.project;
 
+import cn.hutool.core.util.IdUtil;
 import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
 import io.github.xiaomisum.quickclick.dal.mapper.project.ProjectMapper;
@@ -56,8 +57,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void add(Project project) {
+    public String add(Project project) {
+        project.setId(IdUtil.getSnowflakeNextIdStr());
         mapper.insert(project);
+        return project.getId();
     }
 
     @Override

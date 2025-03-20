@@ -29,10 +29,13 @@ import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectAd
 import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
 import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectUpdateReqVO;
 import io.github.xiaomisum.quickclick.convert.project.ProjectConvert;
+import io.github.xiaomisum.quickclick.service.project.ProjectMemberService;
 import io.github.xiaomisum.quickclick.service.project.ProjectService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.Result;
+import xyz.migoo.framework.security.core.LoginUser;
+import xyz.migoo.framework.security.core.annotation.CurrentUser;
 
 import java.util.List;
 
@@ -45,6 +48,8 @@ public class ProjectController {
 
     @Resource
     private ProjectService service;
+    @Resource
+    private ProjectMemberService memberService;
 
     /**
      * 项目列表
@@ -64,7 +69,7 @@ public class ProjectController {
      * @return 项目信息
      */
     @GetMapping("/{id}")
-    public Result<?> get(@PathVariable String id) {
+    public Result<?> get(@PathVariable("id") String id) {
         return Result.getSuccessful(ProjectConvert.INSTANCE.convert(service.get(id)));
     }
 
@@ -75,8 +80,10 @@ public class ProjectController {
      * @return 处理结果
      */
     @PostMapping
-    public Result<?> add(@RequestBody ProjectAddReqVO data) {
-        service.add(ProjectConvert.INSTANCE.convert(data));
+    public Result<?> add(@RequestBody ProjectAddReqVO data, @CurrentUser LoginUser user) {
+        String projectId = service.add(ProjectConvert.INSTANCE.convert(data));
+        memberService.add(projectId, user.getId());
+        // todo 添加当前用户到成员
         return Result.getSuccessful();
     }
 
@@ -99,8 +106,8 @@ public class ProjectController {
      * @return 处理结果
      */
     @DeleteMapping
-    public Result<?> remove(@RequestParam List<String> ids) {
-        service.remove(ids);
+    public Result<?> remove(@RequestParam("ids") String ids) {
+        service.remove(List.of(ids.split(",")));
         return Result.getSuccessful();
     }
 }

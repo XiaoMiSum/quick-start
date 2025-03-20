@@ -38,8 +38,8 @@ public interface ArchiveNodeMapper extends BaseMapperX<ArchiveNode> {
 
     default List<ArchiveNode> selectPage(ProjectQueryReqVO req) {
         return selectList(new LambdaQueryWrapperX<ArchiveNode>()
-                .eq(ArchiveNode::getArchiveId, req.getName())
-                .likeIfPresent(ArchiveNode::getName, req.getName())
+                .eq(ArchiveNode::getArchiveId, req.getTitle())
+                .likeIfPresent(ArchiveNode::getTitle, req.getTitle())
                 .orderByDesc(ArchiveNode::getSort));
     }
 

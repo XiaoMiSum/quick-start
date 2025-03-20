@@ -39,7 +39,7 @@ public interface ProjectService {
 
     Project get(String id);
 
-    void add(Project project);
+    String add(Project project);
 
     void update(Project project);
 

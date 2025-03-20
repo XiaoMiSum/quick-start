@@ -20,7 +20,8 @@ public interface ProjectMemberService {
 
     void update(ProjectMember data);
 
-    void remove(List<String> ids);
+    void remove(List<Long> ids);
 
 
+    void add(String projectId, Long userId);
 }

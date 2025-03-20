@@ -5,5 +5,5 @@
 defineOptions({ name: 'Error404' })
 const { push } = useRouter()
 
-const path = ref('/index')
+const path = ref('/')
 </script>

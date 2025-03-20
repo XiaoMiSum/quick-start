@@ -40,10 +40,8 @@ service.interceptors.request.use(
       }
     })
     if (getAccessToken() && !isToken) {
-      ;(config as Recordable).headers['X-Token'] = 'Bearer ' + getAccessToken() // 让每个请求携带自定义token
+      ;(config as Recordable).headers['Authorization'] = 'Bearer ' + getAccessToken() // 让每个请求携带自定义token
     }
-
-    ;(config as Recordable).headers['x-project-id'] = wsCache.get(CACHE_KEY.PROJECT)
     const params = config.params || {}
     const data = config.data || false
     if (

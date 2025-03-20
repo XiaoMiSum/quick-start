@@ -26,6 +26,7 @@
 package io.github.xiaomisum.quickclick.service.project;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
 import io.github.xiaomisum.quickclick.dal.mapper.project.NodeMapper;
@@ -36,7 +37,7 @@ import java.util.List;
 
 @Service
 public class NodeServiceImpl implements NodeService {
-    
+
     @Resource
     private NodeMapper mapper;
 
@@ -52,7 +53,8 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public void add(ProjectNode node) {
-        node.setPath("/" + node.getName());
+        node.setId(IdUtil.getSnowflakeNextIdStr());
+        node.setPath("/" + node.getTitle());
         if (StrUtil.isNotBlank(node.getParentId())) {
             node.setPath(mapper.selectById(node.getParentId()).getPath() + node.getPath());
         }
@@ -61,7 +63,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public void update(ProjectNode node) {
-        node.setPath("/" + node.getName());
+        node.setPath("/" + node.getTitle());
         if (StrUtil.isNotBlank(node.getParentId())) {
             node.setPath(mapper.selectById(node.getParentId()).getPath() + node.getPath());
         }

@@ -223,7 +223,7 @@ export const IconJson = {
     'semi-select',
     'service',
     'set-up',
-    'setting',
+    'configurer',
     'share',
     'ship',
     'shop',

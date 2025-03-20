@@ -1,5 +1,4 @@
 import CryptoJS from 'crypto-js'
-
 /**
  * @word 要加密的内容
  * @keyWord String  服务器随机返回的关键字

@@ -15,7 +15,7 @@ defineProps({
 </script>
 
 <template>
-  <ElCard :class="[prefixCls, 'mb-15px']" :shadow="shado">
+  <ElCard :class="[prefixCls, 'mb-10px']" :shadow="shado">
     <template v-if="slots.header" #header>
       <div class="card-header">
         <slot name="header"></slot>

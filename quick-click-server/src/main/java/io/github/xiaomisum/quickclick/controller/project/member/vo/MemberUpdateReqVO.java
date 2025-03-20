@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberUpdateReqVO {
 
-    private String id;
+    private Long id;
 
     private Long postId;
 }

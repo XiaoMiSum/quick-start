@@ -25,6 +25,7 @@
 
 package io.github.xiaomisum.quickclick.service.qualitycenter.plan;
 
+import cn.hutool.core.util.IdUtil;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
@@ -69,6 +70,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public String add(Plan plan) {
+        plan.setId(IdUtil.getSnowflakeNextIdStr());
         mapper.insert(plan);
         return plan.getId();
     }

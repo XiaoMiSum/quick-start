@@ -1,11 +1,11 @@
 <template>
   <ElDialog v-model="showSearch" :show-close="false" title="菜单搜索">
     <el-select
-      :remote-method="remoteMethod"
-      :reserve-keyword="false"
       filterable
-      placeholder="请输入菜单内容"
+      :reserve-keyword="false"
       remote
+      placeholder="请输入菜单内容"
+      :remote-method="remoteMethod"
       style="width: 100%"
       @change="handleChange"
     >

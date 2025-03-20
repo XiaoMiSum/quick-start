@@ -37,6 +37,6 @@ public class Archive extends BaseDO<String> {
 
     private String projectId;
 
-    private String name;
+    private String title;
 
 }

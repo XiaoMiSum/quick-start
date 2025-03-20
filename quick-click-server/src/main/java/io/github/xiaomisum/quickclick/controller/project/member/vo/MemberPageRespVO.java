@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberPageRespVO extends MemberBaseVO {
 
-    private String id;
+    private Long id;
 
     private String username;
 

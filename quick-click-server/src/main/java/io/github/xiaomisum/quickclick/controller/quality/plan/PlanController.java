@@ -216,7 +216,7 @@ public class PlanController {
      * @return 用例明细
      */
     @GetMapping("/case/first")
-    public Result<?> getFirstReviewCase(@RequestParam String reviewId) {
+    public Result<?> getFirstReviewCase(@RequestParam("reviewId") String reviewId) {
         PlanCase results = planCaseService.getFirst(reviewId);
         if (Objects.isNull(results)) {
             return Result.getSuccessful(null);
@@ -233,7 +233,8 @@ public class PlanController {
      * @return 用例明细
      */
     @GetMapping("/case/{opt}")
-    public Result<?> getReviewCase(@RequestParam String planId, Long id, @PathVariable String opt) {
+    public Result<?> getReviewCase(@RequestParam("planId") String planId,
+                                   @RequestParam("id") Long id, @PathVariable String opt) {
         List<PlanCase> results = planCaseService.getListGtId(opt, planId, id);
         if (results.isEmpty()) {
             return Result.getSuccessful(null);

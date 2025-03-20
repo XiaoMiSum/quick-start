@@ -39,8 +39,7 @@ public interface ProjectMapper extends BaseMapperX<Project> {
 
     default PageResult<Project> selectPage(ProjectQueryReqVO req) {
         return selectPage(req, new LambdaQueryWrapperX<Project>()
-                .likeIfPresent(Project::getName, req.getName())
-                .eqIfPresent(Project::getStatus, req.getStatus())
+                .likeIfPresent(Project::getTitle, req.getTitle())
                 .orderByDesc(Project::getId));
     }
 

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 const { label } = defineProps({
   label: {
     type: String,
@@ -13,12 +13,12 @@ const { label } = defineProps({
 
 <template>
   <div class="cell-item">
-    <Icon v-if="icon" :icon="icon" :size="18" style="vertical-align: middle" />
+    <Icon :icon="icon" v-if="icon" style="vertical-align: middle" :size="18" />
     {{ label }}
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .cell-item {
   display: inline;
 }

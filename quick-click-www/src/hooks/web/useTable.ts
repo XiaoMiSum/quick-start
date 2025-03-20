@@ -33,6 +33,7 @@ interface TableObject<T = any> {
   loading: boolean
   exportLoading: boolean
   currentRow: Nullable<T>
+  data: any
 }
 
 export const useTable = <T = any>(config?: UseTableConfig<T>) => {
@@ -54,7 +55,8 @@ export const useTable = <T = any>(config?: UseTableConfig<T>) => {
     // 导出加载中
     exportLoading: false,
     // 当前行的数据
-    currentRow: null
+    currentRow: null,
+    data: null
   })
 
   const paramsObj = computed(() => {
@@ -136,6 +138,7 @@ export const useTable = <T = any>(config?: UseTableConfig<T>) => {
         tableObject.loading = false
       })
       if (res) {
+        tableObject.data = res
         tableObject.tableList = (res as unknown as ResponseType).list
         tableObject.total = (res as unknown as ResponseType).total ?? 0
       }

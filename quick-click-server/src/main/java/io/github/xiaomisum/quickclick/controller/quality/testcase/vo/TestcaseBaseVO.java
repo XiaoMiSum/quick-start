@@ -40,7 +40,7 @@ public class TestcaseBaseVO {
     private String nodeId;
 
     @NotEmpty(message = "用例名称不能为空")
-    private String name;
+    private String title;
 
     @NotEmpty(message = "用例等级不能为空")
     private String level;

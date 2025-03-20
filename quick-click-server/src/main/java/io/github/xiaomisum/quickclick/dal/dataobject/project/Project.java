@@ -35,9 +35,7 @@ import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 @Data
 public class Project extends BaseDO<String> {
 
-    private String name;
-
-    private Integer status;
+    private String title;
 
     private String memo;
 }

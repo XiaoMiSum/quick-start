@@ -3,12 +3,12 @@ import type { UserLoginVO } from './types'
 
 // 登录
 export const login = (data: UserLoginVO) => {
-  return request.post({ url: '/sign-in', data })
+  return request.post({ url: '/login', data })
 }
 
 // 登出
 export const loginOut = () => {
-  return request.post({ url: '/sign-out' })
+  return request.post({ url: '/logout' })
 }
 
 // 获取用户权限信息
@@ -23,6 +23,12 @@ export const getRouters = () => {
 export const getConfig = async () => {
   return request.get({
     url: '/configurer'
+  })
+}
+
+export const getProject = async () => {
+  return request.get({
+    url: '/self/project'
   })
 }
 

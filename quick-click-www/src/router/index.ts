@@ -15,7 +15,6 @@ export const resetRouter = (): void => {
   const resetWhiteNameList = ['Redirect', 'Login', 'NoFind', 'Root']
   router.getRoutes().forEach((route) => {
     const { name } = route
-    console.log(route)
     if (name && !resetWhiteNameList.includes(name as string)) {
       router.hasRoute(name) && router.removeRoute(name)
     }

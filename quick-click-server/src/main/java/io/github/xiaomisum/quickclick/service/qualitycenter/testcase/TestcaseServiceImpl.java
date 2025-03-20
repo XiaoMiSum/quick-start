@@ -25,6 +25,7 @@
 
 package io.github.xiaomisum.quickclick.service.qualitycenter.testcase;
 
+import cn.hutool.core.util.IdUtil;
 import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.TestcaseMapper;
@@ -67,6 +68,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 
     @Override
     public String add(Testcase testcase) {
+        testcase.setId(IdUtil.getSnowflakeNextIdStr());
         mapper.insert(testcase);
         return testcase.getId();
     }

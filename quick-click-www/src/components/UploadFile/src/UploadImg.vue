@@ -1,17 +1,17 @@
 <template>
   <div class="upload-box">
     <el-upload
-      :id="uuid"
-      :accept="fileType.join(',')"
       :action="updateUrl"
-      :before-upload="beforeUpload"
+      :id="uuid"
       :class="['upload', drag ? 'no-border' : '']"
-      :drag="drag"
-      :headers="uploadHeaders"
       :multiple="false"
-      :on-error="uploadError"
-      :on-success="uploadSuccess"
       :show-file-list="false"
+      :headers="uploadHeaders"
+      :before-upload="beforeUpload"
+      :on-success="uploadSuccess"
+      :on-error="uploadError"
+      :drag="drag"
+      :accept="fileType.join(',')"
     >
       <template v-if="modelValue">
         <img :src="modelValue" class="upload-image" />
@@ -44,8 +44,8 @@
     </div>
     <el-image-viewer
       v-if="imgViewVisible"
-      :url-list="[modelValue]"
       @close="imgViewVisible = false"
+      :url-list="[modelValue]"
     />
   </div>
 </template>
@@ -55,7 +55,7 @@ import type { UploadProps } from 'element-plus'
 
 import { generateUUID } from '@/utils'
 import { propTypes } from '@/utils/propTypes'
-import { getAccessToken, getTenantId } from '@/utils/auth'
+import { getAccessToken } from '@/utils/auth'
 
 defineOptions({ name: 'UploadImg' })
 
@@ -97,8 +97,7 @@ const deleteImg = () => {
 }
 
 const uploadHeaders = ref({
-  Authorization: 'Bearer ' + getAccessToken(),
-  'tenant-id': getTenantId()
+  Authorization: 'Bearer ' + getAccessToken()
 })
 
 const editImg = () => {
@@ -126,7 +125,7 @@ const uploadError = () => {
   message.notifyError('图片上传失败，请您重新上传！')
 }
 </script>
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .is-error {
   .upload {
     :deep(.el-upload),

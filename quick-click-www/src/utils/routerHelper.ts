@@ -132,6 +132,7 @@ export const generateRoute = (routes: AppCustomRouteRecordRaw[]): AppRouteRecord
         data.children = generateRoute(route.children)
       }
     }
+
     res.push(data as AppRouteRecordRaw)
   }
   return res

@@ -2,9 +2,9 @@
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form ref="queryFormRef" :inline="true" :model="queryParams">
-      <el-form-item label="" prop="name">
+      <el-form-item label="" prop="title">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.title"
           class="!w-240px"
           clearable
           placeholder="请输入项目名称"
@@ -26,7 +26,7 @@
     <el-row :gutter="10">
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['system:project:add']"
+          v-hasPermi="['project:list:add']"
           plain
           type="primary"
           @click="openForm('create')"
@@ -41,38 +41,30 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" highlight-current-row stripe>
-      <el-table-column label="项目名称" prop="name" show-overflow-tooltip width="300" />
-      <el-table-column label="产品经理" show-overflow-tooltip>
-        <template #default="scope">
-          <el-tag v-for="(item, index) in scope.row.productManagers" :key="index" class="mr-2">
-            {{ item }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="开发人员" show-overflow-tooltip>
-        <template #default="scope">
-          <el-tag v-for="(item, index) in scope.row.developers" :key="index" class="mr-2">
-            {{ item }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="测试人员" show-overflow-tooltip>
-        <template #default="scope">
-          <el-tag v-for="(item, index) in scope.row.testers" :key="index" class="mr-2">
-            {{ item }}
-          </el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column label="编号" prop="id" show-overflow-tooltip width="300" />
+      <el-table-column label="项目名称" prop="title" show-overflow-tooltip width="300" />
       <el-table-column label="备注" prop="memo" show-overflow-tooltip />
       <el-table-column :width="150" align="center" label="操作">
         <template #default="scope">
           <el-tooltip content="编辑" placement="top">
-            <el-button circle plain type="primary" @click="openForm('update', scope.row.id)">
+            <el-button
+              circle
+              plain
+              type="primary"
+              v-hasPermi="['project:list:update']"
+              @click="openForm('update', scope.row.id)"
+            >
               <Icon icon="ep:edit" />
             </el-button>
           </el-tooltip>
           <el-tooltip content="删除" placement="top">
-            <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
+            <el-button
+              circle
+              plain
+              type="danger"
+              v-hasPermi="['project:list:remove']"
+              @click="handleDelete(scope.row.id)"
+            >
               <Icon icon="ep:delete" />
             </el-button>
           </el-tooltip>
@@ -98,7 +90,6 @@ import * as HTTP from '@/api/project'
 
 import { useAppStore } from '@/store/modules/app'
 
-const appStore = useAppStore()
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
@@ -107,7 +98,7 @@ defineOptions({ name: 'ProjectManager' })
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  name: '',
+  title: '',
   status: undefined
 })
 const loading = ref(false)
@@ -157,7 +148,6 @@ const handleDelete = async (id: number) => {
 
 /** 初始化 **/
 onMounted(async () => {
-  appStore.setProjectPick(false)
   await getList()
 })
 </script>

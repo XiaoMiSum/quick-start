@@ -88,7 +88,7 @@ defineProps({
   }
 })
 
-const _requirements = ref<string>([])
+const _requirements = ref<string[]>([])
 
 const _visible = ref(false)
 

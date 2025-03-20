@@ -52,7 +52,7 @@ public interface ProjectConvert {
 
     default List<SimpleData> convert(List<Project> projects) {
         List<SimpleData> result = Lists.newArrayList();
-        projects.forEach(item -> result.add(new SimpleData(item.getId(), item.getName())));
+        projects.forEach(item -> result.add(new SimpleData(item.getId(), item.getTitle())));
         return result;
     }
 }

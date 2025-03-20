@@ -1,68 +1,76 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
-import { getSimple } from '@/api/project'
-import { useUserStore } from '@/store/modules/user'
-import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
+import { useDesign } from '@/hooks/web/useDesign'
 
-const { push } = useRouter()
+import { useGlobalStore } from '@/store/modules/global'
+
+import { onMounted } from 'vue'
 
 const message = useMessage() // 消息弹窗
 
-const userStore = useUserStore()
+const globalStore = useGlobalStore()
 
 defineOptions({ name: 'ProjectPicker' })
 
-const currentProject = userStore.getDefaultProject || 1
+const { getPrefixCls } = useDesign()
+
+const prefixCls = getPrefixCls('user-info')
+
 const projects = ref<any>([])
 const title = ref('')
 
-const getList = async () => {
-  projects.value = await getSimple()
-  if (projects.value.length === 0) {
-    message.warning('没有可用项目，请先添加项目！')
-    push('/project/table')
+const handleChange = async (value: string, label: string) => {
+  globalStore.setCurrentProject(value)
+  title.value = label
+}
+
+const init = () => {
+  projects.value = globalStore.getProjects
+  if (!projects.value) {
+    message.alertWarning('没有可用项目，请联系管理员加入项目或添加项目！')
   } else {
     for (let i = 0; i < projects.value.length; i++) {
       const item = projects.value[i]
-      if (item.code === currentProject) {
-        title.value = item.name
+      if (item.value === globalStore.getCurrentProject) {
+        title.value = item.label
       }
     }
   }
 }
 
-const handleChange = async (value: number, name: string) => {
-  await userStore.setDefaultProject(value)
-  title.value = name
-}
+// 监听项目下拉列表变化
+watch(
+  computed(() => globalStore.getProjects),
+  () => {
+    init()
+  },
+  { immediate: true, deep: true }
+)
 
 onMounted(() => {
-  getList()
+  init()
 })
 </script>
 
 <template>
-  <el-dropdown>
-    <span class="el-dropdown-link"> {{ '项目：' + title }}</span>
+  <ElDropdown :class="prefixCls" class="custom-hover" trigger="click">
+    <div class="flex items-center">
+      <Icon class="right-5px" icon="ep:promotion" />
+      <span class="pl-[5px] text-14px text-[var(--top-header-text-color)] <lg:hidden">
+        {{ '项目：' + title }}
+      </span>
+      <Icon class="left-10px" icon="ep:arrow-down" />
+    </div>
     <template #dropdown>
-      <el-dropdown-menu>
-        <el-dropdown-item
+      <ElDropdownMenu>
+        <ElDropdownItem
           v-for="item in projects"
-          :key="item.code"
-          :disiable="item.disiable"
-          @click="handleChange(item.code, item.name)"
+          :key="item.value"
+          divided
+          @click="handleChange(item.value, item.label)"
         >
-          {{ item.name }}
-        </el-dropdown-item>
-      </el-dropdown-menu>
+          <div>{{ item.label }}</div>
+        </ElDropdownItem>
+      </ElDropdownMenu>
     </template>
-  </el-dropdown>
+  </ElDropdown>
 </template>
-
-<style scoped>
-.el-dropdown-link {
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-}
-</style>

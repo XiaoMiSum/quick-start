@@ -37,7 +37,7 @@ public interface ArchiveMapper extends BaseMapperX<Archive> {
 
     default PageResult<Archive> selectPage(ProjectQueryReqVO req) {
         return selectPage(req, new LambdaQueryWrapperX<Archive>()
-                .likeIfPresent(Archive::getName, req.getName())
+                .likeIfPresent(Archive::getTitle, req.getTitle())
                 .orderByDesc(Archive::getId));
     }
 

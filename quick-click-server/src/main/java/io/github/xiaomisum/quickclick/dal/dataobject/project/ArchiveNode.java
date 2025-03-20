@@ -43,7 +43,7 @@ public class ArchiveNode extends BaseDO<Long> {
     // 原始模块父id
     private String parentId;
 
-    private String name;
+    private String title;
 
     private String path;
 

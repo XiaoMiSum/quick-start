@@ -29,7 +29,6 @@ import io.github.xiaomisum.quickclick.controller.project.node.vo.NodeAddReqVO;
 import io.github.xiaomisum.quickclick.controller.project.node.vo.NodeRespVO;
 import io.github.xiaomisum.quickclick.controller.project.node.vo.NodeUpdateReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
-import io.github.xiaomisum.quickclick.model.dto.SimpleResp;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -51,5 +50,4 @@ public interface NodeConvert {
 
     List<NodeRespVO> convert(List<ProjectNode> beans);
 
-    List<SimpleResp> convert1(List<ProjectNode> beans);
 }

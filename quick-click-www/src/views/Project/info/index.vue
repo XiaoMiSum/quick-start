@@ -3,70 +3,41 @@
   <ContentWrap>
     <div class="relative">
       <el-tabs v-model="active" :tab-change="tabChange">
-        <el-tab-pane label="主页 & 迭代">
-          <div class="flex">
-            <div class="mr-8 w-49%">
-              <ProjectLink ref="link" @save="handleSaveLink" v-model="data.links" />
-            </div>
-            <div class="w-49%">
-              <ProjectIteration ref="archive" />
-            </div>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane>
+        <el-tab-pane label="主页 & 迭代" />
+        <el-tab-pane v-hasPermi="['project:member:query']">
           <template #label>
             <Icon icon="ep:user" class="mr-2px" />
             <span>项目成员</span>
           </template>
-          暂未实现
+          <ProjectMember ref="projectMember" :currentProject="globalStore.getCurrentProject" />
         </el-tab-pane>
         <el-tab-pane>
           <template #label>
             <Icon icon="fa:file-archive-o" class="mr-2px" />
-            <span>环境定义</span>
+            <span>模块管理</span>
           </template>
-          暂未实现
+          <ProjectNode ref="projectNode" :currentProject="globalStore.getCurrentProject" />
         </el-tab-pane>
       </el-tabs>
-      <el-tooltip content="新增" placement="top" v-if="active !== '0'">
-        <el-button
-          v-if="active !== '0'"
-          circle
-          plain
-          type="primary"
-          style="position: absolute; top: 0; right: 0"
-          @click="handleAddClick"
-        >
-          <Icon icon="ep:plus" />
-        </el-button>
-      </el-tooltip>
     </div>
   </ContentWrap>
 </template>
 
 <script lang="ts" setup>
 import ProjectInfo from './ProjectInfo.vue'
-import ProjectLink from './ProjectLink.vue'
-import ProjectIteration from './ProjectIteration.vue'
+import ProjectMember from '../member/index.vue'
+import ProjectNode from '../node/index.vue'
 
 import * as HTTP from '@/api/project'
 
-import { useAppStore } from '@/store/modules/app'
-const appStore = useAppStore()
-
-import { useUserStore } from '@/store/modules/user'
-const userStore = useUserStore()
+import { useGlobalStore } from '@/store/modules/global'
+const globalStore = useGlobalStore()
 
 const data = ref<any>({ productManagers: [], developers: [], testers: [], links: [] })
 const active = ref('0')
 
-const handleSaveLink = async () => {
-  await HTTP.updateData({ id: data.value.id, links: data.value.links })
-  await getInfo()
-}
-
 const getInfo = async () => {
-  const id = userStore.getProject
+  const id = globalStore.getCurrentProject
   data.value = await HTTP.getData(id)
 }
 
@@ -74,28 +45,10 @@ const tabChange = (name: string) => {
   active.value = name
 }
 
-const link = ref()
-const handleAddClick = async () => {
-  switch (active.value) {
-    case '0':
-      link.value.handleAddClick()
-      break
-    case '1':
-      alert('暂未实现')
-      break
-    case '2':
-      alert('暂未实现')
-      break
-    case '3':
-      alert('暂未实现')
-      break
-  }
-}
-
 /** 监听当前项目变化，刷新列表数据 */
 const archive = ref()
 watch(
-  computed(() => userStore.getProject),
+  computed(() => globalStore.getCurrentProject),
   () => {
     getInfo()
     if (archive.value) {
@@ -106,7 +59,6 @@ watch(
 )
 
 onMounted(async () => {
-  appStore.setProjectPick(true)
   await getInfo()
 })
 </script>

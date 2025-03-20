@@ -48,7 +48,7 @@ export default defineComponent({
     // 是否自定义内容
     isCustom: propTypes.bool.def(false),
     // 表单label宽度
-    labelWidth: propTypes.oneOfType([String, Number]).def('auto'),
+    labelWidth: propTypes.oneOfType([String, Number]).def('100px'),
     // 是否 loading 数据中 add by 芋艿
     vLoading: propTypes.bool.def(false)
   },
@@ -213,7 +213,11 @@ export default defineComponent({
         }
       }
       return (
-        <ElFormItem {...(item.formItemProps || {})} prop={item.field} label={item.label || ''}>
+        <ElFormItem
+          {...(item.formItemProps || {})}
+          prop={item.field}
+          label={item.hiddenLabel ? '' : item.label || ''}
+        >
           {{
             ...formItemSlots,
             default: () => {

@@ -39,7 +39,7 @@ public class ProjectNode extends BaseDO<String> {
 
     private String parentId;
 
-    private String name;
+    private String title;
 
     private String path;
 

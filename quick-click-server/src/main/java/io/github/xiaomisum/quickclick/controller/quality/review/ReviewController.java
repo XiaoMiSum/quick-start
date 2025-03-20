@@ -43,6 +43,7 @@ import xyz.migoo.framework.common.exception.ErrorCode;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
 import xyz.migoo.framework.common.pojo.SimpleData;
+import xyz.migoo.framework.common.util.string.StrUtils;
 import xyz.migoo.framework.security.core.LoginUser;
 import xyz.migoo.framework.security.core.annotation.CurrentUser;
 
@@ -218,7 +219,7 @@ public class ReviewController {
      * @return 用例明细
      */
     @GetMapping("/case/first")
-    public Result<?> getReviewCaseStart(@RequestParam String reviewId) {
+    public Result<?> getReviewCaseStart(@RequestParam("reviewId") String reviewId) {
         ReviewCase result = reviewCaseService.getFirst(reviewId);
         if (Objects.isNull(result)) {
             return Result.getSuccessful();
@@ -235,7 +236,8 @@ public class ReviewController {
      * @return 用例明细
      */
     @GetMapping("/case/{opt}")
-    public Result<?> getReviewCase(@RequestParam String reviewId, @RequestParam Long id, @PathVariable String opt) {
+    public Result<?> getReviewCase(@RequestParam("reviewId") String reviewId,
+                                   @RequestParam("id") Long id, @PathVariable String opt) {
         List<ReviewCase> results = reviewCaseService.getListGtId(opt, reviewId, id);
         if (results.isEmpty()) {
             return Result.getSuccessful(null);
@@ -290,8 +292,8 @@ public class ReviewController {
      * @return 处理结果
      */
     @DeleteMapping("/case")
-    public Result<?> removeCase(@RequestParam("ids") List<Long> ids) {
-        reviewCaseService.remove(ids);
+    public Result<?> removeCase(@RequestParam("ids") String ids) {
+        reviewCaseService.remove(StrUtils.splitToLong(ids, ","));
         return Result.getSuccessful();
     }
 

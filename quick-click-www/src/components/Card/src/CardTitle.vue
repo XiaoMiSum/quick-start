@@ -15,7 +15,7 @@ const { title } = defineProps({
   <span class="card-title">{{ title }}</span>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .card-title {
   font-size: 14px;
   font-weight: 600;

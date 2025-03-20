@@ -35,22 +35,6 @@ export const Layout = () => import('@/layout/Layout.vue')
 
 const remainingRouter: AppRouteRecordRaw[] = [
   {
-    path: '/redirect',
-    name: 'Redirect',
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        name: 'Redirect',
-        component: () => import('@/components/Redirect/Redirect.vue'),
-        meta: {}
-      }
-    ],
-    meta: {
-      hidden: true,
-      noTagsView: true
-    }
-  },
-  {
     path: '/login',
     name: 'Login',
     component: () => import('@/views/Login/Login.vue'),

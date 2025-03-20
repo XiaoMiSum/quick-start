@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import NodeTree from './NodeTree.vue'
 import NodeForm from './NodeForm.vue'
-import * as HTTP from '@/api/track/node'
+import * as HTTP from '@/api/project/node'
 import { handleTree } from '@/utils/tree'
 
 import { useUserStore } from '@/store/modules/user'

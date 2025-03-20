@@ -96,8 +96,6 @@ const { getLoginState } = useLoginState()
 const { push } = useRouter()
 const loginLoading = ref(false)
 
-const router = useRouter()
-
 const getShow = computed(() => unref(getLoginState) === LoginStateEnum.LOGIN)
 
 const LoginRules = {
@@ -139,7 +137,7 @@ const handleLogin = async () => {
       setTimeout(() => {
         const loadingInstance = ElLoading.service()
         loadingInstance.close()
-        push({ path: '/index' })
+        push({ path: '/' })
       }, 400)
     }
   } catch {

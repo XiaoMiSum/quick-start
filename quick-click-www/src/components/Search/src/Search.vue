@@ -20,7 +20,7 @@ const props = defineProps({
   // 是否需要栅格布局
   isCol: propTypes.bool.def(false),
   // 表单label宽度
-  labelWidth: propTypes.oneOfType([String, Number]).def('auto'),
+  labelWidth: propTypes.oneOfType([String, Number]).def('100px'),
   // 操作按钮风格位置
   layout: propTypes.string.validate((v: string) => ['inline', 'bottom'].includes(v)).def('inline'),
   // 底部按钮的对齐方式
@@ -114,7 +114,7 @@ const setVisible = () => {
     <template #action>
       <div v-if="layout === 'inline'">
         <!-- update by 芋艿：去除搜索的 type="primary"，颜色变淡一点 -->
-        <ElButton v-if="showSearch" @click="search">
+        <ElButton type="primary" v-if="showSearch" @click="search">
           <Icon class="mr-5px" icon="ep:search" />
           {{ t('common.query') }}
         </ElButton>

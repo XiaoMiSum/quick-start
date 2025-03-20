@@ -25,6 +25,7 @@
 
 package io.github.xiaomisum.quickclick.service.qualitycenter.review;
 
+import cn.hutool.core.util.IdUtil;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Review;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
@@ -70,6 +71,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public String add(Review review) {
+        review.setId(IdUtil.getSnowflakeNextIdStr());
         mapper.insert(review);
         return review.getId();
     }

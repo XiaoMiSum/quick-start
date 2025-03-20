@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
 import xyz.migoo.framework.common.pojo.SimpleData;
+import xyz.migoo.framework.common.util.string.StrUtils;
 
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class MemberController {
      * @return 处理结果
      */
     @PutMapping
-    public Result<?> add(@RequestBody MemberUpdateReqVO data) {
+    public Result<?> update(@RequestBody MemberUpdateReqVO data) {
         service.update(MemberConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
     }
@@ -88,8 +89,8 @@ public class MemberController {
      * @return 处理结果
      */
     @DeleteMapping
-    public Result<?> remove(@RequestParam("ids") List<String> ids) {
-        service.remove(ids);
+    public Result<?> remove(@RequestParam("ids") String ids) {
+        service.remove(StrUtils.splitToLong(ids, ","));
         return Result.getSuccessful();
     }
 
@@ -100,7 +101,7 @@ public class MemberController {
      * @return 项目成员下拉
      */
     @GetMapping("simple")
-    public Result<List<SimpleData>> getSimpleList(@RequestParam String projectId) {
+    public Result<List<SimpleData>> getSimpleList(@RequestParam("projectId") String projectId) {
         List<MemberPageRespVO> members = service.getList(projectId);
         return Result.getSuccessful(MemberConvert.INSTANCE.convert(members));
     }

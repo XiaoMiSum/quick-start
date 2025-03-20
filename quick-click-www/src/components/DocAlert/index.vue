@@ -1,11 +1,11 @@
 <template>
-  <el-alert v-if="getEnable()" show-icon type="success">
+  <el-alert v-if="getEnable()" type="success" show-icon>
     <template #title>
       <div @click="goToUrl">{{ '【' + title + '】文档地址：' + url }}</div>
     </template>
   </el-alert>
 </template>
-<script lang="tsx" setup>
+<script setup lang="tsx">
 import { propTypes } from '@/utils/propTypes'
 
 defineOptions({ name: 'DocAlert' })

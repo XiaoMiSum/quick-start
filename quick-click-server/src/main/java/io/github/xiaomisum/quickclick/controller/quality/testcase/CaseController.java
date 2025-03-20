@@ -136,8 +136,8 @@ public class CaseController {
      * @return 处理结果
      */
     @DeleteMapping
-    public Result<?> remove(@RequestParam("ids") List<String> ids) {
-        service.remove(ids);
+    public Result<?> remove(@RequestParam("ids") String ids) {
+        service.remove(List.of(ids.split(",")));
         return Result.getSuccessful();
     }
 
@@ -172,7 +172,7 @@ public class CaseController {
         params.setDictHandler(handler);
         params.setSheetName("测试用例");
         params.setType(XSSF);
-        String filename = projectService.get(projectId).getName();
+        String filename = projectService.get(projectId).getTitle();
         try (Workbook workbook = ExcelExportUtil.exportExcel(params, TestcaseExportVO.class, exports);
              OutputStream os = response.getOutputStream()) {
             workbook.write(os);

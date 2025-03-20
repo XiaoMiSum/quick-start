@@ -16,7 +16,6 @@ interface UserInfoVO {
   permissions: string[]
   isSetUser: boolean
   user: UserVO
-  project: string
 }
 
 export const useUserStore = defineStore('admin-user', {
@@ -27,8 +26,7 @@ export const useUserStore = defineStore('admin-user', {
       id: 0,
       avatar: '',
       name: ''
-    },
-    project: wsCache.get(CACHE_KEY.PROJECT)
+    }
   }),
   getters: {
     getPermissions(): string[] {
@@ -39,12 +37,6 @@ export const useUserStore = defineStore('admin-user', {
     },
     getUser(): UserVO {
       return this.user
-    },
-    getProject(): string {
-      return this.project
-    },
-    getDefaultProject(): number {
-      return wsCache.get(CACHE_KEY.PROJECT)
     }
   },
   actions: {
@@ -59,10 +51,6 @@ export const useUserStore = defineStore('admin-user', {
       }
       this.permissions = userInfo.permissions
       this.user = { name: userInfo.name, id: userInfo.id, avatar: userInfo.avatar }
-      if (!wsCache.get(CACHE_KEY.PROJECT)) {
-        wsCache.add(CACHE_KEY.PROJECT, userInfo.defaultProject)
-      }
-      this.project = wsCache.get(CACHE_KEY.PROJECT)
       this.isSetUser = true
       wsCache.set(CACHE_KEY.USER, userInfo)
     },
@@ -80,10 +68,6 @@ export const useUserStore = defineStore('admin-user', {
         avatar: '',
         name: ''
       }
-    },
-    setDefaultProject(id: string) {
-      this.project = id
-      wsCache.set(CACHE_KEY.PROJECT, id)
     }
   }
 })

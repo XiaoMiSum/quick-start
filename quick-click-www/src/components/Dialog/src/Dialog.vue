@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { propTypes } from '@/utils/propTypes'
 import { isNumber } from '@/utils/is'
-
 defineOptions({ name: 'Dialog' })
 
 const slots = useSlots()
@@ -12,9 +11,7 @@ const props = defineProps({
   fullscreen: propTypes.bool.def(true),
   width: propTypes.oneOfType([String, Number]).def('40%'),
   scroll: propTypes.bool.def(false), // 是否开启滚动条。如果是的话，按照 maxHeight 设置最大高度
-  maxHeight: propTypes.oneOfType([String, Number]).def('400px'),
-  enums: propTypes.array.def([]),
-  tag: propTypes.string.def('')
+  maxHeight: propTypes.oneOfType([String, Number]).def('400px')
 })
 
 const getBindValue = computed(() => {
@@ -62,40 +59,37 @@ const dialogStyle = computed(() => {
 
 <template>
   <ElDialog
+    v-bind="getBindValue"
     :close-on-click-modal="true"
     :fullscreen="isFullscreen"
-    :show-close="false"
     :width="width"
-    class="com-dialog"
     destroy-on-close
-    draggable
     lock-scroll
-    v-bind="getBindValue"
+    draggable
+    class="com-dialog"
+    :show-close="false"
   >
     <template #header="{ close }">
       <div class="relative h-54px flex items-center justify-between pl-15px pr-15px">
         <slot name="title">
-          <div class="flex">
-            {{ title }}
-            <EnumTag v-if="tag" :enums="enums" :value="tag" class="ml-50px" />
-          </div>
+          {{ title }}
         </slot>
         <div
           class="absolute right-15px top-[50%] h-54px flex translate-y-[-50%] items-center justify-between"
         >
           <Icon
             v-if="fullscreen"
-            :icon="isFullscreen ? 'radix-icons:exit-full-screen' : 'radix-icons:enter-full-screen'"
             class="is-hover mr-10px cursor-pointer"
+            :icon="isFullscreen ? 'radix-icons:exit-full-screen' : 'radix-icons:enter-full-screen'"
             color="var(--el-color-info)"
             hover-color="var(--el-color-primary)"
             @click="toggleFull"
           />
           <Icon
             class="is-hover cursor-pointer"
-            color="var(--el-color-info)"
-            hover-color="var(--el-color-primary)"
             icon="ep:close"
+            hover-color="var(--el-color-primary)"
+            color="var(--el-color-info)"
             @click="close"
           />
         </div>

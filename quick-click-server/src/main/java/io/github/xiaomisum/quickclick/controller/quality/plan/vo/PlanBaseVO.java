@@ -40,7 +40,7 @@ public class PlanBaseVO {
     private Long projectId;
 
     @NotBlank(message = "计划名称不能为空")
-    private String name;
+    private String title;
 
     @NotBlank(message = "测试阶段不能为空")
     private String stage;

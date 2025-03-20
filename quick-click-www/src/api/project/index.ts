@@ -9,13 +9,14 @@ export const getPage = (params: any) => {
     params
   })
 }
+
 export const getSimple = () => {
   return request.get({
     url: url + '/simple'
   })
 }
 
-export const getData = (id: number) => {
+export const getData = (id: String) => {
   return request.get({
     url: url + '/' + id
   })

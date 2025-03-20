@@ -86,8 +86,7 @@ const props = defineProps({
 })
 
 const uploadHeaders = ref({
-  Authorization: 'Bearer ' + getAccessToken(),
-  'tenant-id': getTenantId()
+  Authorization: 'Bearer ' + getAccessToken()
 })
 
 const fileList = ref<UploadUserFile[]>([])
