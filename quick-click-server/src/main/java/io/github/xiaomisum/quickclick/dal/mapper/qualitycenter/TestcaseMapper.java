@@ -25,11 +25,11 @@
 
 package io.github.xiaomisum.quickclick.dal.mapper.qualitycenter;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
@@ -40,36 +40,20 @@ import java.util.List;
 @Mapper
 public interface TestcaseMapper extends BaseMapperX<Testcase> {
 
-    @Select("""
-            <script>
-            select
-            id, project_id projectId, node_id nodeId, title, priority, tags, supervisor,
-            last_review_result lastReviewResult, last_review_time lastReviewTime,
-            creator, create_time createTime, updater, update_time updateTime
-            from qc_quality_testcase
-            where deleted = #{req.deleted} and project_id = #{req.projectId}
-            <if test="req.nodeId != null and req.nodeId != ''">
-                and node_id = #{req.nodeId}
-            </if>
-            <if test="req.title != null and req.title != ''">
-                and title like concat('%', #{req.title}, '%')
-            </if>
-            <if test="req.priority != null and req.priority != ''">
-                and priority = #{req.priority}
-            </if>
-            <if test="req.supervisor != null">
-                and supervisor = #{req.supervisor}
-            </if>
-            
-            </script>
-            """)
-    PageResult<Testcase> selectPage(TestcaseQueryReqVO req);
 
+    default PageResult<Testcase> selectPage(TestcaseQueryReqVO req) {
+        return selectPage(req, new LambdaQueryWrapperX<Testcase>()
+                .eq(Testcase::getProjectId, req.getProjectId())
+                .eq(Testcase::getTrash, req.getTrash())
+                .eqIfPresent(Testcase::getNodeId, req.getNodeId())
+                .likeIfPresent(Testcase::getTitle, req.getTitle())
+                .eqIfPresent(Testcase::getPriority, req.getPriority())
+                .eqIfPresent(Testcase::getSupervisor, req.getSupervisor()));
+    }
 
     default List<Testcase> selectList(String projectId) {
         return selectList(new LambdaQueryWrapperX<Testcase>().eq(Testcase::getProjectId, projectId));
     }
-
 
     default PageResult<Testcase> selectPage(TestcaseQueryReqVO req, List<String> notInIds) {
         return selectPage(req, new LambdaQueryWrapperX<Testcase>()
@@ -83,7 +67,7 @@ public interface TestcaseMapper extends BaseMapperX<Testcase> {
 
     @Update("""
             <script>
-            delete from qc_quality_testcase where deleted = 1 and project_id = #{projectId}
+            delete from qc_quality_testcase where trash = 1 and project_id = #{projectId}
             <if test="ids != null and and ids.size() > 0">
             and id in
             <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
@@ -94,17 +78,11 @@ public interface TestcaseMapper extends BaseMapperX<Testcase> {
             """)
     void clear(@Param("ids") List<String> ids, @Param("projectId") String projectId);
 
-    @Update("""
-            <script>
-            update qc_quality_testcase set deleted = 0 where deleted = 1 and project_id = #{projectId}
-            <if test="ids != null and and ids.size() > 0">
-            and id in
-            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
-                    #{id}
-            </foreach>
-            </if>
-            </script>
-            """)
-    void recover(@Param("ids") List<String> ids, @Param("projectId") String projectId);
+    default void recover(List<String> ids, String projectId) {
+        update(new LambdaUpdateWrapper<Testcase>()
+                .set(Testcase::getTrash, 0)
+                .eq(Testcase::getProjectId, projectId)
+                .in(Testcase::getId, ids));
+    }
 
 }

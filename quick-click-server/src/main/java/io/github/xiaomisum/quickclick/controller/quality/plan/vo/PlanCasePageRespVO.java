@@ -35,7 +35,7 @@ import java.time.LocalDateTime;
 @Data
 public class PlanCasePageRespVO extends PlanCaseBaseVO {
 
-    private Long Id;
+    private Long id;
 
     private String path;
 

@@ -38,7 +38,7 @@ public interface ReviewCaseService {
 
     PageResult<ReviewCase> getPage(ReviewCaseQueryReqVO req);
 
-    ReviewCase get(String id);
+    ReviewCase get(Long id);
 
     List<ReviewCase> getList(String reviewId);
 

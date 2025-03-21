@@ -34,7 +34,7 @@ import java.util.Date;
 @Data
 public class TestcasePageRespVO extends TestcaseBaseVO {
 
-    private String Id;
+    private String id;
 
     private String path;
 

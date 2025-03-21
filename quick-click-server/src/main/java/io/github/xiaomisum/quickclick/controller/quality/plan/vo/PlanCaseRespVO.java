@@ -36,7 +36,7 @@ import java.util.List;
 @Data
 public class PlanCaseRespVO extends PlanCaseBaseVO {
 
-    private Long Id;
+    private Long id;
 
     private String path;
 

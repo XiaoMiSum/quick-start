@@ -9,11 +9,18 @@ const DEFAULT_CONFIG: TreeHelperConfig = {
   children: 'children',
   pid: 'pid'
 }
+
 export const defaultProps = {
   children: 'children',
   label: 'name',
   value: 'id',
   isLeaf: 'leaf'
+}
+
+export const defaultProps2 = {
+  children: 'children',
+  label: 'title',
+  value: 'id'
 }
 
 const getConfig = (config: Partial<TreeHelperConfig>) => Object.assign({}, DEFAULT_CONFIG, config)

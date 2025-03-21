@@ -70,4 +70,6 @@ public class Testcase extends BaseDO<String> {
 
     private LocalDateTime lastReviewTime;
 
+    private Integer trash;
+
 }

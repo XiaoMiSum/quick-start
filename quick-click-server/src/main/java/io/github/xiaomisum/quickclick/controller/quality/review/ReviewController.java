@@ -39,7 +39,6 @@ import io.github.xiaomisum.quickclick.service.qualitycenter.testcase.TestcaseSer
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import xyz.migoo.framework.common.exception.ErrorCode;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
 import xyz.migoo.framework.common.pojo.SimpleData;
@@ -50,7 +49,8 @@ import xyz.migoo.framework.security.core.annotation.CurrentUser;
 import java.util.List;
 import java.util.Objects;
 
-import static io.github.xiaomisum.quickclick.enums.TestStatus.Prepare;
+import static io.github.xiaomisum.quickclick.enums.ErrorCodeConstants.ORIGINAL_CASE_NOT_EXIST;
+import static io.github.xiaomisum.quickclick.enums.TestStatus.Preparing;
 
 /**
  * 测试评审
@@ -89,7 +89,7 @@ public class ReviewController {
      * @return 评审明细
      */
     @GetMapping("/{reviewId}")
-    public Result<?> get(@PathVariable String reviewId) {
+    public Result<?> get(@PathVariable("reviewId") String reviewId) {
         ReviewRespVO result = ReviewConvert.INSTANCE.convert(service.get(reviewId));
         if (Objects.nonNull(result)) {
             result.setStatistics(reviewCaseService.statistics(result.getId()));
@@ -127,7 +127,7 @@ public class ReviewController {
      * @return 处理结果
      */
     @DeleteMapping("/{id}")
-    public Result<?> remove(@PathVariable String id) {
+    public Result<?> remove(@PathVariable("id") String id) {
         service.remove(id);
         return Result.getSuccessful();
     }
@@ -161,7 +161,7 @@ public class ReviewController {
     public Result<?> syncReviewCase(@RequestBody @Valid ReviewCaseSyncVO req) {
         TestcaseDTO testcase = TestcaseConvert.INSTANCE.convert(testcaseService.get(req.getOriginalId()));
         if (Objects.isNull(testcase)) {
-            return Result.getError(new ErrorCode(-1, "原始用例不存在"));
+            return Result.getError(ORIGINAL_CASE_NOT_EXIST);
         }
         ReviewCase reviewCase = ReviewConvert.INSTANCE.convert(testcase);
         reviewCase.setReviewId(req.getReviewId()).setId(req.getId());
@@ -176,7 +176,7 @@ public class ReviewController {
      * @return 评审用例信息
      */
     @GetMapping("/case/{id}")
-    public Result<?> getReviewCase(@PathVariable String id) {
+    public Result<?> getReviewCase(@PathVariable("id") Long id) {
         ReviewCaseRespVO result = ReviewConvert.INSTANCE.convert(reviewCaseService.get(id));
         if (Objects.nonNull(result)) {
             if (StrUtil.isNotBlank(result.getNodeId())) {
@@ -198,13 +198,13 @@ public class ReviewController {
         execute.setReviewer(user.getId());
         // 设置实际开始时间
         List<ReviewCase> total = reviewCaseService.getList(execute.getReviewId());
-        List<ReviewCase> notStart = reviewCaseService.getList(execute.getReviewId(), Prepare);
+        List<ReviewCase> notStart = reviewCaseService.getList(execute.getReviewId(), Preparing);
         if (total.size() == notStart.size()) {
             service.setStartTime(execute.getReviewId());
         }
         reviewCaseService.reviewed(execute);
         testcaseService.update(ReviewConvert.INSTANCE.convert(execute));
-        List<ReviewCase> prepares = reviewCaseService.getList(execute.getReviewId(), Prepare);
+        List<ReviewCase> prepares = reviewCaseService.getList(execute.getReviewId(), Preparing);
         // 设置实际结束时间
         if (prepares.isEmpty()) {
             service.setEndTime(execute.getReviewId());
@@ -237,7 +237,8 @@ public class ReviewController {
      */
     @GetMapping("/case/{opt}")
     public Result<?> getReviewCase(@RequestParam("reviewId") String reviewId,
-                                   @RequestParam("id") Long id, @PathVariable String opt) {
+                                   @RequestParam("id") Long id,
+                                   @PathVariable("opt") String opt) {
         List<ReviewCase> results = reviewCaseService.getListGtId(opt, reviewId, id);
         if (results.isEmpty()) {
             return Result.getSuccessful(null);

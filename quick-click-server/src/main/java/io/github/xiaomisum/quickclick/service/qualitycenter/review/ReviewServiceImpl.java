@@ -98,23 +98,23 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Scheduled(cron = CRON)
     public void scheduleUpdateStatus() {
-        mapper.selectByStatus(Prepare).forEach(review -> {
+        mapper.selectByStatus(Preparing).forEach(review -> {
             List<ReviewCase> cases = reviewCaseMapper.selectList(review.getId());
             Map<TestStatus, List<ReviewCase>> group = cases.stream()
                     .collect(Collectors.groupingBy(ReviewCase::getResult));
-            List<ReviewCase> prepareList = Prepare.get(group);
-            List<ReviewCase> passList = Pass.get(group);
-            List<ReviewCase> failureList = Failure.get(group);
+            List<ReviewCase> prepareList = Preparing.get(group);
+            List<ReviewCase> passList = Passed.get(group);
+            List<ReviewCase> failureList = Failed.get(group);
             List<ReviewCase> blockingList = Blocking.get(group);
-            List<ReviewCase> skipList = Skip.get(group);
-            List<ReviewCase> underwayList = Underway.get(group);
+            List<ReviewCase> skipList = Skipped.get(group);
+            List<ReviewCase> underwayList = Processing.get(group);
             if (prepareList.isEmpty() && underwayList.isEmpty()) {
                 // 进行中和未开始的都为空，评审完成
-                mapper.updateStatus(review.getId(), complete);
+                mapper.updateStatus(review.getId(), Finished);
             } else if ((passList.size() + failureList.size() +
                     blockingList.size() + skipList.size() + underwayList.size()) < cases.size()) {
                 // 成功数量 + 失败数量 + 阻塞数量 + 跳过数量 + 进行中数量 之和 小于 总数，评审进行中
-                mapper.updateStatus(review.getId(), Underway);
+                mapper.updateStatus(review.getId(), Processing);
             }
         });
     }

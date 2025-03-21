@@ -25,6 +25,8 @@
 
 package io.github.xiaomisum.quickclick.controller.quality.testcase.vo;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,16 +38,36 @@ import xyz.migoo.framework.common.util.json.JsonUtils;
 @NoArgsConstructor
 public class TestcaseQueryReqVO extends PageParam {
 
+    /**
+     * 项目编号
+     */
+    @NotEmpty(message = "projectId 不能为空")
     private String projectId;
 
+    /**
+     * 回收站
+     */
+    @NotNull(message = "trash 不能为空")
+    private Integer trash;
+
+    /**
+     * 模块编号
+     */
     private String nodeId;
 
+    /**
+     * 标题
+     */
     private String title;
 
+    /**
+     * 优先级
+     */
     private String priority;
 
-    private Integer deleted;
-
+    /**
+     * 责任人
+     */
     private Long supervisor;
 
     public TestcaseQueryReqVO(int pageNo, int pageSize) {

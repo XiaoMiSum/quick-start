@@ -7,7 +7,7 @@ export interface CaseVO {
   prerequisite?: any | String
   steps: CaseStep[]
   tags?: String[]
-  supervisor?: String
+  supervisor?: number
 }
 
 export type CaseStep = {

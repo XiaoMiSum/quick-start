@@ -27,17 +27,21 @@ package io.github.xiaomisum.quickclick.controller.quality.testcase.vo;
 
 import io.github.xiaomisum.quickclick.model.dto.CaseStep;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TestcaseUpdateReqVO extends TestcaseBaseVO {
 
     @NotNull(message = "用例编号不能为空")
-    private Long Id;
+    private String id;
 
     @NotNull(message = "执行步骤不能为空")
     private List<CaseStep> steps;

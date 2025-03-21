@@ -34,7 +34,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class PlanRespVO extends PlanBaseVO {
 
-    private String Id;
+    private String id;
 
     private String memo;
 

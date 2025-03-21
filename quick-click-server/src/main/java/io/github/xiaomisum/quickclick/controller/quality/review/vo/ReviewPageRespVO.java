@@ -39,7 +39,7 @@ import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_D
 @Data
 public class ReviewPageRespVO extends ReviewBaseVO {
 
-    private String Id;
+    private String id;
 
     private Statistics statistics;
 

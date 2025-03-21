@@ -37,7 +37,7 @@ import lombok.NoArgsConstructor;
 public class ReviewCaseExecuteVO {
 
     @NotEmpty(message = "评审关联用例记录编号不能为空")
-    private Long Id;
+    private Long id;
 
     @NotEmpty(message = "用例原始编号不能为空")
     private String originalId;

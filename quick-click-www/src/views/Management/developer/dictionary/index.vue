@@ -75,7 +75,7 @@ const openForm = (type: string, data?: any) => {
 
 /** 数据按钮操作 */
 const handleLinkClick = (code: string) => {
-  push({ path: '/developer/dictionary/values', query: { dictCode: code } })
+  push({ path: '/management/developer/dictionary/values', query: { dictCode: code } })
 }
 
 /** 初始化 **/

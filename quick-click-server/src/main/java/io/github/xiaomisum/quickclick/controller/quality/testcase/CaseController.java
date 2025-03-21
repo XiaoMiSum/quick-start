@@ -35,7 +35,6 @@ import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.*;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.TestcaseConvert;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
-import io.github.xiaomisum.quickclick.enums.ErrorCodeConstants;
 import io.github.xiaomisum.quickclick.model.dto.CaseStep;
 import io.github.xiaomisum.quickclick.service.project.NodeService;
 import io.github.xiaomisum.quickclick.service.project.ProjectService;
@@ -57,8 +56,11 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 import static cn.afterturn.easypoi.excel.entity.enmus.ExcelType.XSSF;
+import static io.github.xiaomisum.quickclick.enums.ErrorCodeConstants.TEST_CASE_BATCH_UPDATE_ERROR;
+import static io.github.xiaomisum.quickclick.enums.ErrorCodeConstants.TEST_CASE_IMPORT_ERROR;
 
 /**
  * 测试用例
@@ -101,7 +103,7 @@ public class CaseController {
      * @return 用例明细
      */
     @GetMapping("/{id}")
-    public Result<?> get(@PathVariable String id) {
+    public Result<?> get(@PathVariable("id") String id) {
         return Result.getSuccessful(TestcaseConvert.INSTANCE.convert1(service.get(id)));
     }
 
@@ -125,6 +127,21 @@ public class CaseController {
      */
     @PutMapping
     public Result<?> update(@RequestBody @Valid TestcaseUpdateReqVO data) {
+        service.update(TestcaseConvert.INSTANCE.convert(data));
+        return Result.getSuccessful();
+    }
+
+    /**
+     * 更新用例
+     *
+     * @param data 用例信息
+     * @return 处理结果
+     */
+    @PutMapping("batch")
+    public Result<?> batchUpdate(@RequestBody @Valid TestcaseBatchUpdateReqVO data) {
+        if (Objects.isNull(data.getSupervisor()) && StrUtil.isAllBlank(data.getPriority(), data.getNodeId())) {
+            throw ServiceExceptionUtil.get(TEST_CASE_BATCH_UPDATE_ERROR);
+        }
         service.update(TestcaseConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
     }
@@ -161,7 +178,7 @@ public class CaseController {
         } else {
             exports = TestcaseConvert.INSTANCE.convert1(service.getList(projectId));
             if (exports.isEmpty()) {
-                throw ServiceExceptionUtil.get(ErrorCodeConstants.TEST_CASE_IMPORT_ERROR);
+                throw ServiceExceptionUtil.get(TEST_CASE_IMPORT_ERROR);
             }
         }
         List<ProjectNode> modules = nodeService.getList(projectId);

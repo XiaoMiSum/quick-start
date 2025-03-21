@@ -1,4 +1,4 @@
-export {}
+export { }
 declare global {
   interface Fn<T = any> {
     (...arg: T[]): T
@@ -44,7 +44,8 @@ declare global {
 
   interface Tree {
     id: number | string
-    name: string
+    name?: string
+    title?: string
     status?: num
     children?: Tree[] | any[]
   }

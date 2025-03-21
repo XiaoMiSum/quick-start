@@ -39,3 +39,9 @@ export const SystemUserSocialTypeEnum = {
     img: 'https://s1.ax1x.com/2022/05/22/OzMrzn.png'
   }
 }
+
+export const QualityTestStatus = {
+  Passed: 'Passed', // 初始化中
+  Preparing: 'Preparing', // 运行中
+  STOP: 2 // 暂停运行
+}

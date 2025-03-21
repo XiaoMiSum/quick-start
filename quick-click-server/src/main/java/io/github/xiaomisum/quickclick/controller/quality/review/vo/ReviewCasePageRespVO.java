@@ -35,7 +35,7 @@ import java.time.LocalDateTime;
 @Data
 public class ReviewCasePageRespVO extends ReviewCaseBaseVO {
 
-    private Long Id;
+    private Long id;
 
     private TestStatus reviewed;
 

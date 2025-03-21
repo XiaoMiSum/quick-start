@@ -32,5 +32,5 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ProjectRespVO extends ProjectBaseVO {
 
-    private String Id;
+    private String id;
 }

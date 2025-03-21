@@ -8,7 +8,7 @@
       </el-col>
       <el-col :span="8">
         <el-form-item label="用例等级：">
-          <EnumTag :enums="CASE_LEVEL_ENUMS" :value="modelValue.level" />
+   
         </el-form-item>
       </el-col>
     </el-row>

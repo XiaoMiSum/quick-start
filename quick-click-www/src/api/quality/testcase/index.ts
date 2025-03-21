@@ -36,6 +36,13 @@ export const updateData = (data: any) => {
   })
 }
 
+export const batchUpdate = (data: any) => {
+  return request.put({
+    url: url + '/batch',
+    data
+  })
+}
+
 export const removeData = (id: number) => {
   return request.delete({
     url: url + '/' + id

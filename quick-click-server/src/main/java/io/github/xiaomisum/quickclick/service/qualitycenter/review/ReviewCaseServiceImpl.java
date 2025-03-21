@@ -52,7 +52,7 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     }
 
     @Override
-    public ReviewCase get(String id) {
+    public ReviewCase get(Long id) {
         return mapper.selectById(id);
     }
 

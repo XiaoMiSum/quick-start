@@ -32,8 +32,11 @@ import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
 import io.github.xiaomisum.quickclick.dal.mapper.project.NodeMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import xyz.migoo.framework.common.exception.util.ServiceExceptionUtil;
 
 import java.util.List;
+
+import static io.github.xiaomisum.quickclick.enums.ErrorCodeConstants.NODE_HAS_CHILDREN;
 
 @Service
 public class NodeServiceImpl implements NodeService {
@@ -72,10 +75,10 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public void remove(List<String> ids) {
-        List<String> canRemoveIds = ids.stream()
-                .filter(parentId -> CollectionUtil.isEmpty(mapper.selectChildren(parentId)))
-                .toList();
+        if (CollectionUtil.isNotEmpty(mapper.selectChildren(ids))) {
+            throw ServiceExceptionUtil.get(NODE_HAS_CHILDREN);
+        }
         // todo 验证是否有用例
-        mapper.deleteByIds(canRemoveIds);
+        mapper.deleteByIds(ids);
     }
 }

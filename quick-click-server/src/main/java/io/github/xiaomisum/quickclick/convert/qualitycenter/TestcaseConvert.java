@@ -95,4 +95,13 @@ public interface TestcaseConvert {
                 .setNodeId(testcase.getNodeId());
     }
 
+    default List<Testcase> convert(TestcaseBatchUpdateReqVO data) {
+        List<Testcase> beans = Lists.newArrayList();
+        data.getIds().forEach(item -> beans.add((Testcase) new Testcase()
+                .setNodeId(data.getNodeId())
+                .setPriority(data.getPriority())
+                .setSupervisor(data.getSupervisor())
+                .setId(item)));
+        return beans;
+    }
 }

@@ -32,13 +32,13 @@ import java.util.Map;
 import java.util.Optional;
 
 public enum TestStatus {
-    Prepare, // 准备中
-    Pass, // 通过
-    Failure, // 失败
+    Preparing, // 准备中
+    Passed, // 通过
+    Failed, // 失败
     Blocking, // 阻塞
-    Skip, // 跳过
-    Underway, // 进行中
-    complete; // 完成
+    Skipped, // 跳过
+    Processing, // 进行中
+    Finished; // 完成
 
     public <T> List<T> get(Map<TestStatus, List<T>> group) {
         return Optional.ofNullable(group.get(this)).orElse(Lists.newArrayList());

@@ -4,14 +4,14 @@
     <div class="relative">
       <el-tabs v-model="active" :tab-change="tabChange">
         <el-tab-pane label="主页 & 迭代" />
-        <el-tab-pane v-hasPermi="['project:member:query']">
+        <el-tab-pane v-if="checkPermi(['project:member:query'])">
           <template #label>
             <Icon icon="ep:user" class="mr-2px" />
             <span>项目成员</span>
           </template>
           <ProjectMember ref="projectMember" :currentProject="globalStore.getCurrentProject" />
         </el-tab-pane>
-        <el-tab-pane>
+        <el-tab-pane v-if="checkPermi(['project:node:query'])">
           <template #label>
             <Icon icon="fa:file-archive-o" class="mr-2px" />
             <span>模块管理</span>
@@ -27,6 +27,8 @@
 import ProjectInfo from './ProjectInfo.vue'
 import ProjectMember from '../member/index.vue'
 import ProjectNode from '../node/index.vue'
+
+import { checkPermi } from '@/utils/permission'
 
 import * as HTTP from '@/api/project'
 

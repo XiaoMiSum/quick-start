@@ -1,8 +1,8 @@
 <template>
   <ContentWrap class="h-260px">
     <el-form ref="formRef" :model="caseData" :rules="formRules" label-width="100px">
-      <el-form-item label="用例标题" prop="name">
-        <el-input v-model="caseData.name" maxlength="64" show-word-limit />
+      <el-form-item label="用例标题" prop="title">
+        <el-input v-model="caseData.title" maxlength="64" show-word-limit />
       </el-form-item>
       <el-row>
         <el-col :span="12">
@@ -10,7 +10,7 @@
             <el-tree-select
               v-model="caseData.nodeId"
               :data="modules"
-              :props="defaultProps"
+              :props="defaultProps2"
               check-strictly
               default-expand-all
               placeholder="请选择所属模块"
@@ -20,13 +20,13 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="用例等级" prop="level">
-            <el-select v-model="caseData.level" placeholder="请选择用例等级" style="width: 100%">
+          <el-form-item label="优先级" prop="priority">
+            <el-select v-model="caseData.priority" placeholder="请选择优先级" style="width: 100%">
               <el-option
-                v-for="item in CASE_LEVEL_ENUMS"
-                :key="item.key"
+                v-for="item in getDictOptions(DICT_TYPE.QUALITY_TESTCASE_PRIORITY)"
+                :key="item.value"
                 :label="item.label"
-                :value="item.key"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
@@ -39,30 +39,24 @@
               v-model="caseData.tags"
               allow-create
               clearable
-              filterable
               multiple
+              filterable
               placeholder="请选择用例标签，无可用标签可输入新标签"
               style="width: 100%"
               @blur="tagsBlur"
             >
-              <el-option
-                v-for="item in tags"
-                :key="item.code"
-                :disabled="item.disabled"
-                :label="item.name"
-                :value="item.name"
-              />
+              <el-option v-for="(item, index) in tags" :key="index" :label="item" :value="item" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="责任人" prop="maintainer">
-            <el-select v-model="caseData.maintainer" placeholder="请选择责任人" style="width: 100%">
+          <el-form-item label="责任人" prop="supervisor">
+            <el-select v-model="caseData.supervisor" placeholder="请选择责任人" style="width: 100%">
               <el-option
                 v-for="item in users"
-                :key="item.id"
-                :label="item.name"
-                :value="item.name"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
@@ -88,8 +82,8 @@
         </el-table-column>
         <el-table-column label="步骤描述">
           <template #default="scope">
-            <el-form-item :prop="'formData.steps.' + scope.$index + '.exec'" clearable>
-              <el-input v-model="scope.row.exec" type="textarea" />
+            <el-form-item :prop="'formData.steps.' + scope.$index + '.step'" clearable>
+              <el-input v-model="scope.row.step" type="textarea" />
             </el-form-item>
           </template>
         </el-table-column>
@@ -117,31 +111,35 @@
     </el-form>
     <div class="float-right">
       <el-button @click="handleGoCaseList">取消</el-button>
-      <el-button :loading="loading" type="primary" @click="handleSubmitAndCloseView"
-        >保存并关闭
+      <el-button :loading="loading" type="primary" @click="handleSubmitAndCloseView">
+        保存并关闭
       </el-button>
-      <el-button :loading="loading" @click="handleSubmitAndAdd"> 保存并继续添加</el-button>
+      <el-button :loading="loading" type="success" @click="handleSubmitAndAdd">
+        保存并继续添加
+      </el-button>
     </div>
   </ContentWrap>
 </template>
 
 <script lang="ts" setup>
-import * as HTTP from '@/api/track/testcase/index'
-import * as MODULE from '@/api/track/node'
-import * as USER from '@/api/management/system/user'
+import * as HTTP from '@/api/quality/testcase'
+import * as Node from '@/api/project/node'
+import * as User from '@/api/project/member'
 
 import { useTagsViewStore } from '@/store/modules/tagsView'
-import { useAppStore } from '@/store/modules/app'
+
+import { useGlobalStore } from '@/store/modules/global'
 import { useUserStore } from '@/store/modules/user'
 import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
-import { defaultProps, handleTree } from '@/utils/tree'
-import { CASE_LEVEL_ENUMS, TESTCASE_STATUS } from '@/utils/enums'
+
+import { defaultProps2, handleTree } from '@/utils/tree'
 
 import { vDragable } from 'element-plus-table-dragable'
-import { CaseStep, CaseVO } from '@/api/track/testcase.data'
+import { CaseStep, CaseVO } from '@/api/quality/testcase.data'
+import { getDictOptions, DICT_TYPE } from '@/utils/dictionary'
 
 const userStore = useUserStore()
-const appStore = useAppStore()
+const globalStore = useGlobalStore()
 
 const { params, query } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 
@@ -153,9 +151,11 @@ const message = useMessage()
 
 const caseData = ref<CaseVO>({
   nodeId: undefined,
-  name: '',
-  level: '',
-  steps: [{ exec: '', expected: '', actual: '' }]
+  projectId: globalStore.getCurrentProject,
+  supervisor: undefined,
+  title: '',
+  priority: '',
+  steps: [{ step: '', expected: '', actual: '' }]
 })
 
 const modules = ref<any>([])
@@ -165,10 +165,11 @@ const tags = ref<any>([])
 const loading = ref(false)
 
 const formRules = reactive({
-  name: [{ required: true, message: '用例标题不能为空', trigger: 'blur' }],
+  title: [{ required: true, message: '用例标题不能为空', trigger: 'blur' }],
   nodeId: [{ required: true, message: '所属模块不能为空', trigger: 'blur' }],
-  level: [{ required: true, message: '用例等级不能为空', trigger: 'blur' }],
-  maintainer: [{ required: true, message: '责任人不能为空', trigger: 'blur' }]
+  priority: [{ required: true, message: '优先级不能为空', trigger: 'blur' }],
+  supervisor: [{ required: true, message: '责任人不能为空', trigger: 'blur' }],
+  steps: [{ required: true, message: '责任人不能为空', trigger: 'blur' }]
 })
 
 /** 监听 标签变化 */
@@ -187,10 +188,6 @@ const handleSubmitAndCloseView = async () => {
       caseData.value.id = await HTTP.addData(caseData.value)
       message.success('新增成功')
     } else {
-      if (caseData.value.reviewed === TESTCASE_STATUS.Pass) {
-        await message.confirm('当前测试用例已「评审通过」，继续操作将重置为「未评审」')
-        caseData.value.reviewed = TESTCASE_STATUS.Prepare
-      }
       await HTTP.updateData(caseData.value)
       message.success('更新成功')
     }
@@ -204,6 +201,7 @@ const handleSubmitAndCloseView = async () => {
 /** 保存并继续添加 */
 const handleSubmitAndAdd = async () => {
   loading.value = true
+  console.log(caseData.value)
   try {
     if (!caseData.value.id) {
       await HTTP.addData(caseData.value)
@@ -213,10 +211,6 @@ const handleSubmitAndAdd = async () => {
         toCaseAdd()
       }
     } else {
-      if (caseData.value.reviewed === TESTCASE_STATUS.Pass) {
-        await message.confirm('当前测试用例已「评审通过」，继续操作将重置为「未评审」')
-        caseData.value.reviewed = TESTCASE_STATUS.Prepare
-      }
       await HTTP.updateData(caseData.value)
       message.success('更新成功')
       await handleCloseView()
@@ -234,10 +228,11 @@ const handleCloseView = async () => {
 const resetData = () => {
   caseData.value = {
     nodeId: undefined,
-    maintainer: userStore.getUser.name,
-    name: '',
-    level: '',
-    steps: [{ exec: '', expected: '', actual: '' }]
+    projectId: globalStore.getCurrentProject,
+    supervisor: undefined,
+    title: '',
+    priority: '',
+    steps: [{ step: '', expected: '', actual: '' }]
   }
 }
 
@@ -252,23 +247,23 @@ const handleGoCaseList = async () => {
 }
 
 const toCaseList = async () => {
-  push('/track/case')
+  push('/quality/case')
 }
 
 const toCaseAdd = async () => {
-  push('/track/case/add')
+  push('/quality/case/add')
 }
 
 /** 获得模块树 */
 const getTree = async () => {
   modules.value = []
-  const data = await MODULE.getSimple()
+  const data = await Node.getList({ projectId: globalStore.getCurrentProject })
   modules.value = handleTree(data)
 }
 
 /**  获取用户列表 */
 const getUsers = async () => {
-  users.value = await USER.listSimple()
+  users.value = await User.getSimple(globalStore.getCurrentProject)
 }
 
 const dragOptions = [
@@ -299,14 +294,14 @@ const dragOptions = [
 ]
 
 const insertList = async (index: number) => {
-  ;(caseData.value.steps as CaseStep[]).splice(index, 0, { exec: '', expected: '', actual: '' })
+  ;(caseData.value.steps as CaseStep[]).splice(index, 0, { step: '', expected: '', actual: '' })
 }
 
 const handleDelete = async (index: number) => {
   const steps = caseData.value.steps as CaseStep[]
   steps.splice(index, 1)
   if (!steps || steps.length < 1) {
-    caseData.value.steps = [{ exec: '', expected: '', actual: '' }]
+    caseData.value.steps = [{ step: '', expected: '', actual: '' }]
   }
 }
 
@@ -319,9 +314,12 @@ onMounted(async () => {
   if (query && query.from) {
     caseData.value = await HTTP.getData(query.from)
     delete caseData.value.id
-    caseData.value.name = 'COPY_' + caseData.value.name
+    caseData.value.title = 'COPY_' + caseData.value.title
   }
-  caseData.value.maintainer = userStore.getUser.name
+  if (!caseData.value.id && !caseData.value.supervisor) {
+    caseData.value.supervisor = userStore.getUser.id
+  }
+  console.log(caseData.value)
 })
 </script>
 

@@ -49,7 +49,7 @@ import xyz.migoo.framework.security.core.annotation.CurrentUser;
 import java.util.List;
 import java.util.Objects;
 
-import static io.github.xiaomisum.quickclick.enums.TestStatus.Prepare;
+import static io.github.xiaomisum.quickclick.enums.TestStatus.Preparing;
 
 /**
  * 测试计划
@@ -90,7 +90,7 @@ public class PlanController {
      * @return 测试计划详情
      */
     @GetMapping("/{id}")
-    public Result<?> get(@PathVariable String planId) {
+    public Result<?> get(@PathVariable("planId") String planId) {
         PlanRespVO result = PlanConvert.INSTANCE.convert(service.get(planId));
         if (Objects.nonNull(result)) {
             result.setStatistics(planCaseService.statistics(result.getId()));
@@ -128,7 +128,7 @@ public class PlanController {
      * @return 处理结果
      */
     @DeleteMapping("/{id}")
-    public Result<?> remove(@PathVariable String id) {
+    public Result<?> remove(@PathVariable("id") String id) {
         service.remove(id);
         return Result.getSuccessful();
     }
@@ -175,7 +175,7 @@ public class PlanController {
      * @return 执行用例信息
      */
     @GetMapping("/case/{id}")
-    public Result<?> getPlanCase(@PathVariable Long id) {
+    public Result<?> getPlanCase(@PathVariable("id") Long id) {
         PlanCaseRespVO result = PlanCaseConvert.INSTANCE.convert(planCaseService.get(id));
         if (Objects.nonNull(result)) {
             if (StrUtil.isNotBlank(result.getNodeId())) {
@@ -196,12 +196,12 @@ public class PlanController {
         execute.setExecutor(user.getId());
         // 设置实际开始时间
         List<PlanCase> total = planCaseService.getList(execute.getPlanId());
-        List<PlanCase> notStart = planCaseService.getList(execute.getPlanId(), Prepare);
+        List<PlanCase> notStart = planCaseService.getList(execute.getPlanId(), Preparing);
         if (total.size() == notStart.size()) {
             service.setStartTime(execute.getPlanId());
         }
         planCaseService.execute(execute);
-        List<PlanCase> prepares = planCaseService.getList(execute.getPlanId(), Prepare);
+        List<PlanCase> prepares = planCaseService.getList(execute.getPlanId(), Preparing);
         // 设置实际结束时间
         if (prepares.isEmpty()) {
             service.setEndTime(execute.getPlanId());
@@ -234,7 +234,8 @@ public class PlanController {
      */
     @GetMapping("/case/{opt}")
     public Result<?> getReviewCase(@RequestParam("planId") String planId,
-                                   @RequestParam("id") Long id, @PathVariable String opt) {
+                                   @RequestParam("id") Long id,
+                                   @PathVariable("opt") String opt) {
         List<PlanCase> results = planCaseService.getListGtId(opt, planId, id);
         if (results.isEmpty()) {
             return Result.getSuccessful(null);

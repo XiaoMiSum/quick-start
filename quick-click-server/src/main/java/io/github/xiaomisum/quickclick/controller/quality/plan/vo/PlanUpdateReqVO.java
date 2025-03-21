@@ -34,7 +34,7 @@ import lombok.EqualsAndHashCode;
 public class PlanUpdateReqVO extends PlanBaseVO {
 
     @NotNull(message = "测试计划编号不能为空")
-    private String Id;
+    private String id;
 
     private String memo;
 }

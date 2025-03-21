@@ -7,15 +7,32 @@
       :rules="formRules"
       label-width="100px"
     >
-      <el-form-item label="成员" prop="userId">
-        <el-select v-model="formData.userId" placeholder="请选择">
-          <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select>
+      <el-form-item label="模块名称" prop="title">
+        <el-input v-model="formData.title" clearable placeholder="请输入菜单名称" />
       </el-form-item>
-      <el-form-item label="岗位" prop="postId">
-        <el-select v-model="formData.postId" placeholder="请选择">
-          <el-option v-for="item in postList" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select>
+      <el-form-item label="上级模块">
+        <el-tree-select
+          v-model="formData.parentId"
+          :data="treeData"
+          :props="{
+            children: 'children',
+            label: 'title',
+            value: 'id',
+            isLeaf: 'leaf'
+          }"
+          check-strictly
+          node-key="id"
+          style="width: 100%"
+        />
+      </el-form-item>
+      <el-form-item label="显示排序" prop="sort">
+        <el-input-number
+          v-model="formData.sort"
+          :min="0"
+          style="width: 100%"
+          clearable
+          controls-position="right"
+        />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -26,16 +43,15 @@
 </template>
 
 <script lang="ts" setup>
-import * as HTTP from '@/api/project/member'
-import * as UserApi from '@/api/management/system/user'
-import * as PostApi from '@/api/management/system/post'
+import * as HTTP from '@/api/project/node'
 
-defineOptions({ name: 'MemberForm' })
+defineOptions({ name: 'NodeForm' })
 
 import { defineProps } from 'vue'
 
 const props = defineProps({
-  projectId: String
+  projectId: String,
+  treeData: Array
 })
 
 const { t } = useI18n() // 国际化
@@ -47,17 +63,15 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref<any>({
   id: undefined,
-  userId: undefined,
-  postId: undefined,
-  projectId: props.projectId
+  projectId: props.projectId,
+  title: undefined,
+  sort: undefined,
+  parentId: undefined
 })
 const formRules = reactive({
-  userId: [{ required: true, message: '请选择成员', trigger: 'blur' }],
-  postId: [{ required: true, message: '请选择岗位', trigger: 'blur' }]
+  title: [{ required: true, message: '模块名称不能为空', trigger: 'blur' }],
+  sort: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }]
 })
-
-const userList = ref<any>([]) // 用户列表
-const postList = ref<any>([]) // 岗位列表
 
 const formRef = ref() // 表单 Ref
 
@@ -69,17 +83,17 @@ const open = async (type: string, data?: any) => {
   resetForm()
   // 修改时，设置数据
   if (data) {
-    formLoading.value = true
-    try {
-      formData.value = Object.assign({}, data)
-    } finally {
-      formLoading.value = false
+    if (typeof data === 'string') {
+      formData.value.parentId = data
+    } else {
+      formLoading.value = true
+      try {
+        formData.value = Object.assign({}, data)
+      } finally {
+        formLoading.value = false
+      }
     }
   }
-  // 加载用户列表
-  userList.value = await UserApi.listSimple()
-  // 加载岗位列表
-  postList.value = await PostApi.listSimple()
 }
 
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
@@ -88,9 +102,10 @@ defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    userId: undefined,
-    postId: undefined,
-    projectId: props.projectId
+    projectId: props.projectId,
+    title: undefined,
+    sort: undefined,
+    parentId: undefined
   }
   formRef.value?.resetFields()
 }

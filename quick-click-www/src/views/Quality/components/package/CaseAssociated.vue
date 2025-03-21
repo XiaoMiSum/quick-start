@@ -49,7 +49,7 @@
             <el-table-column label="所属模块" prop="path" show-overflow-tooltip width="200" />
             <el-table-column align="center" label="用例等级" prop="level">
               <template #default="scope">
-                <EnumTag :enums="CASE_LEVEL_ENUMS" :value="scope.row.level" />
+
               </template>
             </el-table-column>
             <el-table-column align="center" label="标签" prop="tags" show-overflow-tooltip>
@@ -59,7 +59,7 @@
             </el-table-column>
             <el-table-column align="center" label="评审结果" prop="reviewed">
               <template #default="scope">
-                <EnumTag :enums="enums" :value="scope.row.reviewed" />
+    
               </template>
             </el-table-column>
             <el-table-column

@@ -3,14 +3,6 @@
     <!-- 搜索工作栏 -->
     <el-form ref="queryFormRef" :inline="true" :model="queryParams">
       <el-form-item>
-        <el-button type="primary" @click="handleQuery">
-          <Icon class="mr-5px" icon="ep:search" />
-          刷新
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon class="mr-5px" icon="ep:refresh" />
-          重置
-        </el-button>
         <el-button
           v-hasPermi="['project:node:add']"
           plain
@@ -30,6 +22,10 @@
           <Icon class="mr-5px" icon="ep:delete" />
           删除
         </el-button>
+        <el-button @click="resetQuery">
+          <Icon class="mr-5px" icon="ep:refresh" />
+          刷新
+        </el-button>
       </el-form-item>
     </el-form>
 
@@ -45,8 +41,20 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="名称" prop="title" show-overflow-tooltip width="300" />
       <el-table-column label="路径" prop="path" show-overflow-tooltip />
-      <el-table-column :width="150" align="center" label="操作">
+      <el-table-column label="排序" prop="sort" width="100" />
+      <el-table-column :width="250" align="center" label="操作">
         <template #default="scope">
+          <el-tooltip content="新增" placement="top">
+            <el-button
+              circle
+              v-hasPermi="['project:node:add']"
+              plain
+              type="primary"
+              @click="openForm('create', scope.row.id)"
+            >
+              <Icon icon="ep:plus" />
+            </el-button>
+          </el-tooltip>
           <el-tooltip content="编辑" placement="top">
             <el-button
               circle
@@ -74,11 +82,16 @@
     </el-table>
   </ContentWrap>
 
-  <MemberForm ref="formRef" @success="handleQuery" :project-id="props.currentProject" />
+  <NodeForm
+    ref="formRef"
+    @success="handleQuery"
+    :project-id="props.currentProject"
+    :tree-data="list"
+  />
 </template>
 
 <script lang="ts" setup>
-import MemberForm from './MemberForm.vue'
+import NodeForm from './NodeForm.vue'
 
 import * as HTTP from '@/api/project/node'
 

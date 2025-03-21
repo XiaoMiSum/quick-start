@@ -34,7 +34,7 @@ import lombok.EqualsAndHashCode;
 public class ReviewUpdateReqVO extends ReviewBaseVO {
 
     @NotNull(message = "测试评审编号不能为空")
-    private Long Id;
+    private String id;
 
     private String memo;
 }

@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 public class PlanCaseSyncVO {
 
     @NotEmpty(message = "测试计划关联用例记录编号不能为空")
-    private Long Id;
+    private Long id;
 
     @NotEmpty(message = "关联用例原始编号不能为空")
     private String originalId;

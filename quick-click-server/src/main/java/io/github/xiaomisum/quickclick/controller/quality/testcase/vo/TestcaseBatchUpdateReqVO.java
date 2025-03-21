@@ -23,24 +23,27 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.enums;
+package io.github.xiaomisum.quickclick.controller.quality.testcase.vo;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+import java.util.List;
+
+@Data
 @AllArgsConstructor
-public enum RoleTypeEnum {
+@NoArgsConstructor
+public class TestcaseBatchUpdateReqVO {
 
-    /**
-     * 内置角色
-     */
-    SYSTEM(1),
-    /**
-     * 自定义角色
-     */
-    CUSTOM(2);
+    @NotNull(message = "用例编号不能为空")
+    private List<String> ids;
 
-    private final Integer type;
+    private String nodeId;
+
+    private String priority;
+
+    private Long supervisor;
 
 }

@@ -38,13 +38,12 @@ public interface NodeMapper extends BaseMapperX<ProjectNode> {
     default List<ProjectNode> selectList(String projectId) {
         return selectList(new LambdaQueryWrapperX<ProjectNode>()
                 .eq(ProjectNode::getProjectId, projectId)
-                .orderByDesc(ProjectNode::getId, ProjectNode::getSort));
+                .orderByAsc(ProjectNode::getSort));
     }
 
-    default List<ProjectNode> selectChildren(String parentId) {
+    default List<ProjectNode> selectChildren(List<String> parentIds) {
         return selectList(new LambdaQueryWrapperX<ProjectNode>()
-                .eq(ProjectNode::getParentId, parentId)
-                .orderByDesc(ProjectNode::getId, ProjectNode::getSort));
+                .in(ProjectNode::getParentId, parentIds));
     }
 
 }

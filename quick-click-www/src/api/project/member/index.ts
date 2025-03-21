@@ -9,9 +9,10 @@ export const getPage = (params: any) => {
     params
   })
 }
-export const getSimple = () => {
+export const getSimple = (projectId: string) => {
   return request.get({
-    url: url + '/simple'
+    url: url + '/simple',
+    params: { projectId }
   })
 }
 

@@ -124,5 +124,9 @@ export enum DICT_TYPE {
   INFRA_FILE_STORAGE = 'infra_file_storage',
   INFRA_OPERATE_TYPE = 'infra_operate_type',
   INFRA_SMS_SEND_STATUS = 'infra_sms_send_status',
-  INFRA_SMS_RECEIVE_STATUS = 'infra_sms_receive_status'
+  INFRA_SMS_RECEIVE_STATUS = 'infra_sms_receive_status',
+
+  // ========== 质量 模块 ==========
+  QUALITY_TEST_STATUS = 'test_status',
+  QUALITY_TESTCASE_PRIORITY = 'testcase_priority'
 }

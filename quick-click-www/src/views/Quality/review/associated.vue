@@ -81,9 +81,7 @@
             <el-table-column label="用例名称" prop="name" show-overflow-tooltip width="200" />
             <el-table-column label="所属模块" prop="path" show-overflow-tooltip width="200" />
             <el-table-column align="center" label="用例等级" prop="level">
-              <template #default="scope">
-                <EnumTag :enums="CASE_LEVEL_ENUMS" :value="scope.row.level" />
-              </template>
+              <template #default="scope"> </template>
             </el-table-column>
             <el-table-column align="center" label="标签" prop="tags" show-overflow-tooltip>
               <template #default="scope">
@@ -97,9 +95,7 @@
               show-overflow-tooltip
             />
             <el-table-column align="center" label="评审结果" prop="reviewResult">
-              <template #default="scope">
-                <EnumTag :enums="REVIEW_TESTCASE_STATUS" :value="scope.row.reviewResult" />
-              </template>
+              <template #default="scope"> </template>
             </el-table-column>
             <el-table-column align="center" label="评审人" prop="reviewer" show-overflow-tooltip />
             <el-table-column

@@ -25,6 +25,7 @@
 
 package io.github.xiaomisum.quickclick.controller.project.member.vo;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,7 +35,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberUpdateReqVO {
 
+    /**
+     * 数据编号
+     */
+    @NotNull(message = "id 不能为空")
     private Long id;
 
+    /**
+     * 用户编号
+     */
+    @NotNull(message = "userId 不能为空")
+    private Long userId;
+
+    /**
+     * 岗位编号
+     */
+    @NotNull(message = "postId 不能为空")
     private Long postId;
 }

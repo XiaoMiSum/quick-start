@@ -84,6 +84,11 @@ public class TestcaseServiceImpl implements TestcaseService {
     }
 
     @Override
+    public void update(List<Testcase> data) {
+        mapper.updateBatch(data);
+    }
+
+    @Override
     public void remove(List<String> ids) {
         mapper.deleteByIds(ids);
     }

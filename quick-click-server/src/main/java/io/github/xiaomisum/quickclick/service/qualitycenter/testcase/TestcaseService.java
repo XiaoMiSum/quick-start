@@ -49,9 +49,12 @@ public interface TestcaseService {
 
     void update(Testcase testcase);
 
+    void update(List<Testcase> data);
+
     void remove(List<String> ids);
 
     void recover(List<String> ids, String projectId);
 
     void removeTrash(List<String> ids, String projectId);
+
 }

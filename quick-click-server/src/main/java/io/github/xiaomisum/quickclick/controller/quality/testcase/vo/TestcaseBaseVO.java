@@ -33,22 +33,23 @@ import java.util.List;
 
 @Data
 public class TestcaseBaseVO {
-
+    
+    @NotEmpty(message = "projectId 不能为空")
     private String projectId;
 
-    @NotNull(message = "所属模块不能为空")
+    @NotEmpty(message = "所属模块不能为空")
     private String nodeId;
 
     @NotEmpty(message = "用例名称不能为空")
     private String title;
 
     @NotEmpty(message = "用例等级不能为空")
-    private String level;
+    private String priority;
 
     private String prerequisite;
 
     private List<String> tags;
 
-    @NotEmpty(message = "责任人不能为空")
-    private String maintainer;
+    @NotNull(message = "责任人不能为空")
+    private Long supervisor;
 }

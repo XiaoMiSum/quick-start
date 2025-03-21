@@ -35,7 +35,7 @@ import java.util.List;
 @Data
 public class TestcaseRespVO extends TestcaseBaseVO {
 
-    private Long Id;
+    private String id;
 
     private String reviewed;
 

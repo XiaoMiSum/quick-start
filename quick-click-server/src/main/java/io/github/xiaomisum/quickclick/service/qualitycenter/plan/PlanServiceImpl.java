@@ -98,23 +98,23 @@ public class PlanServiceImpl implements PlanService {
 
     @Scheduled(cron = CRON)
     public void scheduleUpdateStatus() {
-        mapper.selectByStatus(Prepare).forEach(plan -> {
+        mapper.selectByStatus(Preparing).forEach(plan -> {
             List<PlanCase> cases = planCaseMapper.selectList(plan.getId());
             Map<TestStatus, List<PlanCase>> group = cases.stream()
                     .collect(Collectors.groupingBy(PlanCase::getResult));
-            List<PlanCase> prepareList = Prepare.get(group);
-            List<PlanCase> passList = Pass.get(group);
-            List<PlanCase> failureList = Failure.get(group);
+            List<PlanCase> prepareList = Preparing.get(group);
+            List<PlanCase> passList = Passed.get(group);
+            List<PlanCase> failureList = Failed.get(group);
             List<PlanCase> blockingList = Blocking.get(group);
-            List<PlanCase> skipList = Skip.get(group);
-            List<PlanCase> underwayList = Underway.get(group);
+            List<PlanCase> skipList = Skipped.get(group);
+            List<PlanCase> underwayList = Processing.get(group);
             if (prepareList.isEmpty() && underwayList.isEmpty()) {
                 // 进行中和未开始的都为空，评审完成
-                mapper.updateStatus(plan.getId(), complete);
+                mapper.updateStatus(plan.getId(), Finished);
             } else if ((passList.size() + failureList.size() +
                     blockingList.size() + skipList.size() + underwayList.size()) < cases.size()) {
                 // 成功数量 + 失败数量 + 阻塞数量 + 跳过数量 + 进行中数量 之和 小于 总数，评审进行中
-                mapper.updateStatus(plan.getId(), Underway);
+                mapper.updateStatus(plan.getId(), Processing);
             }
         });
     }
