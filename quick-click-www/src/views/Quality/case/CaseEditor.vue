@@ -35,18 +35,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="标签" prop="tags">
-            <el-select
-              v-model="caseData.tags"
-              allow-create
-              clearable
-              multiple
-              filterable
-              placeholder="请选择用例标签，无可用标签可输入新标签"
-              style="width: 100%"
-              @blur="tagsBlur"
-            >
-              <el-option v-for="(item, index) in tags" :key="index" :label="item" :value="item" />
-            </el-select>
+            <el-input-tag v-model="caseData.tags" placeholder="请输入标签" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -74,24 +63,21 @@
       </el-form-item>
     </el-form>
   </ContentWrap>
+
   <ContentWrap class="h-[calc(100%-260px)]">
-    <el-form ref="formRef" :model="caseData">
-      <el-table v-dragable="dragOptions" :data="caseData.steps" class="h-[calc(100%-260px)]">
+    <VueDraggable target="tbody" v-model="caseData.steps" :animation="150" @end="onEnd">
+      <el-table id="dragTable" :data="caseData.steps" class="h-[calc(100%-260px)]">
         <el-table-column type="index" width="30">
           <Icon icon="ep:rank" />
         </el-table-column>
         <el-table-column label="步骤描述">
-          <template #default="scope">
-            <el-form-item :prop="'formData.steps.' + scope.$index + '.step'" clearable>
-              <el-input v-model="scope.row.step" type="textarea" />
-            </el-form-item>
+          <template #default="{ row }">
+            <el-input v-model="row.step" type="textarea" />
           </template>
         </el-table-column>
         <el-table-column label="期望结果">
-          <template #default="scope">
-            <el-form-item :prop="'formData.steps.' + scope.$index + '.expected'" clearable>
-              <el-input v-model="scope.row.expected" type="textarea" />
-            </el-form-item>
+          <template #default="{ $index }">
+            <el-input v-model="caseData.steps[$index].expected" type="textarea" />
           </template>
         </el-table-column>
 
@@ -108,7 +94,7 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-form>
+    </VueDraggable>
     <div class="float-right">
       <el-button @click="handleGoCaseList">取消</el-button>
       <el-button :loading="loading" type="primary" @click="handleSubmitAndCloseView">
@@ -134,7 +120,8 @@ import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useR
 
 import { defaultProps2, handleTree } from '@/utils/tree'
 
-import { vDragable } from 'element-plus-table-dragable'
+import { VueDraggable } from 'vue-draggable-plus'
+
 import { CaseStep, CaseVO } from '@/api/quality/testcase.data'
 import { getDictOptions, DICT_TYPE } from '@/utils/dictionary'
 
@@ -266,32 +253,10 @@ const getUsers = async () => {
   users.value = await User.getSimple(globalStore.getCurrentProject)
 }
 
-const dragOptions = [
-  {
-    selector: 'thead tr', // add drag support for column
-    option: {
-      // sortablejs's option
-      animation: 150,
-      onEnd: (evt) => {
-        /* you can define a 'columns' ref 
-        and use v-for render it in table's slot. 
-        then you can change index of the item in 'column' here 
-        to implement drag column to sort */
-        console.log(evt.oldIndex, evt.newIndex)
-      }
-    }
-  },
-  {
-    selector: 'tbody', // add drag support for row
-    option: {
-      // sortablejs's option
-      animation: 150,
-      onEnd: (evt) => {
-        console.log(evt.oldIndex, evt.newIndex)
-      }
-    }
-  }
-]
+const onEnd = (evt) => {
+  console.log(evt)
+  console.log(caseData.value.steps)
+}
 
 const insertList = async (index: number) => {
   ;(caseData.value.steps as CaseStep[]).splice(index, 0, { step: '', expected: '', actual: '' })
@@ -314,12 +279,11 @@ onMounted(async () => {
   if (query && query.from) {
     caseData.value = await HTTP.getData(query.from)
     delete caseData.value.id
-    caseData.value.title = 'COPY_' + caseData.value.title
+    caseData.value.title = caseData.value.title + '_copy'
   }
   if (!caseData.value.id && !caseData.value.supervisor) {
     caseData.value.supervisor = userStore.getUser.id
   }
-  console.log(caseData.value)
 })
 </script>
 

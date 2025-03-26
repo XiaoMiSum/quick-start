@@ -1,6 +1,6 @@
 import request from '@/config/axios'
 
-const url = '/track/review'
+const url = '/quality-center/review'
 
 // 查询详细
 export const getPage = (params: any) => {
@@ -50,10 +50,9 @@ export const getFirstReviewCase = (params: any) => {
   })
 }
 
-export const getReviewCaseExecute = (params: any) => {
+export const getReviewCaseExecute = (id: number) => {
   return request.get({
-    url: url + '/case/execute',
-    params
+    url: url + '/case/detail/' + id
   })
 }
 
@@ -98,7 +97,7 @@ export const removeAssociCase = (id: number) => {
   })
 }
 
-export const batchRemoveAssociCase = (ids: number) => {
+export const batchRemoveAssociCase = (ids: string) => {
   return request.delete({
     url: url + '/case?ids=' + ids
   })

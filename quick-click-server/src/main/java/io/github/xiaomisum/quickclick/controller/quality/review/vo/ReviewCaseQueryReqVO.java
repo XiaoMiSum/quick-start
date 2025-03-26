@@ -36,6 +36,8 @@ public class ReviewCaseQueryReqVO extends PageParam {
 
     private String reviewId;
 
+    private String projectId;
+
     private String nodeId;
 
     private String title;

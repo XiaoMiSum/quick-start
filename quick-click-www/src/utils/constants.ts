@@ -41,7 +41,11 @@ export const SystemUserSocialTypeEnum = {
 }
 
 export const QualityTestStatus = {
-  Passed: 'Passed', // 初始化中
-  Preparing: 'Preparing', // 运行中
-  STOP: 2 // 暂停运行
+  Passed: 'Passed',
+  Preparing: 'Preparing',
+  Failed: 'Failed',
+  Blocking: 'Blocking',
+  Skipped: 'Skipped',
+  Processing: 'Processing',
+  Finished: 'Finished'
 }

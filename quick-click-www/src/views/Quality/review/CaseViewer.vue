@@ -2,7 +2,7 @@
   <Dialog
     v-model="visible"
     :tag="status"
-    :title="data.name"
+    :title="data.title"
     :enums="enums"
     width="80%"
     @close="close"
@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 import { InfoViewer, Executer } from '@/views/components/case'
 
-import * as REVIEW from '@/api/track/review'
+import * as REVIEW from '@/api/quality/review'
 
 const message = useMessage() // 消息弹窗
 
@@ -54,11 +54,11 @@ const loading = ref(false)
 const status = ref('')
 
 /** 打开弹窗 */
-const open = async (obj: any) => {
+const open = async (id: number) => {
   loading.value = true
   visible.value = true
-  data.value = await REVIEW.getReviewCaseExecute(obj)
-  status.value = data.value.reviewResult
+  data.value = await REVIEW.getReviewCaseExecute(id)
+  status.value = data.value.result
   loading.value = false
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
@@ -69,7 +69,7 @@ const handleSyncCase = async () => {
   data.value = await REVIEW.syncCase({
     id: params.id,
     reviewId: params.reviewId,
-    caseId: params.caseId
+    originalId: params.originalId
   })
   loading.value = false
 }
@@ -83,7 +83,7 @@ const handleLastClick = async () => {
     message.error('已经是第一条了')
   } else {
     data.value = resp
-    status.value = data.value.reviewResult
+    status.value = data.value.result
   }
 }
 
@@ -97,7 +97,7 @@ const handleNextClick = async () => {
     return false
   } else {
     data.value = resp
-    status.value = data.value.reviewResult
+    status.value = data.value.result
     return true
   }
 }
@@ -106,7 +106,7 @@ const handleReviewCase = async (result: string) => {
   loading.value = true
   await REVIEW.reviewCase({
     id: data.value.id,
-    caseId: data.value.caseId,
+    originalId: data.value.originalId,
     reviewId: data.value.reviewId,
     result: result
   })

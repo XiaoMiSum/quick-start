@@ -1,5 +1,5 @@
 <template>
-  <Dialog v-model="_visible" :title="'批量' + title">
+  <Dialog v-model="_visible" :title="'批量' + title" @close="close">
     <el-form ref="formRef" v-loading="formLoading" :model="formData" label-width="100px">
       <el-form-item label="所属模块" prop="nodeId">
         <el-tree-select
@@ -69,8 +69,8 @@ const title = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formData = ref<any>({
   ids: undefined,
-  nodeId: '',
-  priority: '',
+  nodeId: undefined,
+  priority: undefined,
   supervisor: undefined
 })
 
@@ -89,11 +89,17 @@ defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 const resetForm = () => {
   formData.value = {
     ids: undefined,
-    nodeId: '',
-    priority: '',
+    nodeId: undefined,
+    priority: undefined,
     supervisor: undefined
   }
   formRef.value?.resetFields()
+}
+
+const close = () => {
+  resetForm()
+  // 发送操作成功的事件
+  emit('success')
 }
 
 /** 提交表单 */
@@ -109,10 +115,6 @@ const submitForm = async () => {
     const data = formData.value
     await HTTP.batchUpdate(data)
     message.success(t('common.updateSuccess'))
-
-    resetForm()
-    // 发送操作成功的事件
-    emit('success')
     _visible.value = false
   } finally {
     formLoading.value = false

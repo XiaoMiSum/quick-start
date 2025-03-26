@@ -12,6 +12,7 @@ const crudColumns = reactive<CrudSchema[]>([
       show: true,
       component: 'Select',
       api: DICT_HTTP.getSimple,
+      formItemProps: { style: { width: '200px' } },
       hiddenLabel: true
     },
     table: {

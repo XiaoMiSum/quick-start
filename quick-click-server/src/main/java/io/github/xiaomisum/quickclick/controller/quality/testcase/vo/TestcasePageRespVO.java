@@ -25,10 +25,15 @@
 
 package io.github.xiaomisum.quickclick.controller.quality.testcase.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.github.xiaomisum.quickclick.enums.TestStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
+import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -38,7 +43,11 @@ public class TestcasePageRespVO extends TestcaseBaseVO {
 
     private String path;
 
-    private String reviewed;
+    private TestStatus lastReviewResult;
 
-    private Date updateTime;
+    @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    private LocalDateTime updateTime;
+
+    private String updater;
 }

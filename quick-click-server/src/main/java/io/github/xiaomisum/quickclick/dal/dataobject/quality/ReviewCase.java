@@ -47,6 +47,8 @@ public class ReviewCase extends BaseDO<Long> {
 
     private String nodeId;
 
+    private String path;
+
     // 原始用例id
     private String originalId;
 

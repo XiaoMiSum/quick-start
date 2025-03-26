@@ -26,9 +26,13 @@
 package io.github.xiaomisum.quickclick.service.qualitycenter.testcase;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
+import io.github.xiaomisum.quickclick.convert.qualitycenter.TestcaseConvert;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.TestcaseMapper;
+import io.github.xiaomisum.quickclick.model.dto.TestcasePageDTO;
+import io.github.xiaomisum.quickclick.service.project.NodeService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -40,6 +44,8 @@ public class TestcaseServiceImpl implements TestcaseService {
 
     @Resource
     private TestcaseMapper mapper;
+    @Resource
+    private NodeService node;
 
     @Override
     public PageResult<Testcase> getPage(TestcaseQueryReqVO req) {
@@ -52,8 +58,8 @@ public class TestcaseServiceImpl implements TestcaseService {
     }
 
     @Override
-    public PageResult<Testcase> getPage(TestcaseQueryReqVO req, List<String> notInIds) {
-        return mapper.selectPage(req, notInIds);
+    public PageResult<TestcasePageDTO> getPage(TestcaseQueryReqVO req, List<String> notInIds) {
+        return TestcaseConvert.INSTANCE.convert1(mapper.selectPage(req, notInIds));
     }
 
     @Override
@@ -68,18 +74,22 @@ public class TestcaseServiceImpl implements TestcaseService {
 
     @Override
     public String add(Testcase testcase) {
-        testcase.setId(IdUtil.getSnowflakeNextIdStr());
+        testcase.setPath(node.get(testcase.getNodeId()).getPath()).setId(IdUtil.getSnowflakeNextIdStr());
         mapper.insert(testcase);
         return testcase.getId();
     }
 
     @Override
     public void add(List<Testcase> testcases) {
+        testcases.forEach(item -> item.setPath(node.get(item.getNodeId()).getPath()).setId(IdUtil.getSnowflakeNextIdStr()));
         mapper.insertBatch(testcases);
     }
 
     @Override
     public void update(Testcase testcase) {
+        if (StrUtil.isNotBlank(testcase.getNodeId())) {
+            testcase.setPath(node.get(testcase.getNodeId()).getPath());
+        }
         mapper.updateById(testcase);
     }
 
@@ -89,8 +99,8 @@ public class TestcaseServiceImpl implements TestcaseService {
     }
 
     @Override
-    public void remove(List<String> ids) {
-        mapper.deleteByIds(ids);
+    public void moveToTrash(List<String> ids, String projectId) {
+        mapper.moveToTrash(ids, projectId);
     }
 
     @Override

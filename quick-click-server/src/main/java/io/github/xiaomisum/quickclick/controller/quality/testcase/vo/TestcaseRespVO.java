@@ -25,6 +25,7 @@
 
 package io.github.xiaomisum.quickclick.controller.quality.testcase.vo;
 
+import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.CaseStep;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,7 +38,7 @@ public class TestcaseRespVO extends TestcaseBaseVO {
 
     private String id;
 
-    private String reviewed;
-
+    private TestStatus lastReviewResult;
+    
     private List<CaseStep> steps;
 }

@@ -26,12 +26,133 @@
 package io.github.xiaomisum.quickclick.dal.dataobject.quality;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.xiaomisum.quickclick.enums.BugStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
+
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "qc_quality_bug", autoResultMap = true)
 @Data
 public class Bug extends BaseDO<String> {
+
+    /**
+     * 标题
+     */
+    private String title;
+
+    /**
+     * 项目编号
+     */
+    private String projectId;
+
+    /**
+     * 模块编号
+     */
+    private String nodeId;
+
+    /**
+     * 严重等级
+     */
+    private String severity;
+
+    /**
+     * 优先级
+     */
+    private String priority;
+
+    /**
+     * 状态
+     */
+    private BugStatus status;
+    /**
+     * 步骤
+     */
+    private String step;
+
+    /**
+     * 实际
+     */
+    private String actual;
+
+    /**
+     * 实际
+     */
+    private String expected;
+
+    /**
+     * 责任人
+     */
+    private Long supervisor;
+
+    /**
+     * 处理人
+     */
+    private Long handler;
+
+    /**
+     * 指派时间
+     */
+    private LocalDateTime assignedTime;
+
+    /**
+     * 确认时间
+     */
+    private LocalDateTime confirmedTime;
+
+    /**
+     * 修复人
+     */
+    private Long fixer;
+
+    /**
+     * 修复时间
+     */
+    private LocalDateTime fixedTime;
+
+    /**
+     * 关闭人
+     */
+    private Long closer;
+
+    /**
+     * 关闭时间
+     */
+    private LocalDateTime closedTime;
+
+    /**
+     * 产生原因
+     */
+    private String cause;
+
+    /**
+     * 产生原因详细描述
+     */
+    private String rootCause;
+
+    /**
+     * 解决方案
+     */
+    private String solution;
+
+    /**
+     * 解决方案详细描述
+     */
+    private String resolution;
+
+    /**
+     * 激活次数
+     */
+    private Integer reopenedTimes;
+
+    /**
+     * 来源
+     */
+    private String source;
+    /**
+     * 创建人
+     */
+    private Long creatorId;
 }

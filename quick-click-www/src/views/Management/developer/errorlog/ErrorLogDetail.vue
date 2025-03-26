@@ -68,14 +68,14 @@ onMounted(() => {
         <el-button
           v-hasPermi="['developer:error-log:update']"
           :disabled="form.status !== 0"
-          type="text"
+          link
           @click="handleSubmit(2)"
           >忽略
         </el-button>
         <el-button
           v-hasPermi="['developer:error-log:update']"
           :disabled="form.status !== 0"
-          type="text"
+          link
           @click="handleSubmit(1)"
           >已处理
         </el-button>

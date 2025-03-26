@@ -84,9 +84,9 @@ public interface ReviewCaseMapper extends BaseMapperX<ReviewCase> {
     default Statistics statistics(String reviewId) {
         return selectJoinOne(Statistics.class, new MPJLambdaWrapperX<ReviewCase>()
                 .select("ifNull(count(id), 0) total",
-                        "sum(case when result = 'Pass' then 1 else 0 end) passed",
-                        "sum(case when result = 'UNREVIEWED' then 1 else 0 end) notstarted",
-                        "sum(case when result = 'Skip' then 1 else 0 end) skipped")
+                        "sum(case when result = 'Passed' then 1 else 0 end) passed",
+                        "sum(case when result = 'Preparing' then 1 else 0 end) preparing",
+                        "sum(case when result = 'Skipped' then 1 else 0 end) skipped")
                 .eq("review_id", reviewId));
     }
 

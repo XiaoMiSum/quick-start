@@ -11,9 +11,9 @@
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form ref="queryFormRef" :inline="true" :model="queryParams">
-            <el-form-item label="" prop="caseName">
+            <el-form-item label="" prop="title">
               <el-input
-                v-model="queryParams.caseName"
+                v-model="queryParams.title"
                 class="!w-240px"
                 clearable
                 placeholder="请输入用例名称"
@@ -48,7 +48,7 @@
                 :disabled="!checked || checked.length < 1"
                 plain
                 type="danger"
-                @click="handleBatchUnlinkCase"
+                @click="handleBatchUnlinkCase(checked)"
               >
                 <Icon class="mr-5px" icon="fa-solid:unlink" />
                 取消关联
@@ -56,7 +56,7 @@
               <el-button
                 v-hasPermi="['review:case:execute']"
                 plain
-                type="primary"
+                type="success"
                 @click="handleReviewFirstCase()"
               >
                 <Icon class="mr-5px" icon="ep:caret-right" />
@@ -78,33 +78,41 @@
             @selection-change="handleSelectionChange"
           >
             <el-table-column :reserve-selection="true" type="selection" width="35" />
-            <el-table-column label="用例名称" prop="name" show-overflow-tooltip width="200" />
+            <el-table-column label="用例名称" prop="title" show-overflow-tooltip width="200">
+              <template #default="scope">
+                <el-button link type="primary" @click="handleReviewCase(scope.row.id)">
+                  {{ scope.row.title }}
+                </el-button>
+              </template>
+            </el-table-column>
             <el-table-column label="所属模块" prop="path" show-overflow-tooltip width="200" />
-            <el-table-column align="center" label="用例等级" prop="level">
-              <template #default="scope"> </template>
+            <el-table-column align="center" label="用例等级" prop="priority" width="80">
+              <template #default="scope">
+                <ones-tag
+                  :type="DICT_TYPE.QUALITY_TESTCASE_PRIORITY"
+                  :value="scope.row.priority"
+                  effect="dark"
+                />
+              </template>
             </el-table-column>
             <el-table-column align="center" label="标签" prop="tags" show-overflow-tooltip>
               <template #default="scope">
-                <el-tag v-for="item in scope.row.tags" :key="item"> {{ item }}</el-tag>
+                <el-tag v-for="(item, index) in scope.row.tags" :key="index" class="ml-2">
+                  {{ item }}
+                </el-tag>
               </template>
             </el-table-column>
-            <el-table-column
-              align="center"
-              label="负责人"
-              prop="maintainer"
-              show-overflow-tooltip
-            />
-            <el-table-column align="center" label="评审结果" prop="reviewResult">
-              <template #default="scope"> </template>
+            <el-table-column align="center" label="评审结果" prop="result">
+              <template #default="scope">
+                <ones-tag :type="DICT_TYPE.QUALITY_TEST_STATUS" :value="scope.row.result" />
+              </template>
             </el-table-column>
-            <el-table-column align="center" label="评审人" prop="reviewer" show-overflow-tooltip />
-            <el-table-column
-              :formatter="dateFormatter"
-              align="center"
-              label="评审时间"
-              prop="reviewTime"
-              width="170"
-            />
+            <el-table-column align="center" label="评审人" prop="reviewer" show-overflow-tooltip>
+              <template #default="scope">
+                <user-tag :value="scope.row.reviewer" />
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="评审时间" prop="reviewTime" width="170" />
             <el-table-column :width="150" align="center" fixed="right" label="操作">
               <template #default="scope">
                 <el-tooltip content="评审" placement="top">
@@ -112,10 +120,10 @@
                     v-hasPermi="['review:case:execute']"
                     circle
                     plain
-                    type="primary"
-                    @click="handleReviewCase(scope.row)"
+                    type="success"
+                    @click="handleReviewCase(scope.row.id)"
                   >
-                    <Icon icon="ep:checked" />
+                    <Icon icon="ep:caret-right" />
                   </el-button>
                 </el-tooltip>
                 <el-tooltip content="移除" placement="top">
@@ -124,9 +132,9 @@
                     circle
                     plain
                     type="danger"
-                    @click="handleDelete(scope.row.id)"
+                    @click="handleBatchUnlinkCase([scope.row.id])"
                   >
-                    <Icon icon="ep:unlock" />
+                    <Icon icon="fa-solid:unlink" />
                   </el-button>
                 </el-tooltip>
               </template>
@@ -147,18 +155,22 @@
   <CaseAssociated
     ref="caseAssociated"
     :data-id="currentReviewId"
-    :enums="REVIEW_TESTCASE_STATUS"
+    :project-id="globalStore.getCurrentProject"
+    :enums="getDictOptions(DICT_TYPE.QUALITY_TEST_STATUS)"
     source="review"
     @close="handleQuery"
   />
 
-  <CaseViewer ref="caseViewer" :enums="REVIEW_TESTCASE_STATUS" @close="handleQuery" />
+  <CaseViewer
+    ref="caseViewer"
+    :enums="getDictOptions(DICT_TYPE.QUALITY_TEST_STATUS)"
+    @close="handleQuery"
+  />
 </template>
 
 <script lang="ts" setup>
 /** 初始化 **/
 onMounted(async () => {
-  appStore.setProjectPick(true)
   if (params && params.reviewId) {
     currentReviewId.value = params.reviewId
     await handleGetData()
@@ -170,19 +182,15 @@ import { DefaultNodeTree } from '@/views/components/node'
 import { CaseAssociated } from '../components'
 import CaseViewer from './CaseViewer.vue'
 
-import { dateFormatter } from '@/utils/formatTime'
+import { DICT_TYPE, getDictOptions } from '@/utils/dictionary'
 
-import { CASE_LEVEL_ENUMS, REVIEW_TESTCASE_STATUS } from '@/utils/enums'
-
-import * as HTTP from '@/api/track/review'
+import * as HTTP from '@/api/quality/review'
 
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import { useRoute } from 'vue-router' //1.先在需要跳转的页面引入useRouter
-import { useAppStore } from '@/store/modules/app'
-import { useUserStore } from '@/store/modules/user'
+import { useGlobalStore } from '@/store/modules/global'
 
-const userStore = useUserStore()
-const appStore = useAppStore()
+const globalStore = useGlobalStore()
 
 const { params } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
 const { currentRoute, push } = useRouter()
@@ -195,7 +203,7 @@ defineOptions({ name: 'ReviewAssociated' })
 const queryParams = ref<any>({
   pageNo: 1,
   pageSize: 10,
-  caseName: '',
+  title: '',
   nodeId: null
 })
 
@@ -217,6 +225,7 @@ const getList = async () => {
     list.value = data.list
     total.value = data.total
   } finally {
+    toggleSelection()
     loading.value = false
   }
 }
@@ -228,10 +237,10 @@ const handleGetData = async () => {
   const data = await HTTP.getData(currentReviewId.value)
   if (!data) {
     tagsViewStore.delView(unref(currentRoute))
-    push('/track/review')
+    push('/quality/review')
     return
   }
-  title.value = data.name
+  title.value = data.title
   statistics.value = data.statistics
   statistics.value.name = '评审进度'
 }
@@ -246,30 +255,19 @@ const resetQuery = async () => {
   await handleQuery()
 }
 
-const handleDelete = async (id: number) => {
-  try {
-    // 删除的二次确认
-    await message.delConfirm('是否解除关联所选用例？')
-    // 发起删除
-    await HTTP.removeAssociCase(id)
-    // 刷新列表
-    await getList()
-  } catch {}
-}
-
 const caseAssociated = ref()
 const handleAssociCase = async () => {
   caseAssociated.value.open()
 }
 
 const caseViewer = ref()
-const handleReviewCase = async (data?: any) => {
-  caseViewer.value.open({ id: data.id, reviewId: data.reviewId })
+const handleReviewCase = async (id: number) => {
+  caseViewer.value.open(id)
 }
 
 const handleReviewFirstCase = async () => {
   const id = await HTTP.getFirstReviewCase({ reviewId: currentReviewId.value })
-  caseViewer.value.open({ id, reviewId: currentReviewId.value })
+  caseViewer.value.open(id)
 }
 
 const handleNodeClick = async (row: any) => {
@@ -281,10 +279,9 @@ const handleSelectionChange = async (val: any[]) => {
   checked.value = val.map((item) => item.id)
 }
 
-const handleBatchUnlinkCase = async () => {
-  await message.delConfirm('是否确认取消关联选中的用例？')
-  await HTTP.batchRemoveAssociCase(checked.value)
-  toggleSelection()
+const handleBatchUnlinkCase = async (ids: number[]) => {
+  await message.delConfirm('是否确认取消关联所选的用例？')
+  await HTTP.batchRemoveAssociCase(ids.join(','))
   await handleQuery()
 }
 
@@ -293,15 +290,6 @@ const toggleSelection = () => {
   multipleTableRef.value!.clearSelection()
   checked.value = []
 }
-
-// 监听当前项目变化，刷新列表数据
-watch(
-  computed(() => userStore.getProject),
-  () => {
-    handleGetData()
-  },
-  { immediate: true, deep: true }
-)
 </script>
 
 <style scoped></style>

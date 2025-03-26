@@ -30,6 +30,7 @@ import com.google.common.collect.Lists;
 import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.*;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
+import io.github.xiaomisum.quickclick.model.dto.TestcasePageDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -62,6 +63,18 @@ public interface TestcaseConvert {
     }
 
     List<TestcaseDTO> convert(List<Testcase> testcases);
+
+    PageResult<TestcasePageDTO> convert1(PageResult<Testcase> beans);
+
+    default TestcasePageDTO convert3(Testcase testcase) {
+        return new TestcasePageDTO().setOriginalId(testcase.getId())
+                .setTitle(testcase.getTitle())
+                .setPriority(testcase.getPriority())
+                .setTags(testcase.getTags())
+                .setNodeId(testcase.getNodeId())
+                .setProjectId(testcase.getProjectId())
+                .setSupervisor(testcase.getSupervisor());
+    }
 
     default List<TestcaseExportVO> convert1(List<Testcase> testcases) {
         List<TestcaseExportVO> result = Lists.newArrayList();

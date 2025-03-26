@@ -27,6 +27,7 @@ package io.github.xiaomisum.quickclick.controller.quality.review.vo;
 
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewCaseExecuteVO {
 
-    @NotEmpty(message = "评审关联用例记录编号不能为空")
+    @NotNull(message = "评审关联用例记录编号不能为空")
     private Long id;
 
     @NotEmpty(message = "用例原始编号不能为空")
@@ -45,7 +46,7 @@ public class ReviewCaseExecuteVO {
     @NotEmpty(message = "测试评审编号不能为空")
     private String reviewId;
 
-    @NotEmpty(message = "评审结果不能为空")
+    @NotNull(message = "评审结果不能为空")
     private TestStatus result;
 
     private Long reviewer;

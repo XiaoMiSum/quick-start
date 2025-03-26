@@ -46,6 +46,6 @@ public class ReviewCaseRespVO extends ReviewCaseBaseVO {
 
     private List<CaseStep> steps;
 
-    private TestStatus reviewResult;
+    private TestStatus result;
 
 }

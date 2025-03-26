@@ -16,7 +16,7 @@ export interface DictDataType {
   dictCode: string
   label: string
   value: string | number | boolean
-  colorType: ElementPlusInfoType | ''
+  colorType: ElementPlusInfoType | 'primary'
   cssClass: string
 }
 
@@ -128,5 +128,8 @@ export enum DICT_TYPE {
 
   // ========== 质量 模块 ==========
   QUALITY_TEST_STATUS = 'test_status',
-  QUALITY_TESTCASE_PRIORITY = 'testcase_priority'
+  QUALITY_TESTCASE_PRIORITY = 'testcase_priority',
+  QUALITY_TEST_STAGE = 'test_stage',
+  QUALITY_BUG_SEVERITY = 'bug_severity',
+  QUALITY_BUG_STATUS = 'bug_status'
 }

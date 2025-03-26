@@ -5,7 +5,7 @@ import { ElTag } from 'element-plus'
 import { DictDataType, getDictOptions } from '@/utils/dictionary'
 
 export default defineComponent({
-  name: 'DictTag',
+  name: 'OnesTag',
   props: {
     type: {
       type: String as PropType<string>,
@@ -23,7 +23,7 @@ export default defineComponent({
       options.forEach((item: DictDataType) => {
         if (item.value === value) {
           if (item.colorType + '' === 'primary' || item.colorType + '' === 'default') {
-            item.colorType = ''
+            item.colorType = 'primary'
           }
           dictData.value = item
         }

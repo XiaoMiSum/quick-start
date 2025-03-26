@@ -25,14 +25,13 @@
 
 package io.github.xiaomisum.quickclick.controller.quality.review;
 
-import cn.hutool.core.util.StrUtil;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.*;
 import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.ReviewConvert;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.TestcaseConvert;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
-import io.github.xiaomisum.quickclick.service.project.NodeService;
+import io.github.xiaomisum.quickclick.model.dto.TestcasePageDTO;
 import io.github.xiaomisum.quickclick.service.qualitycenter.review.ReviewCaseService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.review.ReviewService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.testcase.TestcaseService;
@@ -65,8 +64,6 @@ public class ReviewController {
     private ReviewCaseService reviewCaseService;
     @Resource
     private TestcaseService testcaseService;
-    @Resource
-    private NodeService nodeService;
 
     /**
      * 评审列表
@@ -141,11 +138,6 @@ public class ReviewController {
     @GetMapping("/case")
     public Result<?> getCasePage(ReviewCaseQueryReqVO req) {
         PageResult<ReviewCasePageRespVO> result = ReviewConvert.INSTANCE.convert1(reviewCaseService.getPage(req));
-        result.getList().forEach(item -> {
-            if (StrUtil.isNotBlank(item.getNodeId())) {
-                item.setPath(nodeService.get(item.getNodeId()).getPath());
-            }
-        });
         return Result.getSuccessful(result);
     }
 
@@ -175,14 +167,9 @@ public class ReviewController {
      * @param id 评审用例编号
      * @return 评审用例信息
      */
-    @GetMapping("/case/{id}")
+    @GetMapping("/case/detail/{id}")
     public Result<?> getReviewCase(@PathVariable("id") Long id) {
         ReviewCaseRespVO result = ReviewConvert.INSTANCE.convert(reviewCaseService.get(id));
-        if (Objects.nonNull(result)) {
-            if (StrUtil.isNotBlank(result.getNodeId())) {
-                result.setPath(nodeService.get(result.getNodeId()).getPath());
-            }
-        }
         return Result.getSuccessful(result);
     }
 
@@ -244,9 +231,6 @@ public class ReviewController {
             return Result.getSuccessful(null);
         }
         ReviewCaseRespVO result = ReviewConvert.INSTANCE.convert(results.getFirst());
-        if (StrUtil.isNotBlank(result.getNodeId())) {
-            result.setPath(nodeService.get(result.getNodeId()).getPath());
-        }
         return Result.getSuccessful(result);
     }
 
@@ -261,13 +245,9 @@ public class ReviewController {
         List<String> ids = reviewCaseService.getList(req.getReviewId()).stream().map(ReviewCase::getOriginalId).toList();
         TestcaseQueryReqVO caseQuery = new TestcaseQueryReqVO(req.getPageNo(), req.getPageSize())
                 .setTitle(req.getTitle())
+                .setProjectId(req.getProjectId())
                 .setNodeId(req.getNodeId());
-        PageResult<ReviewCasePageRespVO> result = ReviewConvert.INSTANCE.convert2(testcaseService.getPage(caseQuery, ids));
-        result.getList().forEach(item -> {
-            if (StrUtil.isNotBlank(item.getNodeId())) {
-                item.setPath(nodeService.get(item.getNodeId()).getPath());
-            }
-        });
+        PageResult<TestcasePageDTO> result = testcaseService.getPage(caseQuery, ids);
         return Result.getSuccessful(result);
     }
 

@@ -20,8 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import * as REVIEW from '@/api/track/review'
-import * as HTTP from '@/api/track/plan'
+import * as Review from '@/api/quality/review'
+import * as HTTP from '@/api/quality/plan'
 
 const message = useMessage()
 
@@ -30,14 +30,14 @@ const visible = ref(false)
 const lists = ref<any>([])
 const params = ref({
   planId: -1,
-  reviewId: null
+  reviewId: -1
 })
 
 const open = async (planId: number) => {
-  params.value = { planId: planId, reviewId: null }
+  params.value = { planId: planId, reviewId: -1 }
   visible.value = true
   loading.value = true
-  lists.value = await REVIEW.getSimple()
+  lists.value = await Review.getSimple()
 }
 
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗

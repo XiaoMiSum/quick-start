@@ -27,6 +27,7 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.testcase;
 
 import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
+import io.github.xiaomisum.quickclick.model.dto.TestcasePageDTO;
 import xyz.migoo.framework.common.pojo.PageResult;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public interface TestcaseService {
 
     List<Testcase> getList(String projectId);
 
-    PageResult<Testcase> getPage(TestcaseQueryReqVO req, List<String> notInIds);
+    PageResult<TestcasePageDTO> getPage(TestcaseQueryReqVO req, List<String> notInIds);
 
     Testcase get(String id);
 
@@ -51,7 +52,7 @@ public interface TestcaseService {
 
     void update(List<Testcase> data);
 
-    void remove(List<String> ids);
+    void moveToTrash(List<String> ids, String projectId);
 
     void recover(List<String> ids, String projectId);
 

@@ -68,7 +68,7 @@ public interface TestcaseMapper extends BaseMapperX<Testcase> {
     @Update("""
             <script>
             delete from qc_quality_testcase where trash = 1 and project_id = #{projectId}
-            <if test="ids != null and and ids.size() > 0">
+            <if test="ids != null and ids.size() > 0">
             and id in
             <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
                     #{id}
@@ -85,4 +85,10 @@ public interface TestcaseMapper extends BaseMapperX<Testcase> {
                 .in(Testcase::getId, ids));
     }
 
+    default void moveToTrash(List<String> ids, String projectId) {
+        update(new LambdaUpdateWrapper<Testcase>()
+                .set(Testcase::getTrash, 1)
+                .eq(Testcase::getProjectId, projectId)
+                .in(Testcase::getId, ids));
+    }
 }

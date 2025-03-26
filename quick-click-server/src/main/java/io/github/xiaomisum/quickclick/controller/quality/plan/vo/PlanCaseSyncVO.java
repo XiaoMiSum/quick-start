@@ -26,6 +26,7 @@
 package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,7 +36,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PlanCaseSyncVO {
 
-    @NotEmpty(message = "测试计划关联用例记录编号不能为空")
+    @NotNull(message = "测试计划关联用例记录编号不能为空")
     private Long id;
 
     @NotEmpty(message = "关联用例原始编号不能为空")

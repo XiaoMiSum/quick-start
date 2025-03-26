@@ -2,9 +2,9 @@
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form ref="queryFormRef" :inline="true" :model="queryParams">
-      <el-form-item label="" prop="name">
+      <el-form-item label="" prop="title">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.title"
           class="!w-240px"
           clearable
           placeholder="请输入评审名称"
@@ -26,7 +26,7 @@
     <el-row :gutter="10">
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['tracked:review:add']"
+          v-hasPermi="['quality:review:add']"
           plain
           type="primary"
           @click="openForm('create')"
@@ -41,34 +41,24 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" highlight-current-row stripe>
-      <el-table-column
-        align="center"
-        label="评审名称"
-        prop="name"
-        show-overflow-tooltip
-        width="200"
-      >
+      <el-table-column align="left" label="评审名称" prop="title" show-overflow-tooltip width="200">
         <template #default="scope">
           <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
-            {{ scope.row.name }}
+            {{ scope.row.title }}
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="主讲人" prop="speaker" show-overflow-tooltip />
-      <el-table-column align="center" label="参与人员" prop="reviewers" show-overflow-tooltip>
+      <el-table-column align="center" label="主讲人" prop="speaker" show-overflow-tooltip>
         <template #default="scope">
-          <el-tag
-            v-for="(item, index) in scope.row.reviewers"
-            :key="index"
-            class="mr-2"
-            type="info"
-          >
-            {{ item }}
-          </el-tag>
+          <user-tag :value="scope.row.speaker" />
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="参与人员" prop="reviewer" show-overflow-tooltip>
+        <template #default="scope">
+          <user-tag v-for="(item, index) in scope.row.reviewer" :value="item" :key="index" />
         </template>
       </el-table-column>
       <el-table-column
-        :formatter="dateFormatter"
         align="center"
         label="预计开始时间"
         prop="expectedStartTime"
@@ -76,7 +66,6 @@
         width="170"
       />
       <el-table-column
-        :formatter="dateFormatter"
         align="center"
         label="预计结束时间"
         prop="expectedEndTime"
@@ -84,7 +73,6 @@
         width="170"
       />
       <el-table-column
-        :formatter="dateFormatter"
         align="center"
         label="实际开始时间"
         prop="actualStartTime"
@@ -92,7 +80,6 @@
         width="170"
       />
       <el-table-column
-        :formatter="dateFormatter"
         align="center"
         label="实际结束时间"
         prop="actualEndTime"
@@ -101,7 +88,7 @@
       />
       <el-table-column align="right" label="用例总数" width="100">
         <template #default="scope">
-          <el-button link type="primary">
+          <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
             {{ scope.row.statistics.total }}
           </el-button>
         </template>
@@ -109,36 +96,36 @@
       <el-table-column align="right" label="评审进度" width="180">
         <template #default="scope">
           <el-tooltip content="通过数" placement="top">
-            <el-button link type="success">
+            <el-button link type="success" @click="handleGoAssociCase(scope.row.id)">
               {{ scope.row.statistics.passed }}
             </el-button>
           </el-tooltip>
           <el-tooltip content="不通过数" placement="top">
-            <el-button link type="danger">
+            <el-button link type="danger" @click="handleGoAssociCase(scope.row.id)">
               {{
                 scope.row.statistics.total -
                 scope.row.statistics.passed -
-                scope.row.statistics.notstarted -
+                scope.row.statistics.preparing -
                 scope.row.statistics.skipped
               }}
             </el-button>
           </el-tooltip>
           <el-tooltip content="跳过数" placement="top">
-            <el-button link type="info">
+            <el-button link type="info" @click="handleGoAssociCase(scope.row.id)">
               {{ scope.row.statistics.skipped }}
             </el-button>
           </el-tooltip>
           <el-tooltip content="未评审数" placement="top">
-            <el-button link type="warning">
-              {{ scope.row.statistics.notstarted }}
+            <el-button link type="warning" @click="handleGoAssociCase(scope.row.id)">
+              {{ scope.row.statistics.preparing }}
             </el-button>
           </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column align="right" label="通过率" width="100">
         <template #default="scope">
-          <el-button link type="primary">
-            {{ (scope.row.statistics.passed / scope.row.statistics.total) * 100 }} %
+          <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
+            {{ (scope.row.statistics.passed / (scope.row.statistics.total | 1)) * 100 }} %
           </el-button>
         </template>
       </el-table-column>
@@ -146,7 +133,7 @@
         <template #default="scope">
           <el-tooltip content="编辑" placement="top">
             <el-button
-              v-hasPermi="['tracked:review:update']"
+              v-hasPermi="['quality:review:update']"
               circle
               plain
               type="primary"
@@ -157,7 +144,7 @@
           </el-tooltip>
           <el-tooltip content="规划&评审" placement="top">
             <el-button
-              v-hasPermi="['tracked:review:execute']"
+              v-hasPermi="['quality:review:execute']"
               circle
               plain
               type="primary"
@@ -168,7 +155,7 @@
           </el-tooltip>
           <el-tooltip content="删除" placement="top">
             <el-button
-              v-hasPermi="['tracked:review:remove']"
+              v-hasPermi="['quality:review:remove']"
               circle
               plain
               type="danger"
@@ -195,16 +182,11 @@
 <script lang="ts" setup>
 import ReviewForm from './ReviewForm.vue'
 
-import * as HTTP from '@/api/track/review'
+import * as HTTP from '@/api/quality/review'
 
-import { dateFormatter } from '@/utils/formatTime'
+import { useGlobalStore } from '@/store/modules/global'
 
-import { useUserStore } from '@/store/modules/user'
-import { useAppStore } from '@/store/modules/app'
-
-const userStore = useUserStore()
-
-const appStore = useAppStore()
+const globalStore = useGlobalStore()
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -215,7 +197,8 @@ defineOptions({ name: 'ProjectManager' })
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  name: '',
+  title: '',
+  projectId: globalStore.getCurrentProject,
   status: undefined
 })
 const loading = ref(false)
@@ -252,7 +235,7 @@ const openForm = (type: string, id?: number) => {
 }
 
 const handleGoAssociCase = async (id: Number) => {
-  push('/track/review/' + id + '/associated-use-cases')
+  push('/quality/review/' + id + '/associated-use-cases')
 }
 
 const handleDelete = async (id: number) => {
@@ -269,7 +252,7 @@ const handleDelete = async (id: number) => {
 
 // 监听当前项目变化，刷新列表数据
 watch(
-  computed(() => userStore.getProject),
+  computed(() => globalStore.getCurrentProject),
   () => {
     getList()
   },
@@ -278,7 +261,6 @@ watch(
 
 /** 初始化 **/
 onMounted(async () => {
-  appStore.setProjectPick(true)
   await getList()
 })
 </script>

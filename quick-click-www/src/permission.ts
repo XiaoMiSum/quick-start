@@ -46,6 +46,9 @@ router.beforeEach(async (to, from, next) => {
 
       if (appStore.projectPick) {
         await globalStore.setProjects()
+        if (globalStore.getUsers.length < 1) {
+          globalStore.setGlobalUsers()
+        }
       }
       if (!userStore.getIsSetUser) {
         await userStore.setUserInfoAction()

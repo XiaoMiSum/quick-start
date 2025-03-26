@@ -88,11 +88,6 @@ public class CaseController {
     public Result<?> getPage(TestcaseQueryReqVO req) {
         // 获得测试用例分页列表
         PageResult<TestcasePageRespVO> result = TestcaseConvert.INSTANCE.convert(service.getPage(req));
-        result.getList().forEach(item -> {
-            if (StrUtil.isNotBlank(item.getNodeId())) {
-                item.setPath(nodeService.get(item.getNodeId()).getPath());
-            }
-        });
         return Result.getSuccessful(result);
     }
 
@@ -149,12 +144,12 @@ public class CaseController {
     /**
      * 删除用例
      *
-     * @param ids 用例编号
+     * @param req 请求数据
      * @return 处理结果
      */
     @DeleteMapping
-    public Result<?> remove(@RequestParam("ids") String ids) {
-        service.remove(List.of(ids.split(",")));
+    public Result<?> remove(@Valid TestcaseTrashReqVO req) {
+        service.moveToTrash(req.getIds(), req.getProjectId());
         return Result.getSuccessful();
     }
 
@@ -204,16 +199,15 @@ public class CaseController {
      * @param projectId 项目编号
      * @param user      x
      * @param file      导入文件
-     * @return
+     * @return 处理结果
      */
     @SneakyThrows
     @PostMapping("/imports")
     public Result<?> importTestcase(@RequestParam("projectId") String projectId, @CurrentUser LoginUser user,
                                     @RequestPart MultipartFile file) {
-        List<ProjectNode> modules = nodeService.getList(projectId);
         // 指定单元格转换字典
         TestcaseExportVO.TestcaseExcelDictHandler handler = new TestcaseExportVO.TestcaseExcelDictHandler();
-        handler.add("node", modules);
+        handler.add("node", nodeService.getList(projectId));
         ImportParams params = new ImportParams();
         params.setDictHandler(handler);
         params.setHeadRows(2);
@@ -226,33 +220,25 @@ public class CaseController {
 
     /**
      * 彻底删除用例
-     * <p>
-     * 当 ids为空时，清空项目回收站
      *
-     * @param ids       用例编号
-     * @param projectId 项目编号
+     * @param req 请求数据
      * @return 处理结果
      */
     @DeleteMapping("/trash")
-    public Result<?> removeRecycle(@RequestParam(value = "ids", required = false) List<String> ids,
-                                   @RequestParam("projectId") String projectId) {
-        service.removeTrash(ids, projectId);
+    public Result<?> removeRecycle(@Valid TestcaseTrashReqVO req) {
+        service.removeTrash(req.getIds(), req.getProjectId());
         return Result.getSuccessful();
     }
 
     /**
      * 还原用例
-     * <p>
-     * 当 ids为空时，还原项目回收站
      *
-     * @param ids       用例编号
-     * @param projectId 项目编号
+     * @param req 请求数据
      * @return 处理结果
      */
-    @PostMapping("/trash/recover")
-    public Result<?> recover(@RequestParam(value = "ids", required = false) List<String> ids,
-                             @RequestParam("projectId") String projectId) {
-        service.recover(ids, projectId);
+    @PostMapping("/trash")
+    public Result<?> recover(@RequestBody TestcaseTrashReqVO req) {
+        service.recover(req.getIds(), req.getProjectId());
         return Result.getSuccessful();
     }
 }

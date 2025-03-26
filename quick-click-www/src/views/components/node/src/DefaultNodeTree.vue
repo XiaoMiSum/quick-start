@@ -36,7 +36,7 @@ const dataTree = ref<Tree[]>([]) // 树形结构
 const getTree = async () => {
   dataTree.value = []
   const data = await HTTP.getList({ projectId: globalStore.getCurrentProject })
-  let node: Tree = { id: '0', title: '/', children: [] }
+  let node: Tree = { id: '', title: '/', children: [] }
   node.children = handleTree(data)
   dataTree.value.push(node)
 }

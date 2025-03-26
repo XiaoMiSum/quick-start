@@ -25,7 +25,6 @@
 
 package io.github.xiaomisum.quickclick.controller.quality.plan;
 
-import cn.hutool.core.util.StrUtil;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.*;
 import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.PlanCaseConvert;
@@ -33,7 +32,7 @@ import io.github.xiaomisum.quickclick.convert.qualitycenter.PlanConvert;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.TestcaseConvert;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
-import io.github.xiaomisum.quickclick.service.project.NodeService;
+import io.github.xiaomisum.quickclick.model.dto.TestcasePageDTO;
 import io.github.xiaomisum.quickclick.service.qualitycenter.plan.PlanCaseService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.plan.PlanService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.review.ReviewCaseService;
@@ -66,8 +65,6 @@ public class PlanController {
     private ReviewCaseService reviewCaseService;
     @Resource
     private TestcaseService testcaseService;
-    @Resource
-    private NodeService nodeService;
 
     /**
      * 计划列表
@@ -89,7 +86,7 @@ public class PlanController {
      * @param planId 测试计划编号
      * @return 测试计划详情
      */
-    @GetMapping("/{id}")
+    @GetMapping("/{planId}")
     public Result<?> get(@PathVariable("planId") String planId) {
         PlanRespVO result = PlanConvert.INSTANCE.convert(service.get(planId));
         if (Objects.nonNull(result)) {
@@ -142,11 +139,6 @@ public class PlanController {
     @GetMapping("/case")
     public Result<?> getCasePage(PlanCaseQueryReqVO req) {
         PageResult<PlanCasePageRespVO> result = PlanCaseConvert.INSTANCE.convert(planCaseService.getPage(req));
-        result.getList().forEach(item -> {
-            if (StrUtil.isNotBlank(item.getNodeId())) {
-                item.setPath(nodeService.get(item.getNodeId()).getPath());
-            }
-        });
         return Result.getSuccessful(result);
     }
 
@@ -174,14 +166,9 @@ public class PlanController {
      * @param id 执行用例数据编号
      * @return 执行用例信息
      */
-    @GetMapping("/case/{id}")
+    @GetMapping("/case/detail/{id}")
     public Result<?> getPlanCase(@PathVariable("id") Long id) {
         PlanCaseRespVO result = PlanCaseConvert.INSTANCE.convert(planCaseService.get(id));
-        if (Objects.nonNull(result)) {
-            if (StrUtil.isNotBlank(result.getNodeId())) {
-                result.setPath(nodeService.get(result.getNodeId()).getPath());
-            }
-        }
         return Result.getSuccessful(result);
     }
 
@@ -212,12 +199,12 @@ public class PlanController {
     /**
      * 获取计划明细首个用例
      *
-     * @param reviewId 计划编号
+     * @param planId 计划编号
      * @return 用例明细
      */
     @GetMapping("/case/first")
-    public Result<?> getFirstReviewCase(@RequestParam("reviewId") String reviewId) {
-        PlanCase results = planCaseService.getFirst(reviewId);
+    public Result<?> getFirstReviewCase(@RequestParam("planId") String planId) {
+        PlanCase results = planCaseService.getFirst(planId);
         if (Objects.isNull(results)) {
             return Result.getSuccessful(null);
         }
@@ -233,17 +220,14 @@ public class PlanController {
      * @return 用例明细
      */
     @GetMapping("/case/{opt}")
-    public Result<?> getReviewCase(@RequestParam("planId") String planId,
-                                   @RequestParam("id") Long id,
-                                   @PathVariable("opt") String opt) {
+    public Result<?> getPlanCase(@RequestParam("planId") String planId,
+                                 @RequestParam("id") Long id,
+                                 @PathVariable("opt") String opt) {
         List<PlanCase> results = planCaseService.getListGtId(opt, planId, id);
         if (results.isEmpty()) {
             return Result.getSuccessful(null);
         }
         PlanCaseRespVO result = PlanCaseConvert.INSTANCE.convert(results.getFirst());
-        if (StrUtil.isNotBlank(result.getNodeId())) {
-            result.setPath(nodeService.get(result.getNodeId()).getPath());
-        }
         return Result.getSuccessful(result);
     }
 
@@ -258,13 +242,9 @@ public class PlanController {
         List<String> ids = planCaseService.getList(req.getPlanId()).stream().map(PlanCase::getOriginalId).toList();
         TestcaseQueryReqVO caseQuery = new TestcaseQueryReqVO(req.getPageNo(), req.getPageSize())
                 .setTitle(req.getTitle())
+                .setProjectId(req.getProjectId())
                 .setNodeId(req.getNodeId());
-        PageResult<PlanCasePageRespVO> result = PlanCaseConvert.INSTANCE.convert1(testcaseService.getPage(caseQuery, ids));
-        result.getList().forEach(item -> {
-            if (StrUtil.isNotBlank(item.getNodeId())) {
-                item.setPath(nodeService.get(item.getNodeId()).getPath());
-            }
-        });
+        PageResult<TestcasePageDTO> result = testcaseService.getPage(caseQuery, ids);
         return Result.getSuccessful(result);
     }
 

@@ -34,7 +34,7 @@ public class ReviewCaseBaseVO {
 
     private String projectId;
 
-    private String planId;
+    private String reviewId;
 
     private String nodeId;
 

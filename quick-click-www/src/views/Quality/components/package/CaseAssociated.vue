@@ -11,9 +11,9 @@
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form ref="queryFormRef" :inline="true" :model="queryParams">
-            <el-form-item label="" prop="caseName">
+            <el-form-item label="" prop="title">
               <el-input
-                v-model="queryParams.caseName"
+                v-model="queryParams.title"
                 class="!w-240px"
                 clearable
                 placeholder="请输入用例名称"
@@ -39,35 +39,36 @@
             ref="multipleTableRef"
             v-loading="loading"
             :data="list"
-            :row-key="(row) => row.caseId"
+            :row-key="(row) => row.originalId"
             highlight-current-row
             width="100%"
             @selection-change="handleSelectionChange"
           >
-            <el-table-column :reserve-selection="true" type="selection" width="55" />
-            <el-table-column label="用例名称" prop="name" show-overflow-tooltip width="300" />
+            <el-table-column :reserve-selection="true" type="selection" width="35" />
+            <el-table-column label="用例名称" prop="title" show-overflow-tooltip max-width="500" />
             <el-table-column label="所属模块" prop="path" show-overflow-tooltip width="200" />
-            <el-table-column align="center" label="用例等级" prop="level">
-              <template #default="scope">
-
-              </template>
-            </el-table-column>
             <el-table-column align="center" label="标签" prop="tags" show-overflow-tooltip>
               <template #default="scope">
-                <el-tag v-for="item in scope.row.tags" :key="item"> {{ item }}</el-tag>
+                <el-tag v-for="(item, index) in scope.row.tags" :key="index" class="ml-2">
+                  {{ item }}
+                </el-tag>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="评审结果" prop="reviewed">
+            <el-table-column align="center" label="用例等级" prop="priority" width="80">
               <template #default="scope">
-    
+                <ones-tag
+                  :type="DICT_TYPE.QUALITY_TESTCASE_PRIORITY"
+                  :value="scope.row.priority"
+                  effect="dark"
+                />
               </template>
             </el-table-column>
-            <el-table-column
-              align="center"
-              label="负责人"
-              prop="maintainer"
-              show-overflow-tooltip
-            />
+
+            <el-table-column align="center" label="责任人" prop="supervisor">
+              <template #default="scope">
+                <user-tag :value="scope.row.supervisor" />
+              </template>
+            </el-table-column>
           </el-table>
           <!-- 分页 -->
           <Pagination
@@ -89,10 +90,11 @@
 
 <script lang="ts" setup>
 import { DefaultNodeTree } from '@/views/components/node'
-import { CASE_LEVEL_ENUMS } from '@/utils/enums'
 
-import * as REVIEW from '@/api/track/review'
-import * as PLAN from '@/api/track/plan'
+import { DICT_TYPE } from '@/utils/dictionary'
+
+import * as REVIEW from '@/api/quality/review'
+import * as PLAN from '@/api/quality/plan'
 
 const props = defineProps({
   source: {
@@ -104,12 +106,17 @@ const props = defineProps({
     type: null,
     default: -1
   },
+  projectId: {
+    required: true,
+    type: null,
+    default: -1
+  },
   enums: {
     required: true,
     type: Array
   }
 })
-const { source, dataId } = toRefs(props)
+const { source, dataId, projectId } = toRefs(props)
 
 const visible = ref(false)
 const btnLoading = ref(false)
@@ -121,7 +128,7 @@ const checked = ref<any>([])
 const queryParams = ref<any>({
   pageNo: 1,
   pageSize: 10,
-  caseName: '',
+  title: '',
   nodeId: null
 })
 const queryFormRef = ref() // 搜索的表单
@@ -148,10 +155,12 @@ const getList = async () => {
     } else {
       queryParams.value.planId = dataId.value
     }
+    queryParams.value.projectId = projectId.value
     const data = await func(queryParams.value)
     list.value = data.list
     total.value = data.total
   } finally {
+    toggleSelection()
     loading.value = false
   }
 }
@@ -175,11 +184,18 @@ const submitForm = async () => {
   btnLoading.value = true
   try {
     if (source.value === 'review') {
-      await REVIEW.addAssociCase({ reviewId: dataId.value, testcases: checked.value })
+      await REVIEW.addAssociCase({
+        projectId: projectId.value,
+        reviewId: dataId.value,
+        testcases: checked.value
+      })
     } else if (source.value === 'plan') {
-      await PLAN.addAssociCase({ planId: dataId.value, testcases: checked.value })
+      await PLAN.addAssociCase({
+        projectId: projectId.value,
+        planId: dataId.value,
+        testcases: checked.value
+      })
     }
-    toggleSelection()
     await getList()
   } finally {
     btnLoading.value = false
@@ -187,7 +203,7 @@ const submitForm = async () => {
 }
 
 const handleSelectionChange = async (val: any[]) => {
-  checked.value = val.map((item) => item.caseId)
+  checked.value = val.map((item) => item.originalId)
 }
 
 const multipleTableRef = ref()

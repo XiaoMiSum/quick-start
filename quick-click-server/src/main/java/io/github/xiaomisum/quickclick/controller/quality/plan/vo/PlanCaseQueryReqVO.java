@@ -34,6 +34,8 @@ import xyz.migoo.framework.common.util.json.JsonUtils;
 @Setter
 public class PlanCaseQueryReqVO extends PageParam {
 
+    private String projectId;
+
     private String planId;
 
     private String nodeId;

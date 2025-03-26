@@ -42,7 +42,7 @@ public interface PlanCaseService {
 
     List<PlanCase> getList(String planId);
 
-    PlanCase getFirst(String reviewId);
+    PlanCase getFirst(String planId);
 
     List<PlanCase> getList(String planId, TestStatus result);
 

@@ -40,11 +40,8 @@ import java.util.List;
 @AllArgsConstructor
 public class PlanCaseExecuteVO {
 
-    @NotEmpty(message = "测试计划关联用例记录编号不能为空")
+    @NotNull(message = "测试计划关联用例记录编号不能为空")
     private Long id;
-
-    @NotEmpty(message = "关联测试用例原始编号不能为空")
-    private String originalId;
 
     @NotEmpty(message = "测试计划编号不能为空")
     private String planId;

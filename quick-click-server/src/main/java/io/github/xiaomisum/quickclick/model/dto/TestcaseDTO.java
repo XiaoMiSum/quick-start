@@ -44,6 +44,8 @@ public class TestcaseDTO {
 
     private String priority;
 
+    private String path;
+
     private String prerequisite;
 
     @TableField(typeHandler = JacksonTypeHandler.class)

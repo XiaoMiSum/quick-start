@@ -28,13 +28,17 @@ package io.github.xiaomisum.quickclick.dal.dataobject.project;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.github.xiaomisum.quickclick.model.dto.CaseStep;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "qc_project_archive_testcase", autoResultMap = true)
@@ -72,6 +76,8 @@ public class ArchiveTestcase extends BaseDO<Long> {
      */
     private String lastReviewResult;
 
+    @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime lastReviewTime;
 
 }

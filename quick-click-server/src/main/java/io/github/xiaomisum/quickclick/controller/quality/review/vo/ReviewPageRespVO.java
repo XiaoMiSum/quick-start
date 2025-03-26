@@ -25,6 +25,7 @@
 
 package io.github.xiaomisum.quickclick.controller.quality.review.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import lombok.Data;
@@ -44,9 +45,11 @@ public class ReviewPageRespVO extends ReviewBaseVO {
     private Statistics statistics;
 
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime actualStartTime;
 
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime actualEndTime;
 
     private TestStatus status;

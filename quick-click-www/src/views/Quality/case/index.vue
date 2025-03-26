@@ -11,7 +11,7 @@
       <ContentWrap>
         <el-tabs v-model="activeName" @tab-change="tabChange">
           <el-tab-pane label="测试用例" name="Testcase" />
-          <el-tab-pane label="回收站" name="Recycle" />
+          <el-tab-pane label="回收站" name="Trash" />
         </el-tabs>
         <!-- 搜索工作栏 -->
         <el-form ref="queryFormRef" :inline="true" :model="queryParams">
@@ -73,17 +73,6 @@
               新增
             </el-button>
           </el-col>
-          <el-col :span="1.5">
-            <el-button
-              :disabled="!checked || checked.length < 1"
-              plain
-              type="danger"
-              @click="handleBatchDeleteCase"
-            >
-              <Icon class="mr-5px" icon="ep:delete" />
-              批量删除
-            </el-button>
-          </el-col>
           <el-col :span="1.5" @click="openImports">
             <el-button plain>
               <Icon class="mr-5px" icon="ep:upload" />
@@ -103,7 +92,7 @@
               :disabled="!checked || checked.length < 1"
               plain
               type="success"
-              @click="handleBatchRecoverRecycleTestcase"
+              @click="handleBatchRecoverTestcase"
             >
               <Icon class="mr-5px" icon="ep:document-add" />
               批量恢复
@@ -114,7 +103,7 @@
               :disabled="!checked || checked.length < 1"
               plain
               type="danger"
-              @click="handleBatchRemoveRecycleTestcase"
+              @click="handleBatchRemoveTestcase"
             >
               <Icon class="mr-5px" icon="ep:delete" />
               彻底删除
@@ -152,7 +141,11 @@
           </el-table-column>
           <el-table-column align="center" label="用例等级" prop="priority" width="80">
             <template #default="scope">
-              <ones-tag :type="DICT_TYPE.QUALITY_TESTCASE_PRIORITY" :value="scope.row.priority" />
+              <ones-tag
+                :type="DICT_TYPE.QUALITY_TESTCASE_PRIORITY"
+                :value="scope.row.priority"
+                effect="dark"
+              />
             </template>
           </el-table-column>
           <el-table-column
@@ -172,28 +165,25 @@
             prop="supervisor"
           >
             <template #default="scope">
-              <el-select
-                :disabled="!supervisorEnable"
-                v-model="scope.row.supervisor"
-                style="width: 100%"
-              >
-                <el-option
-                  v-for="item in userList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+              <user-tag :value="scope.row.supervisor" />
             </template>
           </el-table-column>
           <el-table-column
-            v-if="activeName === 'Testcase'"
-            :formatter="dateFormatter"
+            v-if="activeName === 'Trash'"
             align="center"
-            label="更新时间"
+            label="删除人"
+            prop="updater"
+            show-overflow-tooltip
+            width="100"
+          />
+
+          <el-table-column
+            align="center"
+            :label="(activeName === 'Testcase' ? '更新' : '删除') + '时间'"
             prop="updateTime"
             width="165"
           />
+
           <el-table-column
             v-if="activeName === 'Testcase'"
             align="center"
@@ -213,31 +203,15 @@
                 </el-button>
               </el-tooltip>
               <el-tooltip content="删除" placement="top">
-                <el-button circle plain type="danger" @click="handleDelete(scope.row.id)">
+                <el-button circle plain type="danger" @click="handleDelete([scope.row.id])">
                   <Icon icon="ep:delete" />
                 </el-button>
               </el-tooltip>
             </template>
           </el-table-column>
-
-          <el-table-column
-            v-if="activeName === 'Recycle'"
-            align="center"
-            label="删除人"
-            prop="creator"
-            show-overflow-tooltip
-            width="100"
-          />
-          <el-table-column
-            v-if="activeName === 'Recycle'"
-            :formatter="dateFormatter"
-            align="center"
-            label="删除时间"
-            prop="createTime"
-            width="165"
-          />
         </el-table>
         <el-button
+          v-if="activeName === 'Testcase'"
           class="mt-15px"
           plain
           type="primary"
@@ -246,6 +220,17 @@
         >
           <Icon class="mr-5px" icon="ep:edit" />
           批量编辑
+        </el-button>
+        <el-button
+          v-if="activeName === 'Testcase'"
+          class="mt-15px"
+          :disabled="!checked || checked.length < 1"
+          plain
+          type="danger"
+          @click="handleDelete(checked)"
+        >
+          <Icon class="mr-5px" icon="ep:delete" />
+          批量删除
         </el-button>
         <!-- 分页 -->
         <Pagination
@@ -273,7 +258,6 @@ import { DefaultNodeTree } from '@/views/components/node'
 import CaseImports from './CaseImports.vue'
 import CaseBatchEditor from './CaseBatchEditor.vue'
 
-import { dateFormatter } from '@/utils/formatTime'
 import { handleTree } from '@/utils/tree'
 import download from '@/utils/download'
 import { DICT_TYPE, getDictOptions } from '@/utils/dictionary'
@@ -284,15 +268,14 @@ import * as User from '@/api/project/member'
 
 import { useGlobalStore } from '@/store/modules/global'
 
-const supervisorEnable = ref(false)
-
 const { push } = useRouter() // 路由
+
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const globalStore = useGlobalStore()
 
-defineOptions({ name: 'ProjectManager' })
+defineOptions({ name: 'CaseList' })
 
 const queryParams = ref<any>({
   pageNo: 1,
@@ -311,6 +294,7 @@ const checked = ref<any>([])
 const userList = ref<any>([])
 
 const queryFormRef = ref() // 搜索的表单
+
 const getList = async () => {
   loading.value = true
   try {
@@ -334,12 +318,16 @@ const resetQuery = async () => {
   handleQuery()
 }
 
-const handleDelete = async (id: number) => {
+const handleDelete = async (ids: string[]) => {
   try {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await HTTP.removeData(id)
+    const params = {
+      projectId: globalStore.getCurrentProject,
+      idListString: ids.join(',')
+    }
+    await HTTP.batchRemove(params)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -350,10 +338,10 @@ const handleAddCase = async () => {
   await push('/quality/case/add')
 }
 
-const handleEditCase = async (id: number) => {
+const handleEditCase = async (id: string) => {
   await push('/quality/case/edit/' + id)
 }
-const handleCopyCase = async (id: number) => {
+const handleCopyCase = async (id: string) => {
   await push({ path: '/quality/case/add', query: { from: id } })
 }
 
@@ -369,11 +357,6 @@ const openBatchUpdate = async () => {
 
 const handleSelectionChange = async (val: any[]) => {
   checked.value = val.map((item) => item.id)
-}
-
-const handleBatchDeleteCase = async () => {
-  await HTTP.batchRemove(checked.value)
-  await handleQuery()
 }
 
 const multipleTableRef = ref()
@@ -403,23 +386,27 @@ const getTree = async () => {
   modules.value = handleTree(data)
 }
 
-const getTags = async () => {}
-
 const tabChange = async () => {
   checked.value = []
   list.value = []
   total.value = 0
-  queryParams.value.nodeId = null
   await handleQuery()
 }
 
-const handleBatchRemoveRecycleTestcase = async () => {
-  await HTTP.batchRemoveRecycleTestcase(checked.value)
+const handleBatchRemoveTestcase = async () => {
+  // 删除的二次确认
+  await message.delConfirm()
+  await HTTP.batchRemoveTestcase({
+    projectId: globalStore.getCurrentProject,
+    idListString: checked.value.join(',')
+  })
   await handleQuery()
 }
 
-const handleBatchRecoverRecycleTestcase = async () => {
-  await HTTP.recoverTestcase(checked.value)
+const handleBatchRecoverTestcase = async () => {
+  // 删除的二次确认
+  await message.confirm('确认还原所选用例？')
+  await HTTP.recoverTestcase({ projectId: globalStore.getCurrentProject, ids: checked.value })
   await handleQuery()
 }
 
@@ -435,7 +422,6 @@ watch(
     queryParams.value.projectId = globalStore.getCurrentProject
     getList()
     getTree()
-    getTags()
   },
   { immediate: true, deep: true }
 )
@@ -444,7 +430,6 @@ watch(
 onMounted(async () => {
   await getList()
   await getTree()
-  await getTags()
   await getUserList()
 })
 </script>

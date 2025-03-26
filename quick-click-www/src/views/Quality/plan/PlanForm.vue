@@ -7,9 +7,9 @@
       :rules="formRules"
       label-width="110px"
     >
-      <el-form-item label="计划名称" prop="name">
+      <el-form-item label="计划名称" prop="title">
         <el-input
-          v-model="formData.name"
+          v-model="formData.title"
           maxlength="64"
           placeholder="请输入计划名称"
           show-word-limit
@@ -18,39 +18,44 @@
       <el-form-item label="测试阶段" prop="stage">
         <el-select v-model="formData.stage" placeholder="请选择测试阶段" style="width: 100%">
           <el-option
-            v-for="item in TEST_STAGE_ENUMS"
-            :key="item.key"
+            v-for="item in getDictOptions(DICT_TYPE.QUALITY_TEST_STAGE)"
+            :key="item.value"
             :label="item.label"
-            :value="item.key"
+            :value="item.value"
           />
         </el-select>
       </el-form-item>
       <el-form-item label="执行人" prop="executor">
         <el-select v-model="formData.executor" placeholder="请选择执行人" style="width: 100%">
-          <el-option v-for="item in users" :key="item.id" :label="item.name" :value="item.name" />
+          <el-option
+            v-for="item in users"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
-      <el-row :gutter="10">
-        <el-col :span="1.5">
-          <el-form-item label="预计开始时间" prop="expectedStartTime">
-            <el-date-picker
-              v-model="formData.expectedStartTime"
-              placeholder="请选择预计开始时间"
-              type="datetime"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="1.5">
-          <el-form-item label="预计结束时间" prop="expectedEndTime">
-            <el-date-picker
-              v-model="formData.expectedEndTime"
-              placeholder="请选择预计结束时间"
-              type="datetime"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item label="备注" maxlength="" prop="memo" show-word-limit>
+      <el-form-item label="预计开始时间" prop="expectedStartTime">
+        <el-date-picker
+          value-format="YYYY-MM-DD HH:mm:ss"
+          v-model="formData.expectedStartTime"
+          placeholder="请选择预计开始时间"
+          type="datetime"
+          style="width: 100%"
+        />
+      </el-form-item>
+
+      <el-form-item label="预计结束时间" prop="expectedEndTime">
+        <el-date-picker
+          value-format="YYYY-MM-DD HH:mm:ss"
+          v-model="formData.expectedEndTime"
+          placeholder="请选择预计结束时间"
+          type="datetime"
+          style="width: 100%"
+        />
+      </el-form-item>
+
+      <el-form-item label="备注" prop="memo">
         <el-input
           v-model="formData.memo"
           maxlength="255"
@@ -73,16 +78,20 @@
 </template>
 
 <script lang="ts" setup>
-import * as HTTP from '@/api/track/plan'
-import * as USER from '@/api/management/system/user'
+import * as HTTP from '@/api/quality/plan'
+import * as User from '@/api/project/member'
 
-import { TEST_STAGE_ENUMS } from '@/utils/enums'
-
-import { useUserStore } from '@/store/modules/user'
 import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 
+import { getDictOptions, DICT_TYPE } from '@/utils/dictionary'
+
+import { useUserStore } from '@/store/modules/user'
 const userStore = useUserStore()
-defineOptions({ name: 'ReviewForm' })
+
+import { useGlobalStore } from '@/store/modules/global'
+const globalStore = useGlobalStore()
+
+defineOptions({ name: 'PlanForm' })
 
 const { t } = useI18n() // 国际化
 const { push } = useRouter() // 路由
@@ -93,7 +102,7 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref<any>({
   id: undefined,
-  name: '',
+  title: '',
   stage: '',
   executor: userStore.getUser.id,
   expectedStartTime: '',
@@ -101,7 +110,7 @@ const formData = ref<any>({
   memo: ''
 })
 const formRules = reactive({
-  name: [{ required: true, message: '测试计划名称不能为空', trigger: 'blur' }],
+  title: [{ required: true, message: '测试计划名称不能为空', trigger: 'blur' }],
   stage: [{ required: true, message: '测试阶段不能为空', trigger: 'blur' }],
   executor: [{ required: true, message: '执行人不能为空', trigger: 'blur' }],
   expectedStartTime: [{ required: true, message: '预计开始时间不能为空', trigger: 'blur' }],
@@ -132,16 +141,17 @@ const open = async (type: string, id?: number) => {
 
 /**  获取用户列表 */
 const getUsers = async () => {
-  users.value = await USER.listSimple()
+  users.value = await User.getSimple(globalStore.getCurrentProject)
 }
 
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    name: '',
+    title: '',
     stage: '',
-    executor: userStore.getUser.name,
+    projectId: globalStore.getCurrentProject,
+    executor: userStore.getUser.id,
     expectedStartTime: '',
     expectedEndTime: '',
     memo: ''
@@ -168,7 +178,7 @@ const submitForm = async (to?: Boolean) => {
       await HTTP.updateData(data)
     }
     if (to) {
-      push('/track/plan/' + data.id + '/associated-use-cases')
+      push('/quality/plan/' + data.id + '/associated-use-cases')
     } else {
       // 发送操作成功的事件
       emit('success')

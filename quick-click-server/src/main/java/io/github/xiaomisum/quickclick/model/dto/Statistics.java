@@ -38,7 +38,7 @@ public class Statistics {
 
     private int passed;
 
-    private int notstarted;
+    private int preparing;
 
     private int skipped;
 }

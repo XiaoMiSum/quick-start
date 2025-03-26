@@ -58,9 +58,9 @@ public interface PlanCaseMapper extends BaseMapperX<PlanCase> {
     default Statistics statistics(String planId) {
         return selectJoinOne(Statistics.class, new MPJLambdaWrapperX<PlanCase>()
                 .select("ifNull(count(id), 0) total",
-                        "sum(case when result = 'Pass' then 1 else 0 end) passed",
-                        "sum(case when result = 'Prepare' then 1 else 0 end) unstarted",
-                        "sum(case when result = 'Skip' then 1 else 0 end) skipped")
+                        "sum(case when result = 'Passed' then 1 else 0 end) passed",
+                        "sum(case when result = 'Preparing' then 1 else 0 end) preparing",
+                        "sum(case when result = 'Skipped' then 1 else 0 end) skipped")
                 .eq("plan_id", planId));
     }
 

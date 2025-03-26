@@ -7,7 +7,7 @@
     width="80%"
     @close="close"
   >
-    <InfoViewer v-model="data" :show-actual="false" v-loading="loading" />
+    <InfoViewer v-model="data" :show-actual="true" v-loading="loading" />
 
     <template #footer>
       <el-button link @click="handleLastClick">
@@ -28,7 +28,7 @@
         评论
       </el-button>
       <el-divider direction="vertical" />
-      <Executer source="review" @click="handleExecuteCase" />
+      <Executer source="plan" @click="handleExecuteCase" />
     </template>
   </Dialog>
 </template>
@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 import { InfoViewer, Executer } from '@/views/components/case'
 
-import * as PLAN from '@/api/track/plan'
+import * as PLAN from '@/api/quality/plan'
 
 const message = useMessage() // 消息弹窗
 
@@ -54,10 +54,10 @@ const loading = ref(false)
 const status = ref('')
 
 /** 打开弹窗 */
-const open = async (obj: any) => {
+const open = async (id: any) => {
   loading.value = true
   visible.value = true
-  data.value = await PLAN.getPlanCaseExecute(obj)
+  data.value = await PLAN.getPlanCaseExecute(id)
   status.value = data.value.executeResult
   loading.value = false
 }

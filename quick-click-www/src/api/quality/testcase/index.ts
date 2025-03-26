@@ -43,15 +43,10 @@ export const batchUpdate = (data: any) => {
   })
 }
 
-export const removeData = (id: number) => {
+export const batchRemove = (params: any) => {
   return request.delete({
-    url: url + '/' + id
-  })
-}
-
-export const batchRemove = (ids: number[]) => {
-  return request.delete({
-    url: url + '?ids=' + ids
+    url: url,
+    params
   })
 }
 
@@ -68,21 +63,16 @@ export const download = (template: boolean = false) => {
   })
 }
 
-export const getRecycleTestcase = (params: any) => {
-  return request.get({
-    url: url + '/recycle',
+export const batchRemoveTestcase = (params: any) => {
+  return request.delete({
+    url: url + '/trash',
     params
   })
 }
 
-export const batchRemoveRecycleTestcase = (ids: number[]) => {
-  return request.delete({
-    url: url + '/recycle?ids=' + ids
-  })
-}
-
-export const recoverTestcase = (ids: number[]) => {
+export const recoverTestcase = (params: any) => {
   return request.post({
-    url: url + '/recycle?ids=' + ids
+    url: url + '/trash?',
+    data: params
   })
 }

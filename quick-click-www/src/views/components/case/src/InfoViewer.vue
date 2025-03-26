@@ -8,7 +8,11 @@
       </el-col>
       <el-col :span="8">
         <el-form-item label="用例等级：">
-   
+          <ones-tag
+            :type="DICT_TYPE.QUALITY_TESTCASE_PRIORITY"
+            :value="modelValue.priority"
+            effect="dark"
+          />
         </el-form-item>
       </el-col>
     </el-row>
@@ -19,11 +23,6 @@
             <el-tag v-for="item in modelValue.tags" :key="item" class="mr-5px"> {{ item }}</el-tag>
           </div>
           <span v-else> 无</span>
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="负责人：">
-          <span>{{ modelValue.maintainer }}</span>
         </el-form-item>
       </el-col>
     </el-row>
@@ -48,7 +47,7 @@
             <el-table-column>
               <template #default="scope">
                 <el-form-item>
-                  <el-input v-model="scope.row.exec" disabled type="textarea" />
+                  <el-input v-model="scope.row.step" disabled type="textarea" />
                 </el-form-item>
               </template>
             </el-table-column>
@@ -74,8 +73,7 @@
 </template>
 
 <script lang="ts" setup>
-import { CASE_LEVEL_ENUMS } from '@/utils/enums'
-
+import { DICT_TYPE } from '@/utils/dictionary'
 const props = defineProps({
   modelValue: {
     required: true,

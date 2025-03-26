@@ -1,16 +1,19 @@
 import { store } from '@/store'
 import { defineStore } from 'pinia'
 import { getProject } from '@/api/login'
+import { getSimple } from '@/api/project/member'
 
 interface GlobalData {
   currentProject: string
   projects: any[]
+  users: any[]
 }
 
 export const useGlobalStore = defineStore('global-data', {
   state: (): GlobalData => ({
     currentProject: '',
-    projects: []
+    projects: [],
+    users: []
   }),
   getters: {
     getCurrentProject(): string {
@@ -18,6 +21,9 @@ export const useGlobalStore = defineStore('global-data', {
     },
     getProjects(): any[] {
       return this.projects
+    },
+    getUsers(): any[] {
+      return this.users
     }
   },
   actions: {
@@ -29,6 +35,9 @@ export const useGlobalStore = defineStore('global-data', {
       if (this.projects && !this.currentProject) {
         this.setCurrentProject(this.projects[0].value)
       }
+    },
+    async setGlobalUsers() {
+      this.users = await getSimple(this.currentProject)
     }
   }
 })

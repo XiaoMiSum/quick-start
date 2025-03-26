@@ -4,23 +4,23 @@
     :loading="loading"
     plain
     type="danger"
-    @click="handleClick(TESTCASE_STATUS.Blocking)"
+    @click="handleClick(QualityTestStatus.Blocking)"
   >
     阻塞
   </el-button>
-  <el-button :loading="loading" plain type="info" @click="handleClick(TESTCASE_STATUS.Skip)">
+  <el-button :loading="loading" plain type="info" @click="handleClick(QualityTestStatus.Skipped)">
     跳过
   </el-button>
-  <el-button :loading="loading" plain type="warning" @click="handleClick(TESTCASE_STATUS.Failure)">
+  <el-button :loading="loading" plain type="warning" @click="handleClick(QualityTestStatus.Failed)">
     不通过
   </el-button>
-  <el-button :loading="loading" type="success" @click="handleClick(TESTCASE_STATUS.Pass)">
+  <el-button :loading="loading" plain type="success" @click="handleClick(QualityTestStatus.Passed)">
     通过
   </el-button>
 </template>
 
 <script lang="ts" setup>
-import { TESTCASE_STATUS } from '@/utils/enums'
+import { QualityTestStatus } from '@/utils/constants'
 
 const props = defineProps({
   source: {

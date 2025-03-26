@@ -7,9 +7,9 @@
       :rules="formRules"
       label-width="110px"
     >
-      <el-form-item label="评审名称" prop="name">
+      <el-form-item label="评审名称" prop="title">
         <el-input
-          v-model="formData.name"
+          v-model="formData.title"
           maxlength="64"
           placeholder="请输入评审名称"
           show-word-limit
@@ -17,43 +17,51 @@
       </el-form-item>
       <el-form-item label="主讲人" prop="speaker">
         <el-select v-model="formData.speaker" placeholder="请选择主讲人" style="width: 100%">
-          <el-option v-for="item in users" :key="item.id" :label="item.name" :value="item.name" />
+          <el-option
+            v-for="item in users"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
-      <el-form-item label="参与人员" prop="reviewers">
+      <el-form-item label="参与人员" prop="reviewer">
         <el-select
-          v-model="formData.reviewers"
-          allow-create
+          v-model="formData.reviewer"
           clearable
           filterable
           multiple
-          placeholder="请选参与人员，用户不存在可直接输入姓名"
+          placeholder="请选参与人员"
           style="width: 100%"
-          @blur="reviewersBlur"
         >
-          <el-option v-for="item in users" :key="item.id" :label="item.name" :value="item.name" />
+          <el-option
+            v-for="item in users"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
-      <el-row :gutter="10">
-        <el-col :span="1.5">
-          <el-form-item label="预计开始时间" prop="expectedStartTime">
-            <el-date-picker
-              v-model="formData.expectedStartTime"
-              placeholder="请选择预计开始时间"
-              type="datetime"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="1.5">
-          <el-form-item label="预计结束时间" prop="expectedEndTime">
-            <el-date-picker
-              v-model="formData.expectedEndTime"
-              placeholder="请选择预计结束时间"
-              type="datetime"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
+
+      <el-form-item label="预计开始时间" prop="expectedStartTime">
+        <el-date-picker
+          value-format="YYYY-MM-DD HH:mm:ss"
+          v-model="formData.expectedStartTime"
+          placeholder="请选择预计开始时间"
+          type="datetime"
+          style="width: 100%"
+        />
+      </el-form-item>
+
+      <el-form-item label="预计结束时间" prop="expectedEndTime">
+        <el-date-picker
+          value-format="YYYY-MM-DD HH:mm:ss"
+          v-model="formData.expectedEndTime"
+          placeholder="请选择预计结束时间"
+          type="datetime"
+          style="width: 100%"
+        />
+      </el-form-item>
 
       <el-form-item label="备注" prop="memo">
         <el-input
@@ -78,12 +86,14 @@
 </template>
 
 <script lang="ts" setup>
-import * as HTTP from '@/api/track/review'
-import * as USER from '@/api/management/system/user'
+import * as HTTP from '@/api/quality/review'
+import * as User from '@/api/project/member'
 
 import { useUserStoreWithOut } from '@/store/modules/user'
-
 const userStore = useUserStoreWithOut()
+
+import { useGlobalStore } from '@/store/modules/global'
+const globalStore = useGlobalStore()
 
 defineOptions({ name: 'ReviewForm' })
 
@@ -96,15 +106,15 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref<any>({
   id: undefined,
-  name: '',
+  title: '',
   speaker: undefined,
-  reviewers: [],
+  reviewer: [],
   expectedStartTime: '',
   expectedEndTime: '',
   memo: ''
 })
 const formRules = reactive({
-  name: [{ required: true, message: '评审名称不能为空', trigger: 'blur' }],
+  title: [{ required: true, message: '评审名称不能为空', trigger: 'blur' }],
   speaker: [{ required: true, message: '主讲人不能为空', trigger: 'blur' }],
   expectedStartTime: [{ required: true, message: '预计开始时间不能为空', trigger: 'blur' }],
   expectedEndTime: [{ required: true, message: '预计结束时间不能为空', trigger: 'blur' }]
@@ -129,23 +139,24 @@ const open = async (type: string, id?: number) => {
       formLoading.value = false
     }
   } else {
-    formData.value.speaker = userStore.getUser.name
+    formData.value.speaker = userStore.getUser.id
   }
   getUsers()
 }
 
 /**  获取用户列表 */
 const getUsers = async () => {
-  users.value = await USER.listSimple()
+  users.value = await User.getSimple(globalStore.getCurrentProject)
 }
 
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    name: '',
+    projectId: globalStore.getCurrentProject,
+    title: '',
     speaker: undefined,
-    reviewers: [],
+    reviewer: [],
     expectedStartTime: '',
     expectedEndTime: '',
     memo: ''
@@ -172,7 +183,7 @@ const submitForm = async (to?: Boolean) => {
       await HTTP.updateData(data)
     }
     if (to) {
-      push('/track/review/' + data.id + '/associated-use-cases')
+      push('/quality/review/' + data.id + '/associated-use-cases')
     } else {
       // 发送操作成功的事件
       emit('success')
@@ -180,13 +191,6 @@ const submitForm = async (to?: Boolean) => {
   } finally {
     _visible.value = false
     formLoading.value = false
-  }
-}
-
-const reviewersBlur = async (el: any) => {
-  const val = el.target.value
-  if (val) {
-    formData.value.reviewers?.push(val)
   }
 }
 </script>
