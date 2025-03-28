@@ -96,6 +96,18 @@ public class BugController {
     }
 
     /**
+     * 指派缺陷
+     *
+     * @param data 缺陷信息
+     * @return 处理结果
+     */
+    @PutMapping("assigned")
+    public Result<?> assign(@RequestBody @Valid BugAssignedReqVO data) {
+        service.assign(data.getIds(), data.getHandler());
+        return Result.getSuccessful();
+    }
+
+    /**
      * 确认缺陷
      *
      * @param data 缺陷信息

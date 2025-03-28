@@ -3,13 +3,9 @@ package io.github.xiaomisum.quickclick.controller.quality.bug.vo;
 import io.github.xiaomisum.quickclick.enums.BugStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class BugBaseVO {
 
     /**

@@ -7,7 +7,7 @@ VITE_DEV=false
 VITE_BASE_URL='http://localhost:48080'
 
 # 上传路径
-VITE_UPLOAD_URL='/quick-click-server/tools/upload'
+VITE_UPLOAD_URL='/quick-click-server/developer/file'
 
 # 接口地址
 VITE_API_URL=/quick-click-server

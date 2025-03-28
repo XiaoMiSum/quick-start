@@ -67,20 +67,11 @@ public class Bug extends BaseDO<String> {
      * 状态
      */
     private BugStatus status;
-    /**
-     * 步骤
-     */
-    private String step;
 
     /**
-     * 实际
+     * 详细描述
      */
-    private String actual;
-
-    /**
-     * 实际
-     */
-    private String expected;
+    private String content;
 
     /**
      * 责任人

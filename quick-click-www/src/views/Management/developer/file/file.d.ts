@@ -18,6 +18,7 @@ const crudColumns = reactive<CrudSchema[]>([
     label: '文件路径',
     field: 'path',
     component: 'Input',
+    formItemProps: { style: { width: '200px' } },
     search: {
       show: true,
       hiddenLabel: true
@@ -36,6 +37,7 @@ const crudColumns = reactive<CrudSchema[]>([
   {
     label: '文件类型',
     field: 'type',
+    formItemProps: { style: { width: '200px' } },
     search: {
       show: true,
       hiddenLabel: true
@@ -45,7 +47,8 @@ const crudColumns = reactive<CrudSchema[]>([
     label: '文件内容',
     field: 'url',
     formatter: (data: Recordable, __: TableColumn, cellValue: any) => {
-      return data.type.includes('image')
+      return
+      data.type.includes('image')
         ? h(ElImage, {
             class: 'h-80px w-80px',
             lazy: true,

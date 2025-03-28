@@ -10,7 +10,7 @@ export const getPage = (params: any) => {
   })
 }
 
-export const getData = (id: string) => {
+export const getData = (id: any) => {
   return request.get({
     url: url + '/' + id
   })
@@ -26,6 +26,13 @@ export const addData = (data: any) => {
 export const updateData = (data: any) => {
   return request.put({
     url,
+    data
+  })
+}
+
+export const assign = (data: any) => {
+  return request.put({
+    url: url + '/assigned',
     data
   })
 }

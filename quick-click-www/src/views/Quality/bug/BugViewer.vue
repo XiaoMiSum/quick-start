@@ -1,5 +1,5 @@
 <template>
-  <ContentWrap class="h-1000px">
+  <ContentWrap class="h-1300px">
     <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px">
       <el-row>
         <el-col :span="16">
@@ -100,15 +100,17 @@
       </el-row>
     </el-form>
   </ContentWrap>
-  <FloatingButton
-    icon="Plus"
-    buttonType=""
-    tooltip="haha"
-    :menu-items="menuItems"
-    position="right-bottom"
-    :offset="{ x: 600, y: 30 }"
-    @item-click="handleMenuItemClick"
-  />
+
+  <ContentWrap>
+    <FloatingButton
+      icon="Plus"
+      tooltip="haha"
+      :menu-items="menuItems"
+      position="right-bottom"
+      :offset="{ x: 700, y: 30 }"
+      @item-click="handleMenuItemClick"
+    />
+  </ContentWrap>
 </template>
 
 <script lang="ts" setup>
@@ -126,7 +128,8 @@ import { defaultProps2, handleTree } from '@/utils/tree'
 import { getDictOptions, DICT_TYPE } from '@/utils/dictionary'
 
 import { Editor } from '@/components/Editor'
-import { FloatingButton } from '@/components/XButton'
+
+import { FloatingButton, ActionButtonBar } from '@/components/XButton'
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
@@ -148,9 +151,7 @@ const formData = ref<any>({
   severity: 'Medium',
   title: '',
   priority: 'P2',
-  status: 'New',
-  content:
-    '<p><strong>【步骤】</strong></p><p><br></p><p><strong>【结果】</strong></p><p><br></p><p><strong>【期望】</strong></p><p><br></p>'
+  status: 'New'
 })
 
 const modules = ref<any>([])
@@ -167,15 +168,8 @@ const formRules = reactive({
   handler: [{ required: true, message: '处理人不能为空', trigger: 'blur' }]
 })
 
-const formRef = ref()
-
 /** 保存并关闭 */
 const handleSubmitAndCloseView = async () => {
-  // 校验表单
-  if (!formRef) return
-  const valid = await formRef.value.validate()
-  if (!valid) return
-  // 提交请求
   loading.value = true
   try {
     if (!formData.value.id) {
@@ -186,7 +180,7 @@ const handleSubmitAndCloseView = async () => {
       message.success('更新成功')
     }
     await handleCloseView()
-    toBugList()
+    toCaseList()
   } finally {
     loading.value = false
   }
@@ -194,24 +188,21 @@ const handleSubmitAndCloseView = async () => {
 
 /** 保存并继续添加 */
 const handleSubmitAndAdd = async () => {
-  // 校验表单
-  if (!formRef) return
-  const valid = await formRef.value.validate()
-  if (!valid) return
   loading.value = true
+  console.log(formData.value)
   try {
     if (!formData.value.id) {
       await HTTP.addData(formData.value)
       message.success('新增成功')
       resetData()
       if (query && query.from) {
-        toBugAdd()
+        toCaseAdd()
       }
     } else {
       await HTTP.updateData(formData.value)
       message.success('更新成功')
       await handleCloseView()
-      toBugAdd()
+      toCaseAdd()
     }
   } finally {
     loading.value = false
@@ -231,27 +222,25 @@ const resetData = () => {
     severity: 'Medium',
     title: '',
     priority: 'P2',
-    status: 'New',
-    content:
-      '<p><strong>【步骤】</strong></p><p><br></p><p><strong>【结果】</strong></p><p><br></p><p><strong>【期望】</strong></p><p><br></p>'
+    status: 'New'
   }
 }
 
-const handleGoBugList = async () => {
+const handleGoCaseList = async () => {
   try {
     await message.confirm('确认返回测试用例列表？')
     resetData()
     await handleCloseView()
-    toBugList()
+    toCaseList()
   } finally {
   }
 }
 
-const toBugList = async () => {
+const toCaseList = async () => {
   push('/quality/bug')
 }
 
-const toBugAdd = async () => {
+const toCaseAdd = async () => {
   push('/quality/bug/add')
 }
 
@@ -281,7 +270,7 @@ const handleDelete = async (id: string) => {
     message.success(t('common.delSuccess'))
     resetData()
     await handleCloseView()
-    toBugList()
+    toCaseList()
   } catch {}
 }
 
@@ -291,36 +280,33 @@ const handleDelete = async (id: string) => {
 
 const menuItems = ref([
   {
-    key: 'save-close',
-    label: '保存并关闭',
+    key: 'add',
+    icon: 'DocumentAdd',
+    tooltip: '添加文档',
     type: 'success'
   },
   {
-    key: 'save-continue',
-    label: '保存并继续',
-    type: 'primary'
+    key: 'edit',
+    icon: 'Edit',
+    tooltip: '编辑内容'
   },
   {
-    key: 'cancel',
-    label: '取消',
-    type: ''
+    key: 'delete',
+    icon: 'Delete',
+    tooltip: '删除项目',
+    type: 'danger'
+  },
+  {
+    key: 'share',
+    icon: 'Share',
+    tooltip: '分享',
+    autoClose: false // 点击后不自动关闭菜单
   }
 ])
 
-const handleMenuItemClick = async (item) => {
+const handleMenuItemClick = (item) => {
   console.log('点击了菜单项:', item.key)
   // 根据item.key执行不同的操作
-  switch (item.key) {
-    case 'save-close':
-      await handleSubmitAndCloseView()
-      break
-    case 'save-continue':
-      await handleSubmitAndAdd()
-      break
-    case 'cancel':
-      await handleGoBugList()
-      break
-  }
 }
 
 onMounted(async () => {
@@ -334,6 +320,7 @@ onMounted(async () => {
     Object.keys(formData.value).forEach((key) => (formData.value[key] = data[key]))
     formData.value.title = formData.value.title + '_copy'
     formData.value.status = 'New'
+    console.log(formData.value)
   }
   if (!formData.value.id && !formData.value.supervisor) {
     formData.value.supervisor = userStore.getUser.id

@@ -22,4 +22,7 @@ public class BugAddReqVO extends BugBaseVO {
      * 创建人id
      */
     private Long creatorId;
+
+    private String content;
+    
 }

@@ -48,6 +48,11 @@ migoo:
     permit-all-urls:
       - /${spring.application.name}/login
       - /${spring.application.name}/configurer
+      - /${spring.application.name}/d/f/*/*
+  xss:
+    enable: false
+    exclude-urls:
+      - ${spring.application.name}/quality-center/bug # 过滤测试用例 新增\修改的xss拦截
 
 # MyBatis Plus 的配置项
 mybatis-plus:

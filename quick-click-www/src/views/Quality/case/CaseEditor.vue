@@ -76,8 +76,8 @@
           </template>
         </el-table-column>
         <el-table-column label="期望结果">
-          <template #default="{ $index }">
-            <el-input v-model="caseData.steps[$index].expected" type="textarea" />
+          <template #default="{ row }">
+            <el-input v-model="row.expected" type="textarea" />
           </template>
         </el-table-column>
 
@@ -167,8 +167,14 @@ const tagsBlur = async (el: any) => {
   }
 }
 
+const formRef = ref()
+
 /** 保存并关闭 */
 const handleSubmitAndCloseView = async () => {
+  // 校验表单
+  if (!formRef) return
+  const valid = await formRef.value.validate()
+  if (!valid) return
   loading.value = true
   try {
     if (!caseData.value.id) {
@@ -187,8 +193,11 @@ const handleSubmitAndCloseView = async () => {
 
 /** 保存并继续添加 */
 const handleSubmitAndAdd = async () => {
+  // 校验表单
+  if (!formRef) return
+  const valid = await formRef.value.validate()
+  if (!valid) return
   loading.value = true
-  console.log(caseData.value)
   try {
     if (!caseData.value.id) {
       await HTTP.addData(caseData.value)

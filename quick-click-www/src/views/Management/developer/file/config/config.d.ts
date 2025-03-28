@@ -16,6 +16,7 @@ const crudColumns = reactive<CrudSchema[]>([
     dictCode: DICT_TYPE.INFRA_FILE_STORAGE,
     search: {
       show: true,
+      formItemProps: { style: { width: '200px' } },
       hiddenLabel: true
     }
   },
@@ -28,6 +29,7 @@ const crudColumns = reactive<CrudSchema[]>([
     field: 'master',
     dictCode: DICT_TYPE.INFRA_BOOLEAN_STRING,
     search: {
+      formItemProps: { style: { width: '200px' } },
       show: true,
       hiddenLabel: true
     }
@@ -68,23 +70,29 @@ export const handleRemove = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 /** 主配置按钮操作 */
 export const handleMaster = async (id) => {
   try {
     await message.confirm('是否确认修改配置编号为"' + id + '"的数据项为主配置?')
-    await FileConfigApi.updateFileConfigMaster(id)
+    await HTTP.updateFileConfigMaster(id)
     message.success(t('common.updateSuccess'))
     await getList()
-  } catch {}
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 /** 测试按钮操作 */
 export const handleTest = async (id) => {
   try {
-    const response = await FileConfigApi.testFileConfig(id)
+    const response = await HTTP.testFileConfig(id)
     message.alert('测试通过，上传文件成功！访问地址：' + response)
-  } catch {}
+  } catch (e) {
+    console.log(e)
+  }
 }
