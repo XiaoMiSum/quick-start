@@ -2,7 +2,7 @@
   <Dialog title="批量指派" v-model="visible" @close="onClose">
     <el-form ref="formRef" v-loading="formLoading" :model="formData" label-width="100px">
       <el-form-item label="处理人" prop="handler">
-        <el-select v-model="formData.handler" placeholder="请选择处理人人" style="width: 100%">
+        <el-select v-model="formData.handler" placeholder="请选择处理人" style="width: 100%">
           <el-option
             v-for="item in users"
             :key="item.value"

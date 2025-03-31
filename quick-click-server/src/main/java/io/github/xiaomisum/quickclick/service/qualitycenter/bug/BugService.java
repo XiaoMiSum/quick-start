@@ -20,9 +20,11 @@ public interface BugService {
 
     void confirm(List<String> ids);
 
+    void confirm(Bug convert);
+
     void fix(Bug data);
 
-    void reopen(String id);
+    void reopen(String id, Long handler);
 
     void close(String id);
 

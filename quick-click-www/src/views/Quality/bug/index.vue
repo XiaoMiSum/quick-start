@@ -109,7 +109,7 @@
             min-width="300"
           >
             <template #default="scope">
-              <el-button link type="primary" @click="handleEditBug(scope.row.id)">
+              <el-button link type="primary" @click="handleViewBug(scope.row.id)">
                 {{ scope.row.title }}
               </el-button>
             </template>
@@ -159,8 +159,8 @@
           </el-table-column>
           <el-table-column align="center" label="创建人" prop="creator" width="100" />
           <el-table-column align="center" label="创建时间" prop="createTime" width="165" />
-          <el-table-column align="center" label="修复时间" prop="fixTime" width="165" />
-          <el-table-column align="center" label="关闭时间" prop="closeTime" width="165" />
+          <el-table-column align="center" label="修复时间" prop="fixedTime" width="165" />
+          <el-table-column align="center" label="关闭时间" prop="closedTime" width="165" />
           <el-table-column align="center" label="激活次数" prop="reopenedTimes" width="80" />
 
           <el-table-column align="center" fixed="right" label="操作" width="300">
@@ -171,7 +171,7 @@
                   circle
                   plain
                   :type="row.status === 'New' ? 'primary' : ''"
-                  @click="handleEditBug(row.id)"
+                  @click="handleBatchConfirm([row.id])"
                   :disabled="row.status !== 'New'"
                 >
                   <Icon icon="fa:bug" />
@@ -184,7 +184,7 @@
                   circle
                   plain
                   :type="['Opened', 'Reopened'].includes(row.status) ? 'primary' : ''"
-                  @click="handleEditBug(row.id)"
+                  @click="openBugFixer(row)"
                   :disabled="!['Opened', 'Reopened'].includes(row.status)"
                 >
                   <Icon icon="ep:circle-check" />
@@ -197,7 +197,7 @@
                   circle
                   plain
                   :type="row.status === 'Fixed' ? 'primary' : ''"
-                  @click="handleEditBug(row.id)"
+                  @click="openBugCloser(row)"
                   :disabled="row.status !== 'Fixed'"
                 >
                   <Icon icon="ep:switch-button" />
@@ -209,9 +209,9 @@
                   v-hasPermi="['quality:bug:reopen']"
                   circle
                   plain
-                  :type="['Fixed', 'Rejected'].includes(row.status) ? 'primary' : ''"
-                  @click="handleEditBug(row.id)"
-                  :disabled="!['Fixed', 'Rejected'].includes(row.status)"
+                  :type="['Fixed', 'Rejected', 'Closed'].includes(row.status) ? 'primary' : ''"
+                  @click="openBugOpener(row)"
+                  :disabled="!['Fixed', 'Rejected', 'Closed'].includes(row.status)"
                 >
                   <Icon icon="ep:timer" />
                 </el-button>
@@ -261,9 +261,9 @@
           plain
           type="primary"
           :disabled="checked.length < 1 || checked.find((item) => item.status !== 'New')"
-          @click="handleBatchConfirm"
+          @click="handleBatchConfirm(checked.value.map((item) => item.id))"
         >
-          <Icon class="mr-5px" icon="ep:circle-check" />
+          <Icon class="mr-5px" icon="fa:bug" />
           确认
         </el-button>
         <!-- 分页 -->
@@ -278,11 +278,18 @@
   </el-row>
 
   <BatchAssign ref="batchAssign" :users="userList" @success="getList" />
+  <BugFixer ref="bugFixer" :users="userList" @success="getList" />
+  <BugCloser ref="bugCloser" :users="userList" @success="getList" />
+  <BugOpener ref="bugOpener" :users="userList" @success="getList" />
 </template>
 
 <script lang="ts" setup>
 import { DefaultNodeTree } from '@/views/components/node'
+
 import BatchAssign from './BatchAssign.vue'
+import BugFixer from './BugFixer.vue'
+import BugCloser from './BugCloser.vue'
+import BugOpener from './BugOpener.vue'
 
 import { handleTree } from '@/utils/tree'
 import download from '@/utils/download'
@@ -350,6 +357,11 @@ const handleAddBug = async () => {
 const handleEditBug = async (id: number) => {
   await push('/quality/bug/edit/' + id)
 }
+
+const handleViewBug = async (id: number) => {
+  await push('/quality/bug/view/' + id)
+}
+
 const handleCopyBug = async (id: number) => {
   await push({ path: '/quality/bug/add', query: { from: id } })
 }
@@ -398,10 +410,24 @@ const openBatchAssign = async () => {
   batchAssign.value.open(checked.value.map((item) => item.id))
 }
 
-const handleBatchConfirm = async () => {
-  await message.confirm('确定批量确认缺陷?')
-  await HTTP.confirm(checked.value.map((item) => item.id))
-  message.alertSuccess('操作成功')
+const bugFixer = ref()
+const openBugFixer = async (data: any) => {
+  bugFixer.value.open(data)
+}
+
+const bugCloser = ref()
+const openBugCloser = async (data: any) => {
+  bugCloser.value.open(data)
+}
+const bugOpener = ref()
+const openBugOpener = async (data: any) => {
+  bugOpener.value.open(data)
+}
+
+const handleBatchConfirm = async (ids: any[]) => {
+  await message.confirm('确定要确认所选缺陷?')
+  await HTTP.batchConfirm(ids)
+  message.success('操作成功')
   getList()
 }
 

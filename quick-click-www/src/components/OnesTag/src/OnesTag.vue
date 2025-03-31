@@ -22,7 +22,7 @@ export default defineComponent({
       const options = getDictOptions(dictCode)
       options.forEach((item: DictDataType) => {
         if (item.value === value) {
-          if (item.colorType + '' === 'primary' || item.colorType + '' === 'default') {
+          if (item.colorType + '' === '' || item.colorType + '' === 'default') {
             item.colorType = 'primary'
           }
           dictData.value = item

@@ -22,11 +22,14 @@
         :style="getMenuItemStyle(index)"
       >
         <el-button
+          v-if="item.permi"
           :type="item.type || ''"
           :size="size"
           :circle="circle"
+          :disabled="item.disabled"
           @click="handleItemClick(item)"
         >
+          <Icon v-if="item.icon" class="mr-5px" :icon="item.icon" />
           {{ item.label }}
         </el-button>
       </div>
@@ -93,7 +96,7 @@ const containerStyle = computed(() => {
 
 // 计算菜单项样式
 const getMenuItemStyle = (index) => {
-  const baseOffset = props.size === 'large' ? 300 : props.size === 'default' ? 100 : 100
+  const baseOffset = props.size === 'large' ? 300 : props.size === 'default' ? 150 : 100
   return {
     'margin-right': `${(index + 1) * baseOffset}px`
   }
@@ -101,6 +104,7 @@ const getMenuItemStyle = (index) => {
 
 // 切换菜单状态
 const toggleMenu = () => {
+  console.log(props.menuItems)
   isMenuOpen.value = !isMenuOpen.value
 }
 

@@ -75,11 +75,6 @@ public class BugRespVO extends BugBaseVO {
     private String solution;
 
     /**
-     * 解决方案详细描述
-     */
-    private String resolution;
-
-    /**
      * 激活次数
      */
     private Integer reopenedTimes;
@@ -88,4 +83,28 @@ public class BugRespVO extends BugBaseVO {
      * 来源
      */
     private String source;
+
+    /**
+     * 创建者id
+     */
+    private Long creatorId;
+
+    /**
+     * 修改者
+     */
+    private String updater;
+
+    /**
+     * 创建时间
+     */
+    @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    private LocalDateTime updateTime;
 }

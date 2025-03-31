@@ -129,11 +129,6 @@ public class Bug extends BaseDO<String> {
     private String solution;
 
     /**
-     * 解决方案详细描述
-     */
-    private String resolution;
-
-    /**
      * 激活次数
      */
     private Integer reopenedTimes;

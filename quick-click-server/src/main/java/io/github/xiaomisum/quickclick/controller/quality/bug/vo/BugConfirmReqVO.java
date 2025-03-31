@@ -15,7 +15,7 @@ import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_D
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BugFixReqVO {
+public class BugConfirmReqVO {
 
     /**
      * 缺陷编号
@@ -24,22 +24,16 @@ public class BugFixReqVO {
     private String id;
 
     /**
-     * 产生原因
+     * 优先级
      */
-    @NotBlank(message = "cause 不能为空")
-    private String cause;
-
+    @NotBlank(message = "priority 不能为空")
+    private String priority;
+    
     /**
-     * 产生原因详细描述
+     * 责任人
      */
-    @NotBlank(message = "rootCause 不能为空")
-    private String rootCause;
-
-    /**
-     * 解决方案
-     */
-    @NotBlank(message = "solution 不能为空")
-    private String solution;
+    @NotNull(message = "supervisor 不能为空")
+    private Long supervisor;
 
     /**
      * 指派处理人
@@ -48,10 +42,9 @@ public class BugFixReqVO {
     private Long handler;
 
     /**
-     * 解决时间
+     * 指派时间
      */
-    @NotNull(message = "fixedTime 不能为空")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
-    private LocalDateTime fixedTime;
+    private LocalDateTime assignedTime;
 }

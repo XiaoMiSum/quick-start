@@ -35,6 +35,7 @@ import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
 import xyz.migoo.framework.security.core.LoginUser;
 import xyz.migoo.framework.security.core.annotation.CurrentUser;
+import xyz.migoo.framework.security.core.util.SecurityFrameworkUtils;
 
 /**
  * 缺陷跟踪
@@ -55,6 +56,7 @@ public class BugController {
     @GetMapping
     public Result<?> getPage(BugQueryReqVO req) {
         // 获得测试缺陷分页列表
+        req.setCurrentUser(SecurityFrameworkUtils.getLoginUserId());
         PageResult<BugPageRespVO> result = BugConvert.INSTANCE.convert(service.getPage(req));
         return Result.getSuccessful(result);
     }
@@ -114,7 +116,19 @@ public class BugController {
      * @return 处理结果
      */
     @PutMapping("confirmed")
-    public Result<?> confirm(@RequestBody @Valid BugOptionReqVO data) {
+    public Result<?> confirm(@RequestBody @Valid BugConfirmReqVO data) {
+        service.confirm(BugConvert.INSTANCE.convert(data));
+        return Result.getSuccessful();
+    }
+
+    /**
+     * 确认缺陷
+     *
+     * @param data 缺陷信息
+     * @return 处理结果
+     */
+    @PutMapping("confirmed/batch")
+    public Result<?> batchConfirm(@RequestBody @Valid BugOptionReqVO data) {
         service.confirm(data.getIds());
         return Result.getSuccessful();
     }
@@ -134,12 +148,12 @@ public class BugController {
     /**
      * 激活缺陷
      *
-     * @param id 缺陷编号
+     * @param data 缺陷数据
      * @return 处理结果
      */
-    @PutMapping("/reopened/{id}")
-    public Result<?> reopen(@PathVariable("id") String id) {
-        service.reopen(id);
+    @PutMapping("/reopened")
+    public Result<?> reopen(@RequestBody BugReopenReqVO data) {
+        service.reopen(data.getId(), data.getHandler());
         return Result.getSuccessful();
     }
 

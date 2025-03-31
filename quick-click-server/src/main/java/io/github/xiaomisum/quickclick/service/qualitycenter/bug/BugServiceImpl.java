@@ -8,6 +8,7 @@ import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
+import xyz.migoo.framework.security.core.util.SecurityFrameworkUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,24 +53,34 @@ public class BugServiceImpl implements BugService {
     @Override
     public void confirm(List<String> ids) {
         List<Bug> bugs = Lists.newArrayList();
-        ids.forEach(id -> bugs.add((Bug) new Bug().setAssignedTime(LocalDateTime.now()).setStatus(Opened).setId(id)));
+        ids.forEach(id -> bugs.add((Bug) new Bug().setConfirmedTime(LocalDateTime.now()).setStatus(Opened).setId(id)));
         mapper.updateBatch(bugs);
+    }
+
+    @Override
+    public void confirm(Bug data) {
+        data.setStatus(Opened);
+        data.setConfirmedTime(LocalDateTime.now());
+        mapper.updateById(data);
     }
 
     @Override
     public void fix(Bug data) {
         data.setStatus(Fixed);
-        mapper.updateBatch(data);
+        data.setFixedTime(LocalDateTime.now());
+        data.setFixer(SecurityFrameworkUtils.getLoginUserId());
+        data.setAssignedTime(LocalDateTime.now());
+        mapper.updateById(data);
     }
 
     @Override
-    public void reopen(String id) {
-        mapper.reopenById(id, Reopened);
+    public void reopen(String id, Long handler) {
+        mapper.reopenById(id, Reopened, handler);
     }
 
     @Override
     public void close(String id) {
-        mapper.closeById(id, Closed);
+        mapper.closeById(id, Closed, SecurityFrameworkUtils.getLoginUserId());
     }
 
     @Override

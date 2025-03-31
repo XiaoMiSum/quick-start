@@ -20,4 +20,6 @@ public interface BugConvert {
     Bug convert(BugUpdateReqVO data);
 
     Bug convert(BugFixReqVO data);
+
+    Bug convert(BugConfirmReqVO data);
 }

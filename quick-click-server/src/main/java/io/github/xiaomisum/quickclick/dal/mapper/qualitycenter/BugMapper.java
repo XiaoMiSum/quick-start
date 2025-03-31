@@ -12,6 +12,7 @@ import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static io.github.xiaomisum.quickclick.enums.BugStatus.*;
 
@@ -31,7 +32,7 @@ public interface BugMapper extends BaseMapperX<Bug> {
             case IsCreator -> query.eq(Bug::getCreatorId, req.getCurrentUser());
             case IsFixer -> query.eq(Bug::getFixer, req.getCurrentUser());
             case Fixed -> query.eq(Bug::getStatus, Fixed);
-            case UnFixed -> query.ne(Bug::getStatus, Fixed);
+            case UnFixed -> query.notIn(Bug::getStatus, Fixed, Closed);
             case New -> query.eq(Bug::getStatus, New);
             case LongTime ->
                     query.lt(Bug::getAssignedTime, DateUtils.addTime(Duration.ofDays(-7))).ne(Bug::getStatus, Closed);
@@ -42,16 +43,24 @@ public interface BugMapper extends BaseMapperX<Bug> {
         return selectPage(req, query);
     }
 
-    default void reopenById(String id, BugStatus status) {
+    default void reopenById(String id, BugStatus status, Long handler) {
         update(new LambdaUpdateWrapper<Bug>()
-                .setSql(true, "status = ?, reopened_times = reopened_times + 1", status)
+                .set(Bug::getStatus, status)
+                .set(Bug::getHandler, handler)
+                .set(Bug::getFixer, null)
+                .set(Bug::getFixedTime, null)
+                .set(Bug::getAssignedTime, LocalDateTime.now())
+                .setSql(true, "reopened_times = reopened_times + 1")
                 .eq(BaseDO::getId, id));
 
     }
 
-    default void closeById(String id, BugStatus status) {
+    default void closeById(String id, BugStatus status, Long closer) {
         update(new LambdaUpdateWrapper<Bug>()
-                .setSql(true, "status = ?, handler = null", status)
+                .set(Bug::getStatus, status)
+                .set(Bug::getHandler, null)
+                .set(Bug::getClosedTime, LocalDateTime.now())
+                .set(Bug::getCloser, closer)
                 .eq(BaseDO::getId, id));
     }
 }

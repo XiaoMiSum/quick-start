@@ -151,7 +151,8 @@ const editorConfig = computed((): IEditorConfig => {
 
 const editorStyle = computed(() => {
   return {
-    height: isNumber(props.height) ? `${props.height}px` : props.height
+    height: isNumber(props.height) ? `${props.height}px` : props.height,
+    resize: 'vertical'
   }
 })
 

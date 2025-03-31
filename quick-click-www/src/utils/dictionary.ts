@@ -131,5 +131,6 @@ export enum DICT_TYPE {
   QUALITY_TESTCASE_PRIORITY = 'testcase_priority',
   QUALITY_TEST_STAGE = 'test_stage',
   QUALITY_BUG_SEVERITY = 'bug_severity',
-  QUALITY_BUG_STATUS = 'bug_status'
+  QUALITY_BUG_STATUS = 'bug_status',
+  QUALITY_BUG_FIX_CAUSE = 'bug_fix_cause'
 }
