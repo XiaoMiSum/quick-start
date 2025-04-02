@@ -124,22 +124,18 @@ const handleLogin = async () => {
     form.password = encrypt_aes(loginData.loginForm.password)
     const data = await LoginApi.login(form)
     token.value = data.token
-    if (data.requiredBindAuthenticator) {
-      loginLoading.value = false
-    } else {
-      ElLoading.service({
-        lock: true,
-        text: '正在加载系统中...',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      loginLoading.value = false
-      authUtil.setToken(token.value)
-      setTimeout(() => {
-        const loadingInstance = ElLoading.service()
-        loadingInstance.close()
-        push({ path: '/' })
-      }, 400)
-    }
+    ElLoading.service({
+      lock: true,
+      text: '正在加载系统中...',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
+    loginLoading.value = false
+    authUtil.setToken(token.value)
+    setTimeout(() => {
+      const loadingInstance = ElLoading.service()
+      loadingInstance.close()
+      push({ path: '/' })
+    }, 400)
   } catch {
     loginLoading.value = false
   } finally {

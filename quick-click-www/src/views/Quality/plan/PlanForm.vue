@@ -26,7 +26,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="执行人" prop="executor">
-        <el-select v-model="formData.executor" placeholder="请选择执行人" style="width: 100%">
+        <el-select
+          filterable
+          v-model="formData.executor"
+          placeholder="请选择执行人"
+          style="width: 100%"
+        >
           <el-option
             v-for="item in users"
             :key="item.value"
@@ -79,7 +84,6 @@
 
 <script lang="ts" setup>
 import * as HTTP from '@/api/quality/plan'
-import * as User from '@/api/project/member'
 
 import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 
@@ -141,7 +145,7 @@ const open = async (type: string, id?: number) => {
 
 /**  获取用户列表 */
 const getUsers = async () => {
-  users.value = await User.getSimple(globalStore.getCurrentProject)
+  users.value = await globalStore.getUsers
 }
 
 /** 重置表单 */

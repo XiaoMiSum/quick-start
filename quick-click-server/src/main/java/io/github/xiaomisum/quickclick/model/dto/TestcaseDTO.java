@@ -46,6 +46,10 @@ public class TestcaseDTO {
 
     private String path;
 
+    private Long backendDeveloper;
+
+    private Long frontendDeveloper;
+
     private String prerequisite;
 
     @TableField(typeHandler = JacksonTypeHandler.class)

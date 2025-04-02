@@ -113,30 +113,38 @@
               </template>
             </el-table-column>
             <el-table-column align="center" label="评审时间" prop="reviewTime" width="170" />
+            <el-table-column align="center" label="前端开发" width="80">
+              <template #default="scope">
+                <user-tag text :value="scope.row.frontendDeveloper" />
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="后端开发" width="80">
+              <template #default="scope">
+                <user-tag text :value="scope.row.backendDeveloper" />
+              </template>
+            </el-table-column>
             <el-table-column :width="150" align="center" fixed="right" label="操作">
               <template #default="scope">
-                <el-tooltip content="评审" placement="top">
-                  <el-button
-                    v-hasPermi="['review:case:execute']"
-                    circle
-                    plain
-                    type="success"
-                    @click="handleReviewCase(scope.row.id)"
-                  >
-                    <Icon icon="ep:caret-right" />
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip content="移除" placement="top">
-                  <el-button
-                    v-hasPermi="['review:case:remove']"
-                    circle
-                    plain
-                    type="danger"
-                    @click="handleBatchUnlinkCase([scope.row.id])"
-                  >
-                    <Icon icon="fa-solid:unlink" />
-                  </el-button>
-                </el-tooltip>
+                <el-button
+                  v-hasPermi="['review:case:execute']"
+                  circle
+                  plain
+                  type="success"
+                  @click="handleReviewCase(scope.row.id)"
+                >
+                  <Icon icon="ep:caret-right" />
+                </el-button>
+
+                <el-button
+                  v-hasPermi="['review:case:remove']"
+                  circle
+                  plain
+                  type="danger"
+                  @click="handleBatchUnlinkCase([scope.row.id])"
+                >
+                  <Icon icon="fa-solid:unlink" />
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -169,15 +177,6 @@
 </template>
 
 <script lang="ts" setup>
-/** 初始化 **/
-onMounted(async () => {
-  if (params && params.reviewId) {
-    currentReviewId.value = params.reviewId
-    await handleGetData()
-    await getList()
-  }
-})
-
 import { DefaultNodeTree } from '@/views/components/node'
 import { CaseAssociated } from '../components'
 import CaseViewer from './CaseViewer.vue'
@@ -290,6 +289,29 @@ const toggleSelection = () => {
   multipleTableRef.value!.clearSelection()
   checked.value = []
 }
+
+const pageInit = ref(false)
+/** 监听当前项目变化，返回测试评审列表 */
+watch(
+  computed(() => globalStore.getCurrentProject),
+  async () => {
+    if (pageInit.value) {
+      tagsViewStore.delView(unref(currentRoute))
+      push('/quality/review')
+    }
+    pageInit.value = true
+  },
+  { immediate: true, deep: true }
+)
+
+/** 初始化 **/
+onMounted(async () => {
+  if (params && params.reviewId) {
+    currentReviewId.value = params.reviewId
+    await handleGetData()
+    await getList()
+  }
+})
 </script>
 
 <style scoped></style>

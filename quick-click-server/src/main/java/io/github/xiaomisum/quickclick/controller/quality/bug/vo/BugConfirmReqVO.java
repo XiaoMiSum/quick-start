@@ -1,6 +1,7 @@
 package io.github.xiaomisum.quickclick.controller.quality.bug.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.github.xiaomisum.quickclick.enums.BugStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ public class BugConfirmReqVO {
      */
     @NotBlank(message = "priority 不能为空")
     private String priority;
-    
+
     /**
      * 责任人
      */
@@ -40,6 +41,9 @@ public class BugConfirmReqVO {
      */
     @NotNull(message = "handler 不能为空")
     private Long handler;
+
+    @NotNull(message = "status 不能为空")
+    private BugStatus status;
 
     /**
      * 指派时间

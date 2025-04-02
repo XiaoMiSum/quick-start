@@ -31,6 +31,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
@@ -47,6 +48,16 @@ public class Bug extends BaseDO<String> {
      * 项目编号
      */
     private String projectId;
+
+    /**
+     * 测试计划编号
+     */
+    private String planId;
+
+    /**
+     * 测试用例编号
+     */
+    private String testcaseId;
 
     /**
      * 模块编号
@@ -102,6 +113,11 @@ public class Bug extends BaseDO<String> {
      * 修复时间
      */
     private LocalDateTime fixedTime;
+
+    /**
+     * 修复时长
+     */
+    private BigDecimal fixDuration;
 
     /**
      * 关闭人

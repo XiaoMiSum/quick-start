@@ -16,6 +16,13 @@ export const getData = (id: any) => {
   })
 }
 
+export const getSimple = (projectId: string) => {
+  return request.get({
+    url: url + '/simple',
+    params: { projectId }
+  })
+}
+
 export const addData = (data: any) => {
   return request.post({
     url,
@@ -40,6 +47,13 @@ export const getPlanCase = (params: any) => {
   return request.get({
     url: url + '/case',
     params
+  })
+}
+
+export const getFailedPlanCaseSimple = (planId: string) => {
+  return request.get({
+    url: url + '/case/failed',
+    params: { planId }
   })
 }
 

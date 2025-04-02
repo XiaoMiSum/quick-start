@@ -58,6 +58,7 @@ export const useUserStore = defineStore('admin-user', {
       await loginOut()
       removeToken()
       wsCache.clear()
+      wsCache.deleteAllExpires()
       this.resetState()
     },
     resetState() {

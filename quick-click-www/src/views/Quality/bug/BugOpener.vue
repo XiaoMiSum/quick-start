@@ -1,20 +1,21 @@
 <template>
   <Dialog :title="'【激活】' + title" v-model="visible" @close="onClose">
     <el-form ref="formRef" v-loading="formLoading" :model="formData" label-width="100px">
-      <el-form-item label="修复人">
+      <el-form-item label="拒绝时间" v-if="formData.status === 'Rejected'">
+        <el-text type="danger"> {{ formData.updater + ' 于 ' + formData.updateTime }}</el-text>
+      </el-form-item>
+      <el-form-item v-else label="修复时间">
         <user-tag :value="formData.fixer" type="danger" />
-        <el-text type="info" class="ml-10px"> 于</el-text>
-        <el-text type="danger" class="ml-5px"> {{ formData.fixedTime }}</el-text>
-        <el-text type="info" class="ml-5px"> 修复</el-text>
+        <el-text type="danger"> {{ '于' + formData.fixedTime }}</el-text>
       </el-form-item>
       <el-form-item label="产生原因">
         <ones-tag :value="formData.cause" :type="DICT_TYPE.QUALITY_BUG_FIX_CAUSE" />
       </el-form-item>
       <el-form-item label="详细描述" prop="rootCause">
-        <el-text type="info" class="ml-5px"> {{ formData.rootCause }}</el-text>
+        <el-text type="info"> {{ formData.rootCause }}</el-text>
       </el-form-item>
       <el-form-item label="解决方案" prop="solution">
-        <el-text type="info" class="ml-5px"> {{ formData.solution }}</el-text>
+        <el-text type="info"> {{ formData.solution }}</el-text>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -50,7 +51,8 @@ const formData = ref<any>({
   rootCause: undefined,
   solution: undefined,
   handler: undefined,
-  fixedTime: undefined
+  fixedTime: undefined,
+  status: ''
 })
 
 defineOptions({ name: 'BugOpener' })
@@ -74,7 +76,8 @@ const resetForm = () => {
     rootCause: undefined,
     solution: undefined,
     handler: undefined,
-    fixedTime: undefined
+    fixedTime: undefined,
+    status: ''
   }
   formRef.value?.resetFields()
 }
@@ -96,7 +99,7 @@ const submitForm = async () => {
   try {
     const data = formData.value
     await reopen({ id: data.id, handler: data.fixer })
-    message.success(t('common.updateSuccess'))
+    message.success(t('common.optionSuccess'))
     visible.value = false
   } finally {
     formLoading.value = false

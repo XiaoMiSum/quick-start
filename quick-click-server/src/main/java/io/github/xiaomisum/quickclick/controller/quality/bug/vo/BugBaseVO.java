@@ -20,6 +20,10 @@ public class BugBaseVO {
     @NotBlank(message = "projectId 不能为空")
     private String projectId;
 
+    private String planId;
+
+    private String testcaseId;
+
     /**
      * 模块编号
      */

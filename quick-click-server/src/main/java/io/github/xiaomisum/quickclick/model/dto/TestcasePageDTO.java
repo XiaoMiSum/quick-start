@@ -53,4 +53,8 @@ public class TestcasePageDTO {
      * 负责人 user_id
      */
     private Long supervisor;
+
+    private Long backendDeveloper;
+
+    private Long frontendDeveloper;
 }

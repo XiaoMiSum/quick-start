@@ -49,7 +49,7 @@ public class BugPageRespVO extends BugBaseVO {
     /**
      * 创建人
      */
-    private String creator;
+    private Long creatorId;
 
     /**
      * 创建时间

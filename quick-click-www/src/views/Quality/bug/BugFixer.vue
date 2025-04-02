@@ -7,6 +7,15 @@
       :rules="formRules"
       label-width="100px"
     >
+      <el-form-item label="修复时长" prop="fixDuration">
+        <el-input-number
+          v-model="formData.fixDuration"
+          :precision="2"
+          placeholder="请输入修复时长（小时）"
+          :step="0.1"
+          style="width: 100%"
+        />
+      </el-form-item>
       <el-form-item label="产生原因" prop="cause">
         <el-select v-model="formData.cause" placeholder="请选择产生原因" style="width: 100%">
           <el-option
@@ -42,7 +51,7 @@
         />
       </el-form-item>
       <el-form-item label="指派给" prop="handler">
-        <el-select v-model="formData.handler" style="width: 100%">
+        <el-select filterable v-model="formData.handler" style="width: 100%">
           <el-option
             v-for="item in users"
             :key="item.value"
@@ -85,7 +94,8 @@ const formData = ref<any>({
   rootCause: undefined,
   solution: undefined,
   handler: undefined,
-  fixedTime: undefined
+  fixedTime: undefined,
+  fixDuration: undefined
 })
 
 defineOptions({ name: 'BugFixer' })
@@ -95,7 +105,8 @@ const formRules = reactive({
   rootCause: [{ required: true, message: '详细描述不能为空', trigger: 'blur' }],
   solution: [{ required: true, message: '解决方案不能为空', trigger: 'blur' }],
   handler: [{ required: true, message: '指派处理人不能为空', trigger: 'blur' }],
-  fixedTime: [{ required: true, message: '修复时间不能为空', trigger: 'blur' }]
+  fixedTime: [{ required: true, message: '修复时间不能为空', trigger: 'blur' }],
+  fixDuration: [{ required: true, message: '修复时长不能为空', trigger: 'blur' }]
 })
 
 const formRef = ref() // 表单 Ref
@@ -141,7 +152,7 @@ const submitForm = async () => {
   try {
     const data = formData.value
     await fix(data)
-    message.success(t('common.updateSuccess'))
+    message.success(t('common.optionSuccess'))
     visible.value = false
   } finally {
     formLoading.value = false

@@ -16,7 +16,12 @@
         />
       </el-form-item>
       <el-form-item label="主讲人" prop="speaker">
-        <el-select v-model="formData.speaker" placeholder="请选择主讲人" style="width: 100%">
+        <el-select
+          filterable
+          v-model="formData.speaker"
+          placeholder="请选择主讲人"
+          style="width: 100%"
+        >
           <el-option
             v-for="item in users"
             :key="item.value"
@@ -87,7 +92,6 @@
 
 <script lang="ts" setup>
 import * as HTTP from '@/api/quality/review'
-import * as User from '@/api/project/member'
 
 import { useUserStoreWithOut } from '@/store/modules/user'
 const userStore = useUserStoreWithOut()
@@ -146,7 +150,7 @@ const open = async (type: string, id?: number) => {
 
 /**  获取用户列表 */
 const getUsers = async () => {
-  users.value = await User.getSimple(globalStore.getCurrentProject)
+  users.value = globalStore.getUsers
 }
 
 /** 重置表单 */

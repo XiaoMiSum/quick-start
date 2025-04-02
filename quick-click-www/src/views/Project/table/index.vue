@@ -46,28 +46,25 @@
       <el-table-column label="备注" prop="memo" show-overflow-tooltip />
       <el-table-column :width="150" align="center" label="操作">
         <template #default="scope">
-          <el-tooltip content="编辑" placement="top">
-            <el-button
-              circle
-              plain
-              type="primary"
-              v-hasPermi="['project:list:update']"
-              @click="openForm('update', scope.row.id)"
-            >
-              <Icon icon="ep:edit" />
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="删除" placement="top">
-            <el-button
-              circle
-              plain
-              type="danger"
-              v-hasPermi="['project:list:remove']"
-              @click="handleDelete(scope.row.id)"
-            >
-              <Icon icon="ep:delete" />
-            </el-button>
-          </el-tooltip>
+          <el-button
+            circle
+            text
+            type="primary"
+            v-hasPermi="['project:list:update']"
+            @click="openForm('update', scope.row.id)"
+          >
+            编辑
+          </el-button>
+
+          <el-button
+            type="danger"
+            circle
+            text
+            v-hasPermi="['project:list:remove']"
+            @click="handleDelete(scope.row.id)"
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>

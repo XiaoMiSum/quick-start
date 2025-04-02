@@ -18,7 +18,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="责任人" prop="supervisor">
-        <el-select v-model="formData.supervisor" placeholder="请选择责任人" style="width: 100%">
+        <el-select
+          filterable
+          v-model="formData.supervisor"
+          placeholder="请选择责任人"
+          style="width: 100%"
+        >
           <el-option
             v-for="item in users"
             :key="item.value"
@@ -29,6 +34,7 @@
       </el-form-item>
       <el-form-item label="处理人" prop="handler">
         <el-select
+          filterable
           v-model="formData.handler"
           placeholder="请选择处理人"
           style="width: 100%"
@@ -45,7 +51,12 @@
     </el-form>
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
-      <el-button :disabled="formLoading" type="primary" @click="submitForm">确 定</el-button>
+      <el-button :disabled="formLoading" type="danger" @click="submitForm('Rejected')">
+        拒 绝
+      </el-button>
+      <el-button :disabled="formLoading" type="primary" @click="submitForm('Opened')">
+        确 定
+      </el-button>
     </template>
   </Dialog>
 </template>
@@ -74,9 +85,8 @@ const formData = ref<any>({})
 defineOptions({ name: 'BugConfirmer' })
 
 const formRules = reactive({
-  cause: [{ required: true, message: '产生原因不能为空', trigger: 'blur' }],
-  rootCause: [{ required: true, message: '详细描述不能为空', trigger: 'blur' }],
-  solution: [{ required: true, message: '解决方案不能为空', trigger: 'blur' }],
+  priority: [{ required: true, message: '优先级不能为空', trigger: 'blur' }],
+  supervisor: [{ required: true, message: '责任人不能为空', trigger: 'blur' }],
   handler: [{ required: true, message: '指派处理人不能为空', trigger: 'blur' }],
   fixedTime: [{ required: true, message: '修复时间不能为空', trigger: 'blur' }]
 })
@@ -108,7 +118,8 @@ const onClose = () => {
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
-const submitForm = async () => {
+
+const submitForm = async (status: string) => {
   // 校验表单
   if (!formRef) return
   const valid = await formRef.value.validate()
@@ -122,7 +133,8 @@ const submitForm = async () => {
       assignedTime: data.assignedTime,
       priority: data.priority,
       supervisor: data.supervisor,
-      handler: data.handler
+      handler: data.handler,
+      status: status
     })
     message.success(t('common.optionSuccess'))
     visible.value = false

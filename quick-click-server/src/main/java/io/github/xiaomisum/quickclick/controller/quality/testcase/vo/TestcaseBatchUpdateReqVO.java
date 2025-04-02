@@ -46,4 +46,8 @@ public class TestcaseBatchUpdateReqVO {
 
     private Long supervisor;
 
+    private Long backendDeveloper;
+
+    private Long frontendDeveloper;
+
 }

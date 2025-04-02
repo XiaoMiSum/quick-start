@@ -48,6 +48,7 @@ import xyz.migoo.framework.security.core.annotation.CurrentUser;
 import java.util.List;
 import java.util.Objects;
 
+import static io.github.xiaomisum.quickclick.enums.TestStatus.Failed;
 import static io.github.xiaomisum.quickclick.enums.TestStatus.Preparing;
 
 /**
@@ -128,6 +129,18 @@ public class PlanController {
     public Result<?> remove(@PathVariable("id") String id) {
         service.remove(id);
         return Result.getSuccessful();
+    }
+
+
+    /**
+     * 获取测试计划下拉
+     *
+     * @param projectId 测试计划编号
+     * @return 处理结果
+     */
+    @GetMapping("/simple")
+    public Result<?> getSimple(@RequestParam("projectId") String projectId) {
+        return Result.getSuccessful(PlanConvert.INSTANCE.convert(service.getList(projectId)));
     }
 
     /**
@@ -292,5 +305,16 @@ public class PlanController {
     public Result<?> unassociatedCase(@RequestParam("ids") List<Long> ids) {
         planCaseService.remove(ids);
         return Result.getSuccessful();
+    }
+
+    /**
+     * 获取测试计划执行失败的用例
+     *
+     * @param planId 测试计划编号
+     * @return 处理结果
+     */
+    @GetMapping("/case/failed")
+    public Result<?> unassociatedCase(@RequestParam("planId") String planId) {
+        return Result.getSuccessful(PlanConvert.INSTANCE.convert1(planCaseService.getList(planId, Failed)));
     }
 }

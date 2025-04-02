@@ -49,7 +49,7 @@ const props = defineProps({
   // 按钮大小
   size: {
     type: String,
-    default: 'large'
+    default: ''
   },
   // 是否为圆形按钮
   circle: {
@@ -96,7 +96,7 @@ const containerStyle = computed(() => {
 
 // 计算菜单项样式
 const getMenuItemStyle = (index) => {
-  const baseOffset = props.size === 'large' ? 300 : props.size === 'default' ? 150 : 100
+  const baseOffset = props.size === 'large' ? 300 : props.size === 'default' ? 200 : 150
   return {
     'margin-right': `${(index + 1) * baseOffset}px`
   }

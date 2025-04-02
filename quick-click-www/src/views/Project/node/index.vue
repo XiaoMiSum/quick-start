@@ -44,39 +44,35 @@
       <el-table-column label="排序" prop="sort" width="100" />
       <el-table-column :width="250" align="center" label="操作">
         <template #default="scope">
-          <el-tooltip content="新增" placement="top">
-            <el-button
-              circle
-              v-hasPermi="['project:node:add']"
-              plain
-              type="primary"
-              @click="openForm('create', scope.row.id)"
-            >
-              <Icon icon="ep:plus" />
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="编辑" placement="top">
-            <el-button
-              circle
-              plain
-              type="primary"
-              v-hasPermi="['project:node:update']"
-              @click="openForm('update', scope.row.id)"
-            >
-              <Icon icon="ep:edit" />
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="删除" placement="top">
-            <el-button
-              circle
-              plain
-              type="danger"
-              v-hasPermi="['project:node:remove']"
-              @click="handleDelete(scope.row.id)"
-            >
-              <Icon icon="ep:delete" />
-            </el-button>
-          </el-tooltip>
+          <el-button
+            circle
+            v-hasPermi="['project:node:add']"
+            text
+            type="primary"
+            @click="openForm('create', scope.row.id)"
+          >
+            新增
+          </el-button>
+
+          <el-button
+            circle
+            text
+            type="primary"
+            v-hasPermi="['project:node:update']"
+            @click="openForm('update', scope.row)"
+          >
+            编辑
+          </el-button>
+
+          <el-button
+            circle
+            text
+            type="danger"
+            v-hasPermi="['project:node:remove']"
+            @click="handleDelete(scope.row.id)"
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>

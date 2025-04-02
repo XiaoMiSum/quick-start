@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType, ref } from 'vue'
-import { ElTag } from 'element-plus'
+import { ElTag, ElLink, ElText } from 'element-plus'
 
 import { useGlobalStore } from '@/store/modules/global'
 
@@ -17,6 +17,16 @@ export default defineComponent({
     value: {
       type: [String, Number, Boolean] as PropType<string | number | boolean>,
       required: false
+    },
+    text: {
+      type: Boolean as PropType<boolean>,
+      required: false,
+      default: false
+    },
+    link: {
+      type: Boolean as PropType<boolean>,
+      required: false,
+      default: false
     }
   },
   setup(props) {
@@ -38,7 +48,11 @@ export default defineComponent({
         return null
       }
       getDictObj(props.value)
-      return (
+      return props.text ? (
+        <ElText type={props.type}>{dictData.value?.label} </ElText>
+      ) : props.link ? (
+        <ElLink type={props.type}>{dictData.value?.label} </ElLink>
+      ) : (
         <ElTag type={props.type} disableTransitions={true}>
           {dictData.value?.label}
         </ElTag>

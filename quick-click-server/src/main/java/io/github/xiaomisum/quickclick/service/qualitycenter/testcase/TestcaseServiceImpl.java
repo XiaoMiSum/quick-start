@@ -95,7 +95,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 
     @Override
     public void update(List<Testcase> data) {
-        mapper.updateBatch(data);
+        data.forEach(this::update);
     }
 
     @Override

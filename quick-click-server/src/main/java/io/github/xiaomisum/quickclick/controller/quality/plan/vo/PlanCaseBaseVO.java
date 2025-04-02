@@ -44,4 +44,8 @@ public class PlanCaseBaseVO {
 
     private List<String> tags;
 
+    private Long backendDeveloper;
+
+    private Long frontendDeveloper;
+
 }

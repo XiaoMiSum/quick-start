@@ -1,5 +1,5 @@
 <template>
-  <ContentWrap class="h-260px">
+  <ContentWrap class="h-300px">
     <el-form ref="formRef" :model="caseData" :rules="formRules" label-width="100px">
       <el-form-item label="用例标题" prop="title">
         <el-input v-model="caseData.title" maxlength="64" show-word-limit />
@@ -8,6 +8,7 @@
         <el-col :span="12">
           <el-form-item label="所属模块" prop="nodeId">
             <el-tree-select
+              filterable
               v-model="caseData.nodeId"
               :data="modules"
               :props="defaultProps2"
@@ -40,7 +41,49 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="责任人" prop="supervisor">
-            <el-select v-model="caseData.supervisor" placeholder="请选择责任人" style="width: 100%">
+            <el-select
+              filterable
+              v-model="caseData.supervisor"
+              placeholder="请选择责任人"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in users"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="前端开发" prop="frontendDeveloper">
+            <el-select
+              filterable
+              v-model="caseData.frontendDeveloper"
+              placeholder="请选择前端开发"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in users"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="后端开发" prop="backendDeveloper">
+            <el-select
+              filterable
+              v-model="caseData.backendDeveloper"
+              placeholder="请选择后端开发"
+              style="width: 100%"
+            >
               <el-option
                 v-for="item in users"
                 :key="item.value"
@@ -64,8 +107,8 @@
     </el-form>
   </ContentWrap>
 
-  <ContentWrap class="h-[calc(100%-260px)]">
-    <VueDraggable target="tbody" v-model="caseData.steps" :animation="150" @end="onEnd">
+  <ContentWrap class="h-[calc(100%-300px)]">
+    <VueDraggable target="tbody" v-model="caseData.steps" :animation="150">
       <el-table id="dragTable" :data="caseData.steps" class="h-[calc(100%-260px)]">
         <el-table-column type="index" width="30">
           <Icon icon="ep:rank" />
@@ -109,8 +152,6 @@
 
 <script lang="ts" setup>
 import * as HTTP from '@/api/quality/testcase'
-import * as Node from '@/api/project/node'
-import * as User from '@/api/project/member'
 
 import { useTagsViewStore } from '@/store/modules/tagsView'
 
@@ -118,7 +159,7 @@ import { useGlobalStore } from '@/store/modules/global'
 import { useUserStore } from '@/store/modules/user'
 import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 
-import { defaultProps2, handleTree } from '@/utils/tree'
+import { defaultProps2 } from '@/utils/tree'
 
 import { VueDraggable } from 'vue-draggable-plus'
 
@@ -147,7 +188,6 @@ const caseData = ref<CaseVO>({
 
 const modules = ref<any>([])
 const users = ref<any>([])
-const tags = ref<any>([])
 
 const loading = ref(false)
 
@@ -158,14 +198,6 @@ const formRules = reactive({
   supervisor: [{ required: true, message: '责任人不能为空', trigger: 'blur' }],
   steps: [{ required: true, message: '责任人不能为空', trigger: 'blur' }]
 })
-
-/** 监听 标签变化 */
-const tagsBlur = async (el: any) => {
-  const val = el.target.value
-  if (val) {
-    caseData.value.tags?.push(val)
-  }
-}
 
 const formRef = ref()
 
@@ -253,18 +285,12 @@ const toCaseAdd = async () => {
 /** 获得模块树 */
 const getTree = async () => {
   modules.value = []
-  const data = await Node.getList({ projectId: globalStore.getCurrentProject })
-  modules.value = handleTree(data)
+  modules.value = await globalStore.getNodes
 }
 
 /**  获取用户列表 */
 const getUsers = async () => {
-  users.value = await User.getSimple(globalStore.getCurrentProject)
-}
-
-const onEnd = (evt) => {
-  console.log(evt)
-  console.log(caseData.value.steps)
+  users.value = await globalStore.getUsers
 }
 
 const insertList = async (index: number) => {
@@ -278,6 +304,20 @@ const handleDelete = async (index: number) => {
     caseData.value.steps = [{ step: '', expected: '', actual: '' }]
   }
 }
+
+/** 监听当前项目变化，返回测试用例列表 */
+const pageInit = ref(false)
+watch(
+  computed(() => globalStore.getCurrentProject),
+  async () => {
+    if (pageInit.value) {
+      await handleCloseView()
+      await toCaseList()
+    }
+    pageInit.value = true
+  },
+  { immediate: true, deep: true }
+)
 
 onMounted(async () => {
   getTree()

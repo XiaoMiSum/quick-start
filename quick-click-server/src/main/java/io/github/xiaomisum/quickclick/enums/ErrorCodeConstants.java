@@ -8,6 +8,7 @@ public class ErrorCodeConstants {
     public static final ErrorCode ORIGINAL_CASE_NOT_EXIST = ErrorCode.of(32001001, "原始用例不存在");
     public static final ErrorCode TEST_CASE_IMPORT_ERROR = ErrorCode.of(35001001, "测试用例导入失败");
     public static final ErrorCode TEST_CASE_BATCH_UPDATE_ERROR = ErrorCode.of(35001002, "模块、优先级、责任人不能同时为空");
+    public static final ErrorCode BUG_STATUS_ERROR = ErrorCode.of(36001001, "缺陷状态错误");
 
     static {
         ErrorCode.put(ErrorCodeConstants.class);

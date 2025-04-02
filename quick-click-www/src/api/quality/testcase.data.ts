@@ -8,6 +8,8 @@ export interface CaseVO {
   steps: CaseStep[]
   tags?: String[]
   supervisor?: number
+  frontendDeveloper?: number | number[]
+  backendDeveloper?: number | number[]
 }
 
 export type CaseStep = {

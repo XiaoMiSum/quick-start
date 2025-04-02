@@ -14,7 +14,7 @@
   <div class="head-container">
     <el-tree
       ref="treeRef"
-      :data="data"
+      :data="modelValue"
       :expand-on-click-node="false"
       :filter-node-method="filterNode"
       :props="props"
@@ -46,8 +46,8 @@ import { defaultProps } from '@/utils/tree'
 
 defineOptions({ title: '' })
 
-const { data, props } = defineProps({
-  data: {
+const { modelValue, props } = defineProps({
+  modelValue: {
     required: true,
     type: Array
   },
@@ -68,8 +68,6 @@ const treeRef = ref<InstanceType<typeof ElTree>>()
 
 /** 基于名字过滤 */
 const filterNode = (title: string, data: Tree) => {
-  console.log(data)
-  console.log(props)
   if (!title) return true
   return data[props.label].includes(title)
 }

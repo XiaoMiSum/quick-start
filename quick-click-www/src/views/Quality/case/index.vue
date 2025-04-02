@@ -29,7 +29,7 @@
               v-model="queryParams.priority"
               clearable
               placeholder="优先级"
-              style="width: 100%"
+              :style="{ width: '240px' }"
             >
               <el-option
                 v-for="item in getDictOptions(DICT_TYPE.QUALITY_TESTCASE_PRIORITY)"
@@ -43,8 +43,9 @@
             <el-select
               v-model="queryParams.supervisor"
               clearable
+              filterable
               placeholder="责任人"
-              style="width: 100%"
+              :style="{ width: '240px' }"
             >
               <el-option
                 v-for="item in userList"
@@ -68,13 +69,18 @@
         <!-- 操作工具栏 -->
         <el-row v-if="activeName === 'Testcase'" :gutter="10">
           <el-col :span="1.5">
-            <el-button plain type="primary" @click="handleAddCase">
+            <el-button
+              v-hasPermi="['quality:case:add']"
+              plain
+              type="primary"
+              @click="handleAddCase"
+            >
               <Icon class="mr-5px" icon="ep:plus" />
               新增
             </el-button>
           </el-col>
           <el-col :span="1.5" @click="openImports">
-            <el-button plain>
+            <el-button plain v-hasPermi="['quality:case:add']">
               <Icon class="mr-5px" icon="ep:upload" />
               导入
             </el-button>
@@ -92,6 +98,7 @@
               :disabled="!checked || checked.length < 1"
               plain
               type="success"
+              v-hasPermi="['quality:case:update']"
               @click="handleBatchRecoverTestcase"
             >
               <Icon class="mr-5px" icon="ep:document-add" />
@@ -103,6 +110,7 @@
               :disabled="!checked || checked.length < 1"
               plain
               type="danger"
+              v-hasPermi="['quality:case:remove']"
               @click="handleBatchRemoveTestcase"
             >
               <Icon class="mr-5px" icon="ep:delete" />
@@ -124,7 +132,13 @@
           @selection-change="handleSelectionChange"
         >
           <el-table-column :reserve-selection="true" type="selection" width="35" />
-          <el-table-column label="用例名称" prop="title" show-overflow-tooltip max-width="500">
+          <el-table-column
+            label="用例名称"
+            prop="title"
+            show-overflow-tooltip
+            min-width="350"
+            sortable
+          >
             <template #default="scope">
               <el-button link type="primary" @click="handleEditCase(scope.row.id)">
                 {{ scope.row.title }}
@@ -139,7 +153,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="用例等级" prop="priority" width="80">
+          <el-table-column align="center" label="用例等级" prop="priority" width="120" sortable>
             <template #default="scope">
               <ones-tag
                 :type="DICT_TYPE.QUALITY_TESTCASE_PRIORITY"
@@ -151,8 +165,10 @@
           <el-table-column
             v-if="activeName === 'Testcase'"
             align="center"
-            label="最后一次评审"
+            label="最后评审"
             prop="lastReviewResult"
+            sortable
+            width="120"
           >
             <template #default="scope">
               <ones-tag :type="DICT_TYPE.QUALITY_TEST_STATUS" :value="scope.row.lastReviewResult" />
@@ -163,11 +179,26 @@
             align="center"
             label="责任人"
             prop="supervisor"
+            width="120"
+            sortable
           >
             <template #default="scope">
-              <user-tag :value="scope.row.supervisor" />
+              <user-tag text :value="scope.row.supervisor" />
             </template>
           </el-table-column>
+
+          <el-table-column align="center" label="前端开发" width="120" sortable>
+            <template #default="scope">
+              <user-tag text :value="scope.row.frontendDeveloper" />
+            </template>
+          </el-table-column>
+
+          <el-table-column align="center" label="后端开发" width="120" sortable>
+            <template #default="scope">
+              <user-tag text :value="scope.row.backendDeveloper" />
+            </template>
+          </el-table-column>
+
           <el-table-column
             v-if="activeName === 'Trash'"
             align="center"
@@ -192,21 +223,35 @@
             width="150"
           >
             <template #default="scope">
-              <el-tooltip content="编辑" placement="top">
-                <el-button circle plain type="primary" @click="handleEditCase(scope.row.id)">
-                  <Icon icon="ep:edit" />
-                </el-button>
-              </el-tooltip>
-              <el-tooltip content="复制" placement="top">
-                <el-button circle plain type="primary" @click="handleCopyCase(scope.row.id)">
-                  <Icon icon="ep:document-copy" />
-                </el-button>
-              </el-tooltip>
-              <el-tooltip content="删除" placement="top">
-                <el-button circle plain type="danger" @click="handleDelete([scope.row.id])">
-                  <Icon icon="ep:delete" />
-                </el-button>
-              </el-tooltip>
+              <el-button
+                v-hasPermi="['quality:case:update']"
+                circle
+                text
+                type="primary"
+                @click="handleEditCase(scope.row.id)"
+              >
+                编辑
+              </el-button>
+
+              <el-button
+                v-hasPermi="['quality:case:add']"
+                circle
+                text
+                type="primary"
+                @click="handleCopyCase(scope.row.id)"
+              >
+                复制
+              </el-button>
+
+              <el-button
+                v-hasPermi="['quality:case:remove']"
+                circle
+                text
+                type="danger"
+                @click="handleDelete([scope.row.id])"
+              >
+                删除
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -257,14 +302,10 @@
 import { DefaultNodeTree } from '@/views/components/node'
 import CaseImports from './CaseImports.vue'
 import CaseBatchEditor from './CaseBatchEditor.vue'
-
-import { handleTree } from '@/utils/tree'
 import download from '@/utils/download'
 import { DICT_TYPE, getDictOptions } from '@/utils/dictionary'
 
-import * as Node from '@/api/project/node'
 import * as HTTP from '@/api/quality/testcase'
-import * as User from '@/api/project/member'
 
 import { useGlobalStore } from '@/store/modules/global'
 
@@ -299,6 +340,7 @@ const getList = async () => {
   loading.value = true
   try {
     queryParams.value.trash = activeName.value === 'Testcase' ? 0 : 1
+    queryParams.value.projectId = globalStore.getCurrentProject
     const data = await HTTP.getPage(queryParams.value)
     list.value = data.list
     total.value = data.total
@@ -381,9 +423,9 @@ const openImports = () => {
 
 /** 获得模块树 */
 const getTree = async () => {
+  await globalStore.setNodes()
   modules.value = []
-  const data = await Node.getList({ projectId: queryParams.value.projectId })
-  modules.value = handleTree(data)
+  modules.value = await globalStore.getNodes
 }
 
 const tabChange = async () => {
@@ -410,18 +452,18 @@ const handleBatchRecoverTestcase = async () => {
   await handleQuery()
 }
 
-const getUserList = async () => {
-  // 加载用户列表
-  userList.value = await User.getSimple(queryParams.value.projectId)
+const resetQuery2 = async () => {
+  queryParams.value = { pageNo: 1, pageSize: 10 }
+  getList()
 }
 
 // 监听当前项目变化，刷新列表数据
 watch(
   computed(() => globalStore.getCurrentProject),
-  () => {
-    queryParams.value.projectId = globalStore.getCurrentProject
-    getList()
-    getTree()
+  async () => {
+    await resetQuery2()
+    await getTree()
+    userList.value = globalStore.getUsers
   },
   { immediate: true, deep: true }
 )
@@ -430,6 +472,5 @@ watch(
 onMounted(async () => {
   await getList()
   await getTree()
-  await getUserList()
 })
 </script>

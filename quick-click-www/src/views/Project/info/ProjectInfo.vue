@@ -2,11 +2,15 @@
   <Card>
     <template #header>
       <span class="text-16px font-700"> {{ modelValue.title }}</span>
-      <el-tooltip content="编辑" placement="top">
-        <el-button circle plain type="primary" @click="openForm('update', modelValue.id)">
-          <Icon icon="ep:edit" />
-        </el-button>
-      </el-tooltip>
+      <el-button
+        v-hasPermi="['project:list:update']"
+        circle
+        text
+        type="primary"
+        @click="openForm('update', modelValue.id)"
+      >
+        编辑
+      </el-button>
     </template>
     <div>
       <span> {{ modelValue.memo || '暂无描述' }} </span>

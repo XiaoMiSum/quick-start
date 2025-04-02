@@ -52,6 +52,7 @@ public interface TestcaseConvert {
 
     default TestcaseDTO convert(Testcase testcase) {
         return new TestcaseDTO().setOriginalId(testcase.getId())
+                .setPath(testcase.getPath())
                 .setTitle(testcase.getTitle())
                 .setPriority(testcase.getPriority())
                 .setTags(testcase.getTags())
@@ -59,7 +60,9 @@ public interface TestcaseConvert {
                 .setSteps(testcase.getSteps())
                 .setNodeId(testcase.getNodeId())
                 .setProjectId(testcase.getProjectId())
-                .setSupervisor(testcase.getSupervisor());
+                .setSupervisor(testcase.getSupervisor())
+                .setBackendDeveloper(testcase.getBackendDeveloper())
+                .setFrontendDeveloper(testcase.getFrontendDeveloper());
     }
 
     List<TestcaseDTO> convert(List<Testcase> testcases);
@@ -68,12 +71,15 @@ public interface TestcaseConvert {
 
     default TestcasePageDTO convert3(Testcase testcase) {
         return new TestcasePageDTO().setOriginalId(testcase.getId())
+                .setPath(testcase.getPath())
                 .setTitle(testcase.getTitle())
                 .setPriority(testcase.getPriority())
                 .setTags(testcase.getTags())
                 .setNodeId(testcase.getNodeId())
                 .setProjectId(testcase.getProjectId())
-                .setSupervisor(testcase.getSupervisor());
+                .setSupervisor(testcase.getSupervisor())
+                .setBackendDeveloper(testcase.getBackendDeveloper())
+                .setFrontendDeveloper(testcase.getFrontendDeveloper());
     }
 
     default List<TestcaseExportVO> convert1(List<Testcase> testcases) {
@@ -114,6 +120,8 @@ public interface TestcaseConvert {
                 .setNodeId(data.getNodeId())
                 .setPriority(data.getPriority())
                 .setSupervisor(data.getSupervisor())
+                .setBackendDeveloper(data.getBackendDeveloper())
+                .setFrontendDeveloper(data.getFrontendDeveloper())
                 .setId(item)));
         return beans;
     }

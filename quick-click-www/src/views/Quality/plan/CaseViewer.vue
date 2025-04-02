@@ -58,7 +58,7 @@ const open = async (id: any) => {
   loading.value = true
   visible.value = true
   data.value = await PLAN.getPlanCaseExecute(id)
-  status.value = data.value.executeResult
+  status.value = data.value.result
   loading.value = false
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
@@ -69,7 +69,7 @@ const handleSyncCase = async () => {
   data.value = await PLAN.syncCase({
     id: params.id,
     planId: params.planId,
-    caseId: params.caseId
+    originalId: params.originalId
   })
   loading.value = false
 }
@@ -83,7 +83,7 @@ const handleLastClick = async () => {
     message.error('已经是第一条了')
   } else {
     data.value = resp
-    status.value = data.value.executeResult
+    status.value = data.value.result
   }
 }
 
@@ -97,7 +97,7 @@ const handleNextClick = async () => {
     return false
   } else {
     data.value = resp
-    status.value = data.value.executeResult
+    status.value = data.value.result
     return true
   }
 }
@@ -106,7 +106,7 @@ const handleExecuteCase = async (result: string) => {
   loading.value = true
   await PLAN.executeCase({
     id: data.value.id,
-    caseId: data.value.caseId,
+    originalId: data.value.originalId,
     planId: data.value.planId,
     steps: data.value.steps,
     result: result

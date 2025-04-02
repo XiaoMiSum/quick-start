@@ -173,12 +173,13 @@
   />
 
   <BugConfirmer ref="bugConfirmer" :users="users" @success="getData" />
+  <BugFixer ref="bugFixer" :users="users" @success="getData" />
+  <BugCloser ref="bugCloser" :users="users" @success="getData" />
+  <BugOpener ref="bugOpener" :users="users" @success="getData" />
 </template>
 
 <script lang="ts" setup>
 import * as HTTP from '@/api/quality/bug'
-import * as Node from '@/api/project/node'
-import * as User from '@/api/project/member'
 
 import { checkPermi } from '@/utils/permission'
 
@@ -187,13 +188,16 @@ import { useTagsViewStore } from '@/store/modules/tagsView'
 import { useGlobalStore } from '@/store/modules/global'
 import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 
-import { defaultProps2, handleTree } from '@/utils/tree'
+import { defaultProps2 } from '@/utils/tree'
 import { DICT_TYPE } from '@/utils/dictionary'
 
 import { Editor } from '@/components/Editor'
 import { FloatingButton } from '@/components/XButton'
 
 import BugConfirmer from './BugConfirmer.vue'
+import BugFixer from './BugFixer.vue'
+import BugCloser from './BugCloser.vue'
+import BugOpener from './BugOpener.vue'
 
 const globalStore = useGlobalStore()
 
@@ -229,6 +233,7 @@ const handleGoBugList = async () => {
     await handleCloseView()
     toBugList()
   } finally {
+    showOptionButton.value = true
   }
 }
 
@@ -239,13 +244,12 @@ const toBugList = async () => {
 /** 获得模块树 */
 const getTree = async () => {
   modules.value = []
-  const data = await Node.getList({ projectId: globalStore.getCurrentProject })
-  modules.value = handleTree(data)
+  modules.value = await globalStore.getNodes
 }
 
 /**  获取用户列表 */
 const getUsers = async () => {
-  users.value = await User.getSimple(globalStore.getCurrentProject)
+  users.value = await globalStore.getUsers
 }
 
 const handleDelete = async (id: string) => {
@@ -256,7 +260,9 @@ const handleDelete = async (id: string) => {
     message.success(t('common.delSuccess'))
     await handleCloseView()
     toBugList()
-  } catch {}
+  } catch {
+    showOptionButton.value = true
+  }
 }
 
 /**
@@ -273,72 +279,124 @@ watch(
         key: 'delete',
         label: '删除',
         type: 'danger',
-        permi: checkPermi(['quality:bug:remove'])
+        permi: checkPermi(['quality:bug:remove']),
+        icon: 'ep:delete'
       },
       {
         key: 'edit',
         label: '编辑',
         type: 'primary',
-        permi: checkPermi(['quality:bug:update'])
+        permi: checkPermi(['quality:bug:update']),
+        icon: 'ep:edit'
       },
       {
         key: 'reopen',
         label: '激活',
         disabled: !['Fixed', 'Rejected', 'Closed'].includes(formData.value.status),
         type: ['Fixed', 'Rejected', 'Closed'].includes(formData.value.status) ? 'primary' : '',
-        permi: checkPermi(['quality:bug:reopen'])
+        permi: checkPermi(['quality:bug:reopen']),
+        icon: 'ep:timer'
       },
       {
         key: 'close',
         label: '关闭',
         disabled: formData.value.status !== 'Fixed',
         type: formData.value.status === 'Fixed' ? 'primary' : '',
-        permi: checkPermi(['quality:bug:close'])
+        permi: checkPermi(['quality:bug:close']),
+        icon: 'ep:switch-button'
       },
       {
         key: 'fix',
         label: '修复',
         disabled: !['Opened', 'Reopened'].includes(formData.value.status),
         type: ['Opened', 'Reopened'].includes(formData.value.status) ? 'primary' : '',
-        permi: checkPermi(['quality:bug:fix'])
+        permi: checkPermi(['quality:bug:fix']),
+        icon: 'ep:circle-check'
       },
       {
         key: 'confirm',
         label: '确认',
         disabled: formData.value.status !== 'New',
         type: formData.value.status === 'New' ? 'primary' : '',
-        permi: checkPermi(['quality:bug:confirm'])
+        permi: checkPermi(['quality:bug:confirm']),
+        icon: 'fa:bug'
       },
       {
         key: 'cancel',
-        label: '取消',
-        type: ''
+        label: '返回',
+        type: '',
+        permi: true,
+        icon: 'ep:back'
       }
     ]
   },
   { immediate: true, deep: true }
 )
 
+/** 监听当前项目变化，返回缺陷跟踪列表 */
+const pageInit = ref(false)
+watch(
+  computed(() => globalStore.getCurrentProject),
+  async () => {
+    if (pageInit.value) {
+      await handleCloseView()
+      await toBugList()
+    }
+    pageInit.value = true
+  },
+  { immediate: true, deep: true }
+)
+
 const handleMenuItemClick = async (item) => {
   console.log('点击按钮：' + item.key)
+  showOptionButton.value = false
   // 根据item.key执行不同的操作
   switch (item.key) {
     case 'delete':
       await handleDelete(formData.value.id)
       break
     case 'confirm':
-      showOptionButton.value = false
       await handleConfirm()
+      break
+    case 'fix':
+      await handleFix()
+      break
+    case 'reopen':
+      await handleReopen()
+      break
+    case 'close':
+      await handleClose()
       break
     case 'cancel':
       await handleGoBugList()
       break
+    case 'edit':
+      handleEditBug()
   }
+}
+
+const handleEditBug = async () => {
+  await push('/quality/bug/edit/' + formData.value.id)
 }
 
 const bugConfirmer = ref()
 const handleConfirm = async () => {
   bugConfirmer.value.open(formData.value)
+}
+
+const bugFixer = ref()
+const handleFix = async () => {
+  bugFixer.value.open(formData.value)
+}
+
+const bugCloser = ref()
+const handleClose = async () => {
+  bugCloser.value.open(formData.value)
+}
+
+const bugOpener = ref()
+const handleReopen = async () => {
+  bugOpener.value.open(formData.value)
 }
 
 const getData = async () => {

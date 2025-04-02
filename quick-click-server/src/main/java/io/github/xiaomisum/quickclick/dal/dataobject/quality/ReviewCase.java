@@ -59,6 +59,10 @@ public class ReviewCase extends BaseDO<Long> {
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> tags;
 
+    private Long backendDeveloper;
+
+    private Long frontendDeveloper;
+
     private String prerequisite;
 
     @TableField(typeHandler = JacksonTypeHandler.class)

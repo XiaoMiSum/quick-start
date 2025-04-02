@@ -51,8 +51,8 @@ const tabChange = (name: string) => {
 const archive = ref()
 watch(
   computed(() => globalStore.getCurrentProject),
-  () => {
-    getInfo()
+  async () => {
+    await getInfo()
     if (archive.value) {
       archive.value.initialization()
     }

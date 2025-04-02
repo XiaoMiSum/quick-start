@@ -46,4 +46,8 @@ public class ReviewCaseBaseVO {
 
     private List<String> tags;
 
+    private Long backendDeveloper;
+
+    private Long frontendDeveloper;
+
 }

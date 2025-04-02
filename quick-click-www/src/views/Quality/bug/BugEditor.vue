@@ -14,8 +14,43 @@
         <el-col :span="8">
           <el-row>
             <el-col>
+              <el-form-item label="关联计划" prop="planId">
+                <el-select
+                  v-model="formData.planId"
+                  style="width: 100%"
+                  @change="handleTestPlanChange"
+                >
+                  <el-option
+                    v-for="item in testPlans"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col>
+              <el-form-item label="关联用例" prop="testcaseId">
+                <el-select v-model="formData.testcaseId" style="width: 100%">
+                  <el-option
+                    v-for="item in testcases"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col>
               <el-form-item label="所属模块" prop="nodeId">
                 <el-tree-select
+                  filterable
                   v-model="formData.nodeId"
                   :data="modules"
                   :props="defaultProps2"
@@ -64,6 +99,7 @@
               <el-form-item label="处理人" prop="handler">
                 <el-select
                   v-model="formData.handler"
+                  filterable
                   placeholder="请选择处理人"
                   style="width: 100%"
                   @change="handleHanderChange"
@@ -83,6 +119,7 @@
               <el-form-item label="责任人" prop="supervisor">
                 <el-select
                   v-model="formData.supervisor"
+                  filterable
                   placeholder="请选择责任人"
                   style="width: 100%"
                 >
@@ -101,9 +138,8 @@
     </el-form>
   </ContentWrap>
   <FloatingButton
-    icon="Plus"
+    size="large"
     buttonType=""
-    tooltip="haha"
     :menu-items="menuItems"
     position="right-bottom"
     :offset="{ x: 600, y: 30 }"
@@ -113,8 +149,7 @@
 
 <script lang="ts" setup>
 import * as HTTP from '@/api/quality/bug'
-import * as Node from '@/api/project/node'
-import * as User from '@/api/project/member'
+import * as Plan from '@/api/quality/plan'
 
 import { useTagsViewStore } from '@/store/modules/tagsView'
 
@@ -122,7 +157,7 @@ import { useGlobalStore } from '@/store/modules/global'
 import { useUserStore } from '@/store/modules/user'
 import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
 
-import { defaultProps2, handleTree } from '@/utils/tree'
+import { defaultProps2 } from '@/utils/tree'
 import { getDictOptions, DICT_TYPE } from '@/utils/dictionary'
 
 import { Editor } from '@/components/Editor'
@@ -155,6 +190,8 @@ const formData = ref<any>({
 
 const modules = ref<any>([])
 const users = ref<any>([])
+const testPlans = ref<any>([])
+const testcases = ref<any>([])
 
 const loading = ref(false)
 
@@ -239,7 +276,7 @@ const resetData = () => {
 
 const handleGoBugList = async () => {
   try {
-    await message.confirm('确认返回测试用例列表？')
+    await message.confirm('确认返回缺陷跟踪列表？')
     resetData()
     await handleCloseView()
     toBugList()
@@ -258,31 +295,27 @@ const toBugAdd = async () => {
 /** 获得模块树 */
 const getTree = async () => {
   modules.value = []
-  const data = await Node.getList({ projectId: globalStore.getCurrentProject })
-  modules.value = handleTree(data)
+  modules.value = globalStore.getNodes
 }
 
 /**  获取用户列表 */
 const getUsers = async () => {
-  users.value = await User.getSimple(globalStore.getCurrentProject)
+  users.value = await globalStore.getUsers
+}
+
+/**  获取测试计划 */
+const getTestPlans = async () => {
+  testPlans.value = await Plan.getSimple(globalStore.getCurrentProject)
+}
+
+const handleTestPlanChange = async (val: any) => {
+  testcases.value = await Plan.getFailedPlanCaseSimple(val)
 }
 
 const handleHanderChange = async (val: number) => {
   if (!formData.value.supervisor) {
     formData.value.supervisor = val
   }
-}
-
-const handleDelete = async (id: string) => {
-  try {
-    // 删除的二次确认
-    await message.delConfirm()
-    await HTTP.remove(id)
-    message.success(t('common.delSuccess'))
-    resetData()
-    await handleCloseView()
-    toBugList()
-  } catch {}
 }
 
 /**
@@ -293,17 +326,23 @@ const menuItems = ref([
   {
     key: 'save-close',
     label: '保存并关闭',
-    type: 'success'
+    type: 'success',
+    permi: true,
+    disabled: false
   },
   {
     key: 'save-continue',
     label: '保存并继续',
-    type: 'primary'
+    type: 'primary',
+    permi: true,
+    disabled: false
   },
   {
     key: 'cancel',
     label: '取消',
-    type: ''
+    type: '',
+    permi: true,
+    disabled: false
   }
 ])
 
@@ -323,17 +362,41 @@ const handleMenuItemClick = async (item) => {
   }
 }
 
+/** 监听当前项目变化，返回缺陷跟踪列表 */
+const pageInit = ref(false)
+
+watch(
+  computed(() => globalStore.getCurrentProject),
+  async () => {
+    if (pageInit.value) {
+      await handleCloseView()
+      await toBugList()
+    }
+    pageInit.value = true
+  },
+  { immediate: true, deep: true }
+)
+
 onMounted(async () => {
   getTree()
   getUsers()
+  getTestPlans()
   if (params && params.id) {
     formData.value = await HTTP.getData(params.id)
   }
-  if (query && query.from) {
-    const data = await HTTP.getData(query.from)
-    Object.keys(formData.value).forEach((key) => (formData.value[key] = data[key]))
-    formData.value.title = formData.value.title + '_copy'
-    formData.value.status = 'New'
+  if (query && query.from && query.originalId) {
+    if (query.from === 'bug') {
+      const data = await HTTP.getData(query.originalId)
+      Object.keys(formData.value).forEach((key) => (formData.value[key] = data[key]))
+      formData.value.title = formData.value.title + '_copy'
+      formData.value.status = 'New'
+    } else if (query.from === 'testplan') {
+      const data = Plan.getData(query.originalId)
+      formData.value.title = data.title
+      formData.value.planId = data.planId
+      formData.value.testcaseId = data.originalId
+      formData.value.status = 'New'
+    }
   }
   if (!formData.value.id && !formData.value.supervisor) {
     formData.value.supervisor = userStore.getUser.id

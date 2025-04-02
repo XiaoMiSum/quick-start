@@ -33,7 +33,7 @@ import java.util.List;
 
 @Data
 public class TestcaseBaseVO {
-    
+
     @NotEmpty(message = "projectId 不能为空")
     private String projectId;
 
@@ -52,4 +52,8 @@ public class TestcaseBaseVO {
 
     @NotNull(message = "责任人不能为空")
     private Long supervisor;
+
+    private Long backendDeveloper;
+
+    private Long frontendDeveloper;
 }

@@ -80,4 +80,8 @@ public class Testcase extends BaseDO<String> {
 
     private Integer trash;
 
+    private Long backendDeveloper;
+
+    private Long frontendDeveloper;
+
 }

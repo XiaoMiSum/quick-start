@@ -25,14 +25,20 @@
 
 package io.github.xiaomisum.quickclick.convert.qualitycenter;
 
+import com.google.common.collect.Lists;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanAddReqVO;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanPageRespVO;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanRespVO;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanUpdateReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
+import xyz.migoo.framework.common.pojo.SimpleData;
+
+import java.util.List;
+import java.util.Objects;
 
 @Mapper
 public interface PlanConvert {
@@ -47,4 +53,21 @@ public interface PlanConvert {
 
     PageResult<PlanPageRespVO> convert(PageResult<Plan> beans);
 
+    default List<SimpleData> convert(List<Plan> beans) {
+        if (Objects.isNull(beans)) {
+            return null;
+        }
+        List<SimpleData> results = Lists.newArrayList();
+        beans.forEach(item -> results.add(new SimpleData(item.getId(), item.getTitle())));
+        return results;
+    }
+
+    default List<SimpleData> convert1(List<PlanCase> beans) {
+        if (Objects.isNull(beans)) {
+            return null;
+        }
+        List<SimpleData> results = Lists.newArrayList();
+        beans.forEach(item -> results.add(new SimpleData(item.getOriginalId(), item.getTitle())));
+        return results;
+    }
 }

@@ -35,6 +35,7 @@
             <el-select
               v-model="queryParams.supervisor"
               clearable
+              filterable
               placeholder="责任人"
               style="width: 240px"
             >
@@ -49,6 +50,7 @@
           <el-form-item label="修复人" prop="fixer" v-if="activeName !== '4'">
             <el-select
               v-model="queryParams.fixer"
+              filterable
               clearable
               placeholder="修复人"
               style="width: 240px"
@@ -116,20 +118,12 @@
           </el-table-column>
           <el-table-column align="center" label="严重程度" prop="severity" width="80">
             <template #default="scope">
-              <ones-tag
-                :type="DICT_TYPE.QUALITY_BUG_SEVERITY"
-                :value="scope.row.severity"
-                effect="dark"
-              />
+              <ones-tag :type="DICT_TYPE.QUALITY_BUG_SEVERITY" :value="scope.row.severity" />
             </template>
           </el-table-column>
           <el-table-column align="center" label="优先级" prop="priority" width="80">
             <template #default="scope">
-              <ones-tag
-                :type="DICT_TYPE.QUALITY_TESTCASE_PRIORITY"
-                :value="scope.row.priority"
-                effect="dark"
-              />
+              <ones-tag :type="DICT_TYPE.QUALITY_TESTCASE_PRIORITY" :value="scope.row.priority" />
             </template>
           </el-table-column>
           <el-table-column align="center" label="状态" prop="status">
@@ -139,108 +133,107 @@
           </el-table-column>
           <el-table-column align="center" label="责任人" prop="supervisor">
             <template #default="scope">
-              <user-tag :value="scope.row.supervisor" />
+              <user-tag text :value="scope.row.supervisor" />
             </template>
           </el-table-column>
           <el-table-column align="center" label="处理人" prop="handler">
             <template #default="scope">
-              <user-tag :value="scope.row.handler" />
+              <user-tag text :value="scope.row.handler" />
             </template>
           </el-table-column>
           <el-table-column align="center" label="修复人" prop="fixer">
             <template #default="scope">
-              <user-tag :value="scope.row.fixer" />
+              <user-tag text :value="scope.row.fixer" />
             </template>
           </el-table-column>
           <el-table-column align="center" label="关闭人" prop="closer">
             <template #default="scope">
-              <user-tag :value="scope.row.closer" />
+              <user-tag text :value="scope.row.closer" />
             </template>
           </el-table-column>
-          <el-table-column align="center" label="创建人" prop="creator" width="100" />
+          <el-table-column align="center" label="创建人" prop="closer">
+            <template #default="scope">
+              <user-tag text :value="scope.row.creatorId" />
+            </template>
+          </el-table-column>
           <el-table-column align="center" label="创建时间" prop="createTime" width="165" />
           <el-table-column align="center" label="修复时间" prop="fixedTime" width="165" />
           <el-table-column align="center" label="关闭时间" prop="closedTime" width="165" />
-          <el-table-column align="center" label="激活次数" prop="reopenedTimes" width="80" />
+          <el-table-column align="center" label="激活次数" prop="reopenedTimes" width="80">
+            <template #default="{ row }">
+              <el-text :type="row.reopenedTimes > 0 ? 'danger' : 'info'">
+                {{ row.reopenedTimes }}</el-text
+              >
+            </template>
+          </el-table-column>
 
           <el-table-column align="center" fixed="right" label="操作" width="300">
             <template #default="{ row }">
-              <el-tooltip content="确认" placement="top">
-                <el-button
-                  v-hasPermi="['quality:bug:confirm']"
-                  circle
-                  plain
-                  :type="row.status === 'New' ? 'primary' : ''"
-                  @click="handleBatchConfirm([row.id])"
-                  :disabled="row.status !== 'New'"
-                >
-                  <Icon icon="fa:bug" />
-                </el-button>
-              </el-tooltip>
+              <el-button
+                v-hasPermi="['quality:bug:confirm']"
+                circle
+                text
+                :type="row.status === 'New' ? 'primary' : ''"
+                @click="openBugConfirmr(row)"
+                :disabled="row.status !== 'New'"
+              >
+                确认
+              </el-button>
 
-              <el-tooltip content="修复" placement="top">
-                <el-button
-                  v-hasPermi="['quality:bug:fix']"
-                  circle
-                  plain
-                  :type="['Opened', 'Reopened'].includes(row.status) ? 'primary' : ''"
-                  @click="openBugFixer(row)"
-                  :disabled="!['Opened', 'Reopened'].includes(row.status)"
-                >
-                  <Icon icon="ep:circle-check" />
-                </el-button>
-              </el-tooltip>
+              <el-button
+                v-hasPermi="['quality:bug:fix']"
+                text
+                circle
+                :type="['Opened', 'Reopened'].includes(row.status) ? 'primary' : ''"
+                @click="openBugFixer(row)"
+                :disabled="!['Opened', 'Reopened'].includes(row.status)"
+              >
+                修复
+              </el-button>
 
-              <el-tooltip content="关闭" placement="top">
-                <el-button
-                  v-hasPermi="['quality:bug:close']"
-                  circle
-                  plain
-                  :type="row.status === 'Fixed' ? 'primary' : ''"
-                  @click="openBugCloser(row)"
-                  :disabled="row.status !== 'Fixed'"
-                >
-                  <Icon icon="ep:switch-button" />
-                </el-button>
-              </el-tooltip>
+              <el-button
+                v-hasPermi="['quality:bug:close']"
+                text
+                circle
+                :type="row.status === 'Fixed' ? 'primary' : ''"
+                @click="openBugCloser(row)"
+                :disabled="row.status !== 'Fixed'"
+              >
+                关闭
+              </el-button>
 
-              <el-tooltip content="激活" placement="top">
-                <el-button
-                  v-hasPermi="['quality:bug:reopen']"
-                  circle
-                  plain
-                  :type="['Fixed', 'Rejected', 'Closed'].includes(row.status) ? 'primary' : ''"
-                  @click="openBugOpener(row)"
-                  :disabled="!['Fixed', 'Rejected', 'Closed'].includes(row.status)"
-                >
-                  <Icon icon="ep:timer" />
-                </el-button>
-              </el-tooltip>
+              <el-button
+                v-hasPermi="['quality:bug:reopen']"
+                text
+                circle
+                :type="['Fixed', 'Rejected', 'Closed'].includes(row.status) ? 'primary' : ''"
+                @click="openBugOpener(row)"
+                :disabled="!['Fixed', 'Rejected', 'Closed'].includes(row.status)"
+              >
+                激活
+              </el-button>
 
-              <el-tooltip content="编辑" placement="top">
-                <el-button
-                  v-if="row.status !== 'Closed'"
-                  v-hasPermi="['quality:bug:update']"
-                  circle
-                  plain
-                  type="primary"
-                  @click="handleEditBug(row.id)"
-                >
-                  <Icon icon="ep:edit" />
-                </el-button>
-              </el-tooltip>
-              <el-tooltip content="复制" placement="top">
-                <el-button
-                  v-if="row.status !== 'Closed'"
-                  v-hasPermi="['quality:bug:add']"
-                  circle
-                  plain
-                  type="primary"
-                  @click="handleCopyBug(row.id)"
-                >
-                  <Icon icon="ep:document-copy" />
-                </el-button>
-              </el-tooltip>
+              <el-button
+                v-if="row.status !== 'Closed'"
+                v-hasPermi="['quality:bug:reopen']"
+                text
+                circle
+                type="primary"
+                @click="handleEditBug(row.id)"
+              >
+                编辑
+              </el-button>
+
+              <el-button
+                text
+                circle
+                type="primary"
+                v-if="row.status !== 'Closed'"
+                v-hasPermi="['quality:bug:reopen']"
+                @click="handleCopyBug(row.id)"
+              >
+                复制
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -249,10 +242,10 @@
           class="mt-15px"
           plain
           type="primary"
-          :disabled="checked.length < 1"
+          :disabled="checked.length < 1 || checked.find((item) => item.status === 'Closed')"
           @click="openBatchAssign"
         >
-          <Icon class="mr-5px" icon="ep:user" />
+          <Icon class="mr-5px" icon="ep:pointer" />
           指派
         </el-button>
         <el-button
@@ -281,6 +274,7 @@
   <BugFixer ref="bugFixer" :users="userList" @success="getList" />
   <BugCloser ref="bugCloser" :users="userList" @success="getList" />
   <BugOpener ref="bugOpener" :users="userList" @success="getList" />
+  <BugConfirmer ref="bugConfirmer" :users="userList" @success="getList" />
 </template>
 
 <script lang="ts" setup>
@@ -290,16 +284,12 @@ import BatchAssign from './BatchAssign.vue'
 import BugFixer from './BugFixer.vue'
 import BugCloser from './BugCloser.vue'
 import BugOpener from './BugOpener.vue'
+import BugConfirmer from './BugConfirmer.vue'
 
-import { handleTree } from '@/utils/tree'
 import download from '@/utils/download'
 import { DICT_TYPE } from '@/utils/dictionary'
 
-import * as Node from '@/api/project/node'
-
 import * as HTTP from '@/api/quality/bug'
-
-import * as User from '@/api/project/member'
 
 import { useGlobalStore } from '@/store/modules/global'
 
@@ -331,6 +321,7 @@ const queryFormRef = ref() // 搜索的表单
 const getList = async () => {
   loading.value = true
   try {
+    queryParams.value.projectId = globalStore.getCurrentProject
     const data = await HTTP.getPage(queryParams.value)
     list.value = data.list
     total.value = data.total
@@ -363,7 +354,7 @@ const handleViewBug = async (id: number) => {
 }
 
 const handleCopyBug = async (id: number) => {
-  await push({ path: '/quality/bug/add', query: { from: id } })
+  await push({ path: '/quality/bug/add', query: { from: 'bug', originalId: id } })
 }
 
 const handleNodeClick = async (row: any) => {
@@ -382,15 +373,18 @@ const toggleSelection = () => {
 }
 
 const handleDownload = async () => {
+  message.warning('暂未实现')
+  /*  
   const data = await HTTP.download(queryParams.value)
   download.excel(data, '缺陷列表.xlsx')
+  */
 }
 
 /** 获得模块树 */
 const getTree = async () => {
+  await globalStore.setNodes()
   modules.value = []
-  const data = await Node.getList({ projectId: queryParams.value.projectId })
-  modules.value = handleTree(data)
+  modules.value = await globalStore.getNodes
 }
 const tabChange = async () => {
   queryParams.value.tab = activeName
@@ -402,7 +396,7 @@ const tabChange = async () => {
 
 const getUserList = async () => {
   // 加载用户列表
-  userList.value = await User.getSimple(queryParams.value.projectId)
+  userList.value = await globalStore.getUsers
 }
 
 const batchAssign = ref()
@@ -419,9 +413,15 @@ const bugCloser = ref()
 const openBugCloser = async (data: any) => {
   bugCloser.value.open(data)
 }
+
 const bugOpener = ref()
 const openBugOpener = async (data: any) => {
   bugOpener.value.open(data)
+}
+
+const bugConfirmer = ref()
+const openBugConfirmr = async (data: any) => {
+  bugConfirmer.value.open(data)
 }
 
 const handleBatchConfirm = async (ids: any[]) => {
@@ -431,13 +431,18 @@ const handleBatchConfirm = async (ids: any[]) => {
   getList()
 }
 
+const resetQuery2 = async () => {
+  queryParams.value = { pageNo: 1, pageSize: 10 }
+  getList()
+}
+
 // 监听当前项目变化，刷新列表数据
 watch(
   computed(() => globalStore.getCurrentProject),
-  () => {
-    queryParams.value.projectId = globalStore.getCurrentProject
-    getList()
-    getTree()
+  async () => {
+    await resetQuery2()
+    await getTree()
+    await getUserList()
   },
   { immediate: true, deep: true }
 )

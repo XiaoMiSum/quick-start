@@ -296,4 +296,24 @@ CREATE TABLE `qc_quality_testcase`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '测试用例表' ROW_FORMAT = DYNAMIC;
 
+
+ALTER TABLE `qc_quality_bug`
+ADD COLUMN `fix_duration` decimal(10, 2) NULL DEFAULT NULL COMMENT '修复时长' AFTER `fixed_time`;
+
+ALTER TABLE `qc_quality_bug`
+ADD COLUMN `plan_id` varchar(32) NULL AFTER `project_id`,
+ADD COLUMN `testcase_id` varchar(32) NULL AFTER `plan_id`;
+
+ALTER TABLE `qc_quality_testcase`
+ADD COLUMN `frontend_developer` bigint NULL COMMENT '前端开发者' AFTER `priority`,
+ADD COLUMN `backend_developer` bigint NULL COMMENT '后端开发者' AFTER `frontend_developer`;
+
+ALTER TABLE `qc_quality_test_plan_case`
+ADD COLUMN `frontend_developer` bigint NULL COMMENT '前端开发者' AFTER `priority`,
+ADD COLUMN `backend_developer` bigint NULL COMMENT '后端开发者' AFTER `frontend_developer`;
+
+ALTER TABLE `qc_quality_test_review_case`
+ADD COLUMN `frontend_developer` bigint NULL COMMENT '前端开发者' AFTER `priority`,
+ADD COLUMN `backend_developer` bigint NULL COMMENT '后端开发者' AFTER `frontend_developer`;
+
 SET FOREIGN_KEY_CHECKS = 1;

@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="8">
         <el-form-item label="所属模块：">
-          <span>{{ modelValue.path || '未分组用例' }}</span>
+          <el-text type="info">{{ modelValue.path || '未分组用例' }}</el-text>
         </el-form-item>
       </el-col>
       <el-col :span="8">
@@ -26,47 +26,38 @@
         </el-form-item>
       </el-col>
     </el-row>
+
+    <el-row>
+      <el-col :span="8">
+        <el-form-item label="前端开发：" prop="frontendDeveloper">
+          <user-tag :value="modelValue.frontendDeveloper" />
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item label="后端开发：" prop="backendDeveloper">
+          <user-tag :value="modelValue.backendDeveloper" />
+        </el-form-item>
+      </el-col>
+    </el-row>
+
     <el-row>
       <el-col :span="24">
         <el-form-item label="前置条件：">
-          <el-input
-            v-model="modelValue.prerequisite"
-            :autosize="{ minRows: 2, maxRows: 6 }"
-            disabled
-            maxlength="512"
-            type="textarea"
-          />
+          <el-text type="info">{{ modelValue.prerequisite }}</el-text>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="24">
-        <el-form-item label="执行步骤：">
-          <el-table :data="modelValue.steps" :show-header="false" border>
-            <el-table-column type="index" width="30" />
-            <el-table-column>
-              <template #default="scope">
-                <el-form-item>
-                  <el-input v-model="scope.row.step" disabled type="textarea" />
-                </el-form-item>
-              </template>
-            </el-table-column>
-            <el-table-column>
-              <template #default="scope">
-                <el-form-item>
-                  <el-input v-model="scope.row.expected" disabled type="textarea" />
-                </el-form-item>
-              </template>
-            </el-table-column>
-            <el-table-column v-if="showActual">
-              <template #default="scope">
-                <el-form-item>
-                  <el-input v-model="scope.row.actual" type="textarea" />
-                </el-form-item>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form-item>
+        <el-table :data="modelValue.steps" :header-cell-style="{ background: '#f4f6f8' }" border>
+          <el-table-column label="执行步骤" prop="step" />
+          <el-table-column label="期望结果" prop="expected" />
+          <el-table-column v-if="showActual" label="实际结果">
+            <template #default="{ row }">
+              <el-input v-model="row.actual" />
+            </template>
+          </el-table-column>
+        </el-table>
       </el-col>
     </el-row>
   </el-form>

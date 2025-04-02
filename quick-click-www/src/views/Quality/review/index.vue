@@ -50,7 +50,7 @@
       </el-table-column>
       <el-table-column align="center" label="主讲人" prop="speaker" show-overflow-tooltip>
         <template #default="scope">
-          <user-tag :value="scope.row.speaker" />
+          <user-tag text :value="scope.row.speaker" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="参与人员" prop="reviewer" show-overflow-tooltip>
@@ -122,48 +122,47 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column align="right" label="通过率" width="100">
+      <el-table-column align="center" label="通过率" width="100">
         <template #default="scope">
           <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
-            {{ (scope.row.statistics.passed / (scope.row.statistics.total | 1)) * 100 }} %
+            {{
+              ((scope.row.statistics.passed / (scope.row.statistics.total | 1)) * 100).toFixed(2)
+            }}
+            %
           </el-button>
         </template>
       </el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width="150">
         <template #default="scope">
-          <el-tooltip content="编辑" placement="top">
-            <el-button
-              v-hasPermi="['quality:review:update']"
-              circle
-              plain
-              type="primary"
-              @click="openForm('update', scope.row.id)"
-            >
-              <Icon icon="ep:edit" />
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="规划&评审" placement="top">
-            <el-button
-              v-hasPermi="['quality:review:execute']"
-              circle
-              plain
-              type="primary"
-              @click="handleGoAssociCase(scope.row.id)"
-            >
-              <Icon icon="ep:link" />
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="删除" placement="top">
-            <el-button
-              v-hasPermi="['quality:review:remove']"
-              circle
-              plain
-              type="danger"
-              @click="handleDelete(scope.row.id)"
-            >
-              <Icon icon="ep:delete" />
-            </el-button>
-          </el-tooltip>
+          <el-button
+            v-hasPermi="['quality:review:update']"
+            circle
+            text
+            type="primary"
+            @click="openForm('update', scope.row.id)"
+          >
+            编辑
+          </el-button>
+
+          <el-button
+            v-hasPermi="['quality:review:execute']"
+            circle
+            text
+            type="primary"
+            @click="handleGoAssociCase(scope.row.id)"
+          >
+            评审
+          </el-button>
+
+          <el-button
+            v-hasPermi="['quality:review:remove']"
+            circle
+            text
+            type="danger"
+            @click="handleDelete(scope.row.id)"
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -194,12 +193,12 @@ const { push } = useRouter() // 路由
 
 defineOptions({ name: 'ProjectManager' })
 
-const queryParams = reactive({
+const queryParams = ref({
   pageNo: 1,
   pageSize: 10,
   title: '',
-  projectId: globalStore.getCurrentProject,
-  status: undefined
+  status: undefined,
+  projectId: ''
 })
 const loading = ref(false)
 const list = ref<any>([])
@@ -210,7 +209,8 @@ const queryFormRef = ref() // 搜索的表单
 const getList = async () => {
   loading.value = true
   try {
-    const data = await HTTP.getPage(queryParams)
+    queryParams.value.projectId = globalStore.getCurrentProject
+    const data = await HTTP.getPage(queryParams.value)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -219,7 +219,7 @@ const getList = async () => {
 }
 
 const handleQuery = async () => {
-  queryParams.pageNo = 1
+  queryParams.value.pageNo = 1
   getList()
 }
 
@@ -250,11 +250,16 @@ const handleDelete = async (id: number) => {
   } catch {}
 }
 
+const resetQuery2 = async () => {
+  queryParams.value = { pageNo: 1, pageSize: 10, title: '', status: undefined, projectId: '' }
+  getList()
+}
+
 // 监听当前项目变化，刷新列表数据
 watch(
   computed(() => globalStore.getCurrentProject),
-  () => {
-    getList()
+  async () => {
+    await resetQuery2()
   },
   { immediate: true, deep: true }
 )

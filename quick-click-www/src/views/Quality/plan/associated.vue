@@ -108,30 +108,38 @@
               </template>
             </el-table-column>
             <el-table-column align="center" label="执行时间" prop="executeTime" width="170" />
+            <el-table-column align="center" label="前端开发" width="80">
+              <template #default="scope">
+                <user-tag text :value="scope.row.frontendDeveloper" />
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="后端开发" width="80">
+              <template #default="scope">
+                <user-tag text :value="scope.row.backendDeveloper" />
+              </template>
+            </el-table-column>
             <el-table-column :width="150" align="center" fixed="right" label="操作">
               <template #default="scope">
-                <el-tooltip content="执行" placement="top">
-                  <el-button
-                    v-hasPermi="['plan:case:execute']"
-                    circle
-                    plain
-                    type="success"
-                    @click="handleExecuteCase(scope.row.id)"
-                  >
-                    <Icon icon="ep:caret-right" />
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip content="移除" placement="top">
-                  <el-button
-                    v-hasPermi="['plan:case:remove']"
-                    circle
-                    plain
-                    type="danger"
-                    @click="handleBatchUnlinkCase([scope.row.id])"
-                  >
-                    <Icon icon="fa-solid:unlink" />
-                  </el-button>
-                </el-tooltip>
+                <el-button
+                  v-hasPermi="['plan:case:execute']"
+                  circle
+                  plain
+                  type="success"
+                  @click="handleExecuteCase(scope.row.id)"
+                >
+                  <Icon icon="ep:caret-right" />
+                </el-button>
+
+                <el-button
+                  v-hasPermi="['plan:case:remove']"
+                  circle
+                  plain
+                  type="danger"
+                  @click="handleBatchUnlinkCase([scope.row.id])"
+                >
+                  <Icon icon="fa-solid:unlink" />
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -284,11 +292,16 @@ const handleOpenImportCase = () => {
   caseImports.value.open(currentPlanId.value)
 }
 
-// 监听当前项目变化，刷新列表数据
+const pageInit = ref(false)
+/** 监听当前项目变化，返回测试计划列表 */
 watch(
   computed(() => globalStore.getCurrentProject),
-  () => {
-    handleGetData()
+  async () => {
+    if (pageInit.value) {
+      tagsViewStore.delView(unref(currentRoute))
+      push('/quality/plan')
+    }
+    pageInit.value = true
   },
   { immediate: true, deep: true }
 )

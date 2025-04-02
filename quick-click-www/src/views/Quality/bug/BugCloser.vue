@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="'【确认】' + title" v-model="visible" @close="onClose">
+  <Dialog :title="'【关闭】' + title" v-model="visible" @close="onClose">
     <el-form
       ref="formRef"
       v-loading="formLoading"
@@ -7,24 +7,22 @@
       :rules="formRules"
       label-width="100px"
     >
-      <el-form-item label="修复人">
+      <el-form-item label="修复时间">
         <user-tag :value="formData.fixer" type="danger" />
-        <el-text type="info" class="ml-10px"> 于</el-text>
-        <el-text type="danger" class="ml-5px"> {{ formData.fixedTime }}</el-text>
-        <el-text type="info" class="ml-5px"> 修复</el-text>
+        <el-text type="danger"> {{ '于' + formData.fixedTime }}</el-text>
       </el-form-item>
       <el-form-item label="产生原因">
         <ones-tag :value="formData.cause" :type="DICT_TYPE.QUALITY_BUG_FIX_CAUSE" />
       </el-form-item>
       <el-form-item label="详细描述" prop="rootCause">
-        <el-text type="info" class="ml-5px"> {{ formData.rootCause }}</el-text>
+        <el-text type="info"> {{ formData.rootCause }}</el-text>
       </el-form-item>
       <el-form-item label="解决方案" prop="solution">
-        <el-text type="info" class="ml-5px"> {{ formData.solution }}</el-text>
+        <el-text type="info"> {{ formData.solution }}</el-text>
       </el-form-item>
     </el-form>
     <template #footer>
-      <el-button type="danger" @click="visible = false">拒 绝</el-button>
+      <el-button @click="visible = false">取 消</el-button>
       <el-button :disabled="formLoading" type="primary" @click="submitForm">确 认</el-button>
     </template>
   </Dialog>
@@ -47,14 +45,14 @@ defineProps({
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
-const title = ref('缺陷修复')
+const title = ref('')
 const visible = ref(false)
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formData = ref<any>({
   id: undefined,
-  cause: undefined,
-  rootCause: undefined,
-  solution: undefined,
+  cause: '',
+  rootCause: '',
+  solution: '',
   handler: undefined,
   fixedTime: undefined
 })
@@ -84,9 +82,9 @@ defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    cause: undefined,
-    rootCause: undefined,
-    solution: undefined,
+    cause: '',
+    rootCause: '',
+    solution: '',
     handler: undefined,
     fixedTime: undefined
   }
@@ -110,7 +108,7 @@ const submitForm = async () => {
   try {
     const data = formData.value
     await close(data.id)
-    message.success(t('common.updateSuccess'))
+    message.success(t('common.optionSuccess'))
     visible.value = false
   } finally {
     formLoading.value = false

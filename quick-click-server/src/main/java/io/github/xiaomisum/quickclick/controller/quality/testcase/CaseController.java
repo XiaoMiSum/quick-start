@@ -134,7 +134,8 @@ public class CaseController {
      */
     @PutMapping("batch")
     public Result<?> batchUpdate(@RequestBody @Valid TestcaseBatchUpdateReqVO data) {
-        if (Objects.isNull(data.getSupervisor()) && StrUtil.isAllBlank(data.getPriority(), data.getNodeId())) {
+        if (Objects.isNull(data.getSupervisor()) && Objects.isNull(data.getFrontendDeveloper()) &&
+                Objects.isNull(data.getBackendDeveloper()) && StrUtil.isAllBlank(data.getPriority(), data.getNodeId())) {
             throw ServiceExceptionUtil.get(TEST_CASE_BATCH_UPDATE_ERROR);
         }
         service.update(TestcaseConvert.INSTANCE.convert(data));
