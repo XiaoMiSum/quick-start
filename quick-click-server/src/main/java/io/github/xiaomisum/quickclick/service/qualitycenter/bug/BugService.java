@@ -2,6 +2,7 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.bug;
 
 import io.github.xiaomisum.quickclick.controller.quality.bug.vo.BugQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugComment;
 import xyz.migoo.framework.common.pojo.PageResult;
 
 import java.util.List;
@@ -31,4 +32,10 @@ public interface BugService {
     void close(String id);
 
     void remove(String id);
+
+    List<BugComment> getComment(String bugId);
+
+    void addComment(BugComment data);
+
+    void removeComment(Long id);
 }

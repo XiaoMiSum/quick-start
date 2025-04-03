@@ -28,7 +28,7 @@ const props = defineProps({
     type: Object,
     required: false,
     default: () => ({
-      maxHeight: '700px',
+      maxHeight: '800px',
       minWidth: '1000px',
       minHeight: '200px',
       overflow: 'auto'

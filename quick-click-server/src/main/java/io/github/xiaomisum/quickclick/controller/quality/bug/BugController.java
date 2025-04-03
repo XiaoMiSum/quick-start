@@ -37,6 +37,8 @@ import xyz.migoo.framework.security.core.LoginUser;
 import xyz.migoo.framework.security.core.annotation.CurrentUser;
 import xyz.migoo.framework.security.core.util.SecurityFrameworkUtils;
 
+import java.util.List;
+
 /**
  * 缺陷跟踪
  */
@@ -165,7 +167,7 @@ public class BugController {
      * @return 处理结果
      */
     @PutMapping("/reopened")
-    public Result<?> reopen(@RequestBody BugReopenReqVO data) {
+    public Result<?> reopen(@Valid @RequestBody BugReopenReqVO data) {
         service.reopen(data.getId(), data.getHandler());
         return Result.getSuccessful();
     }
@@ -194,5 +196,40 @@ public class BugController {
         return Result.getSuccessful();
     }
 
+    /**
+     * 获取评论列表
+     *
+     * @param bugId 缺陷编号
+     * @return 评论列表
+     */
+    @GetMapping("/comment")
+    public Result<List<BugCommentRespVO>> getComment(@RequestParam("bugId") String bugId) {
+        return Result.getSuccessful(BugConvert.INSTANCE.convert(service.getComment(bugId)));
+    }
 
+    /**
+     * 添加评论
+     *
+     * @param data 评论信息
+     * @return 处理结果
+     */
+    @PostMapping("/comment")
+    public Result<?> addComment(@Valid @RequestBody BugCommentAddReqVO data) {
+        data.setUserId(SecurityFrameworkUtils.getLoginUserId());
+        service.addComment(BugConvert.INSTANCE.convert(data));
+        return Result.getSuccessful();
+    }
+
+
+    /**
+     * 删除评论
+     *
+     * @param id 编号
+     * @return 处理结果
+     */
+    @DeleteMapping("/comment/{id}")
+    public Result<?> removeComment(@RequestParam("id") Long id) {
+        service.removeComment(id);
+        return Result.getSuccessful();
+    }
 }

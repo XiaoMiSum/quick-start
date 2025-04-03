@@ -4,6 +4,8 @@ import cn.hutool.core.util.IdUtil;
 import com.google.common.collect.Lists;
 import io.github.xiaomisum.quickclick.controller.quality.bug.vo.BugQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugComment;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugCommentMapper;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class BugServiceImpl implements BugService {
 
     @Resource
     private BugMapper mapper;
+    @Resource
+    private BugCommentMapper commentMapper;
 
     @Override
     public PageResult<Bug> getPage(BugQueryReqVO req) {
@@ -94,6 +98,21 @@ public class BugServiceImpl implements BugService {
     @Override
     public void remove(String id) {
         mapper.deleteById(id);
+    }
+
+    @Override
+    public List<BugComment> getComment(String bugId) {
+        return commentMapper.selectList(bugId);
+    }
+
+    @Override
+    public void addComment(BugComment data) {
+        commentMapper.insert(data);
+    }
+
+    @Override
+    public void removeComment(Long id) {
+        commentMapper.deleteById(id);
     }
 
 }

@@ -138,3 +138,41 @@ export const download = (params: any) => {
     params
   })
 }
+
+/**
+ * 获取评论
+ *
+ * @param bugId 缺陷编号
+ * @returns
+ */
+export const getComment = (bugId: string | string[]) => {
+  return request.get({
+    url: url + '/comment',
+    params: { bugId }
+  })
+}
+
+/**
+ * 新增评论
+ *
+ * @param data 数据
+ * @returns
+ */
+export const addComment = (data: any) => {
+  return request.post({
+    url: url + '/comment',
+    data
+  })
+}
+
+/**
+ * 删除评论
+ *
+ * @param id 编号
+ * @returns
+ */
+export const removeComment = (id: number) => {
+  return request.delete({
+    url: url + '/comment/' + id
+  })
+}

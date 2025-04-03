@@ -1,5 +1,5 @@
 <template>
-  <ContentWrap class="h-900px">
+  <ContentWrap>
     <el-form ref="formRef" :model="formData" label-width="100px">
       <el-row>
         <el-col :span="16">
@@ -176,6 +176,13 @@
   <BugFixer ref="bugFixer" :users="users" @success="getData" />
   <BugCloser ref="bugCloser" :users="users" @success="getData" />
   <BugOpener ref="bugOpener" :users="users" @success="getData" />
+
+  <BugCommenter
+    ref="bugCommenter"
+    v-model="comments"
+    :bug-id="formData.id"
+    @success="handleGetComment"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -198,6 +205,7 @@ import BugConfirmer from './BugConfirmer.vue'
 import BugFixer from './BugFixer.vue'
 import BugCloser from './BugCloser.vue'
 import BugOpener from './BugOpener.vue'
+import BugCommenter from './BugCommenter.vue'
 
 const globalStore = useGlobalStore()
 
@@ -221,6 +229,8 @@ const formData = ref<any>({
 
 const modules = ref<any>([])
 const users = ref<any>([])
+
+const comments = ref<any>([])
 
 const formRef = ref()
 const handleCloseView = async () => {
@@ -260,7 +270,16 @@ const handleDelete = async (id: string) => {
     message.success(t('common.delSuccess'))
     await handleCloseView()
     toBugList()
-  } catch {
+  } finally {
+    showOptionButton.value = true
+  }
+}
+
+const handleGetComment = async () => {
+  try {
+    const data = await HTTP.getComment(params.id)
+    comments.value = data
+  } finally {
     showOptionButton.value = true
   }
 }
@@ -275,6 +294,13 @@ watch(
   computed(() => formData.value),
   () => {
     menuItems.value = [
+      {
+        key: 'comment',
+        label: '评论',
+        type: '',
+        permi: true,
+        icon: 'ep:chat-line-square'
+      },
       {
         key: 'delete',
         label: '删除',
@@ -352,6 +378,9 @@ const handleMenuItemClick = async (item) => {
   showOptionButton.value = false
   // 根据item.key执行不同的操作
   switch (item.key) {
+    case 'comment':
+      await handleComment()
+      break
     case 'delete':
       await handleDelete(formData.value.id)
       break
@@ -399,6 +428,11 @@ const handleReopen = async () => {
   bugOpener.value.open(formData.value)
 }
 
+const bugCommenter = ref()
+const handleComment = async () => {
+  bugCommenter.value.open()
+}
+
 const getData = async () => {
   showOptionButton.value = true
   formData.value = await HTTP.getData(params.id)
@@ -408,6 +442,7 @@ onMounted(async () => {
   getTree()
   getUsers()
   getData()
+  handleGetComment()
 })
 </script>
 

@@ -178,6 +178,24 @@ CREATE TABLE `qc_quality_bug`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '质量缺陷表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for qc_quality_bug
+-- ----------------------------
+DROP TABLE IF EXISTS `qc_quality_bug_comment`;
+CREATE TABLE `qc_quality_bug_comment`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `bug_id` varchar(32) NOT NULL COMMENT '缺陷编号',
+  `user_id` bigint NOT NULL COMMENT '用户编号',
+  `content` longtext NOT NULL,
+  `deleted` tinyint NULL DEFAULT 0,
+  `create_time` datetime NULL,
+  `creator` varchar(64) NULL,
+  `update_time` datetime NULL,
+  `updater` varchar(64) NULL,
+  PRIMARY KEY (`id`),
+  INDEX `inx`(`bug_id`)
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '缺陷评论表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for qc_quality_test_plan
 -- ----------------------------
 DROP TABLE IF EXISTS `qc_quality_test_plan`;
