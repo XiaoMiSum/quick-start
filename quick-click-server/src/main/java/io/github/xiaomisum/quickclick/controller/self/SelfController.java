@@ -25,14 +25,15 @@
 
 package io.github.xiaomisum.quickclick.controller.self;
 
+import io.github.xiaomisum.quickclick.controller.self.vo.ProfileVO;
+import io.github.xiaomisum.quickclick.convert.profile.ProfileConvert;
 import io.github.xiaomisum.quickclick.convert.project.ProjectConvert;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
+import io.github.xiaomisum.quickclick.service.profile.ProfileService;
 import io.github.xiaomisum.quickclick.service.project.ProjectMemberService;
 import io.github.xiaomisum.quickclick.service.project.ProjectService;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.Result;
 import xyz.migoo.framework.common.pojo.SimpleData;
 import xyz.migoo.framework.security.core.LoginUser;
@@ -51,6 +52,9 @@ public class SelfController {
     @Resource
     private ProjectService projectService;
 
+    @Resource
+    private ProfileService profileService;
+
     /**
      * 获取当前登录用户的项目列表
      *
@@ -65,5 +69,27 @@ public class SelfController {
         }
         List<Project> projects = projectService.getList(ids);
         return Result.getSuccessful(ProjectConvert.INSTANCE.convert(projects));
+    }
+
+    /**
+     * 获取用户配置
+     *
+     * @return 用户配置
+     */
+    @GetMapping("/profile")
+    public Result<ProfileVO> getProfile(@CurrentUser LoginUser user) {
+        return Result.getSuccessful(ProfileConvert.INSTANCE.convert(profileService.get(user.getId())));
+    }
+
+    /**
+     * 保存用户配置
+     *
+     * @return 操作结果
+     */
+    @PostMapping("/profile")
+    public Result<?> saveProfile(@CurrentUser LoginUser user, @RequestBody ProfileVO profile) {
+        profile.setUserId(user.getId());
+        profileService.save(ProfileConvert.INSTANCE.convert(profile));
+        return Result.getSuccessful();
     }
 }

@@ -109,7 +109,12 @@
 
   <ContentWrap class="h-[calc(100%-300px)]">
     <VueDraggable target="tbody" v-model="caseData.steps" :animation="150">
-      <el-table id="dragTable" :data="caseData.steps" class="h-[calc(100%-260px)]">
+      <el-table
+        id="dragTable"
+        :data="caseData.steps"
+        :header-cell-style="{ background: '#f4f6f8' }"
+        class="h-[calc(100%-300px)]"
+      >
         <el-table-column type="index" width="30">
           <Icon icon="ep:rank" />
         </el-table-column>

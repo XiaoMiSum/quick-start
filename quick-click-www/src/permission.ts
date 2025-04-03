@@ -40,15 +40,9 @@ router.beforeEach(async (to, from, next) => {
     } else {
       const userStore = useUserStoreWithOut()
       const permissionStore = usePermissionStoreWithOut()
-
-      // 设置导航栏是否显示选择项目组件
-      appStore.setProjectPick(useProjectPickerList.some((item) => path.includes(item)))
-
-      if (appStore.projectPick) {
-        await globalStore.setProjects()
-      }
       if (!userStore.getIsSetUser) {
         await userStore.setUserInfoAction()
+        await globalStore.setUserProject()
         // 后端过滤菜单
         await permissionStore.generateRoutes()
         permissionStore.getAddRouters.forEach((route) => {
@@ -56,6 +50,11 @@ router.beforeEach(async (to, from, next) => {
         })
         next({ ...to, replace: true })
       } else {
+        // 设置导航栏是否显示选择项目组件
+        appStore.setProjectPick(useProjectPickerList.some((item) => path.includes(item)))
+        if (appStore.projectPick) {
+          await globalStore.setProjects()
+        }
         next()
       }
     }

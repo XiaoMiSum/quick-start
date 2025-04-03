@@ -2,6 +2,21 @@ import request from '@/config/axios'
 
 const url = ''
 
+// 查询用户配置
+export const getProfile = () => {
+  return request.get({
+    url: url + '/self/profile'
+  })
+}
+
+// 查询用户配置
+export const saveProfile = (data: any) => {
+  return request.post({
+    url: url + '/self/profile',
+    data
+  })
+}
+
 // 查询用户个人信息
 export const getUserProfile = () => {
   return request.get({
