@@ -110,6 +110,19 @@ public class BugController {
     }
 
     /**
+     * 拒绝缺陷
+     *
+     * @param data 缺陷信息
+     * @return 处理结果
+     */
+    @PutMapping("rejected")
+    public Result<?> reject(@RequestBody @Valid BugRejectedReqVO data) {
+        data.setRejectedUser(SecurityFrameworkUtils.getLoginUserId());
+        service.reject(BugConvert.INSTANCE.convert(data));
+        return Result.getSuccessful();
+    }
+
+    /**
      * 确认缺陷
      *
      * @param data 缺陷信息
@@ -180,5 +193,6 @@ public class BugController {
         service.remove(id);
         return Result.getSuccessful();
     }
+
 
 }

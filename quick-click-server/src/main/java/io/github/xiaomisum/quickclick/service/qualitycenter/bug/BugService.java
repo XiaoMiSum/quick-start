@@ -20,7 +20,9 @@ public interface BugService {
 
     void confirm(List<String> ids);
 
-    void confirm(Bug convert);
+    void confirm(Bug data);
+
+    void reject(Bug data);
 
     void fix(Bug data);
 

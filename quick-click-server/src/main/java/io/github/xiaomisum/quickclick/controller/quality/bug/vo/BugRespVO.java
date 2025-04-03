@@ -43,6 +43,22 @@ public class BugRespVO extends BugBaseVO {
     private LocalDateTime confirmedTime;
 
     /**
+     * 拒绝人
+     */
+    private Long rejectedUser;
+
+    /**
+     * 拒绝原因
+     */
+    private String rejectedCause;
+
+    /**
+     * 拒绝时间
+     */
+    @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    private LocalDateTime rejectedTime;
+    /**
      * 修复人
      */
     private Long fixer;
@@ -77,7 +93,7 @@ public class BugRespVO extends BugBaseVO {
     /**
      * 产生原因详细描述
      */
-    private String rootCause;
+    private String causeDetailed;
 
     /**
      * 解决方案

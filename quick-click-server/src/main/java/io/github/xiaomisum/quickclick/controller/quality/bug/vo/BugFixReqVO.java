@@ -44,8 +44,8 @@ public class BugFixReqVO {
     /**
      * 产生原因详细描述
      */
-    @NotBlank(message = "rootCause 不能为空")
-    private String rootCause;
+    @NotBlank(message = "causeDetailed 不能为空")
+    private String causeDetailed;
 
     /**
      * 解决方案

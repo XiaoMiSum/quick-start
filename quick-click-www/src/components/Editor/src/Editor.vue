@@ -26,7 +26,8 @@ const props = defineProps({
     default: () => undefined
   },
   readonly: propTypes.bool.def(false),
-  modelValue: propTypes.string.def('')
+  modelValue: propTypes.string.def(''),
+  imageWidth: propTypes.string.def('50')
 })
 
 const emit = defineEmits(['change', 'update:modelValue'])
@@ -39,8 +40,11 @@ const valueHtml = ref('')
 watch(
   () => props.modelValue,
   (val: string) => {
-    if (val === unref(valueHtml)) return
-    valueHtml.value = val
+    const imgRegEx = /<img.*?>/g
+    const richText = val.replace(imgRegEx, (match) => {
+      return match.replace(/style=""/, 'style="width: ' + props.imageWidth + '%;"')
+    })
+    valueHtml.value = richText
   },
   {
     immediate: true
@@ -111,7 +115,7 @@ const editorConfig = computed((): IEditorConfig => {
           withCredentials: true,
 
           // 超时时间，默认为 10 秒
-          timeout: 5 * 1000, // 5 秒
+          timeout: 10 * 1000, // 5 秒
 
           // form-data fieldName，后端接口参数名称，默认值wangeditor-uploaded-image
           fieldName: 'file',

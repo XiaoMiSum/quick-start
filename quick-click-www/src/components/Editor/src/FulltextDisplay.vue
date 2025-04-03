@@ -1,5 +1,5 @@
 <template>
-  <div class="rich-text-container">
+  <div :style="style">
     <div v-html="props.richText" style="border: none !important" @click="showPreviewImg"></div>
     <div v-if="imgBiggerState.isPreview">
       <ImgPreview
@@ -14,10 +14,25 @@
 <script setup>
 import { reactive } from 'vue'
 import ImgPreview from './ImgPreview.vue'
+
 const props = defineProps({
   richText: {
     type: String,
     default: ''
+  },
+  overflow: {
+    type: Boolean,
+    default: true
+  },
+  style: {
+    type: Object,
+    required: false,
+    default: () => ({
+      maxHeight: '700px',
+      minWidth: '1000px',
+      minHeight: '200px',
+      overflow: 'auto'
+    })
   }
 })
 
@@ -56,13 +71,6 @@ const closeImgPreview = () => {
 </script>
 
 <style lang="scss" scoped>
-.rich-text-container {
-  max-height: 700px;
-  min-width: 1000px;
-  min-height: 200px;
-  overflow: auto; /* 或者 'hidden' 如果你不希望显示滚动条 */
-}
-
 .rich-text-container div {
   color: #909399;
 

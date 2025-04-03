@@ -1,22 +1,31 @@
 <template>
   <Dialog :title="'【激活】' + title" v-model="visible" @close="onClose">
-    <el-form ref="formRef" v-loading="formLoading" :model="formData" label-width="100px">
-      <el-form-item label="拒绝时间" v-if="formData.status === 'Rejected'">
-        <el-text type="danger"> {{ formData.updater + ' 于 ' + formData.updateTime }}</el-text>
-      </el-form-item>
-      <el-form-item v-else label="修复时间">
-        <user-tag :value="formData.fixer" type="danger" />
-        <el-text type="danger"> {{ '于' + formData.fixedTime }}</el-text>
-      </el-form-item>
-      <el-form-item label="产生原因">
-        <ones-tag :value="formData.cause" :type="DICT_TYPE.QUALITY_BUG_FIX_CAUSE" />
-      </el-form-item>
-      <el-form-item label="详细描述" prop="rootCause">
-        <el-text type="info"> {{ formData.rootCause }}</el-text>
-      </el-form-item>
-      <el-form-item label="解决方案" prop="solution">
-        <el-text type="info"> {{ formData.solution }}</el-text>
-      </el-form-item>
+    <el-form ref="formRef" :model="formData" label-width="100px">
+      <div v-if="formData.status === 'Rejected'">
+        <el-form-item label="拒绝时间">
+          <user-tag :value="formData.rejectedUser" type="danger" />
+          <el-text type="danger"> {{ ' 于 ' + formData.rejectedTime }}</el-text>
+        </el-form-item>
+        <el-form-item label="拒绝原因">
+          <el-text type="info"> {{ formData.rejectedCause }}</el-text>
+        </el-form-item>
+      </div>
+
+      <div v-else>
+        <el-form-item label="修复时间">
+          <user-tag :value="formData.fixer" type="danger" />
+          <el-text type="danger"> {{ '于' + formData.fixedTime }}</el-text>
+        </el-form-item>
+        <el-form-item label="产生原因">
+          <ones-tag :value="formData.cause" :type="DICT_TYPE.QUALITY_BUG_FIX_CAUSE" />
+        </el-form-item>
+        <el-form-item label="详细描述" prop="causeDetailed">
+          <el-text type="info"> {{ formData.causeDetailed }}</el-text>
+        </el-form-item>
+        <el-form-item label="解决方案" prop="solution">
+          <el-text type="info"> {{ formData.solution }}</el-text>
+        </el-form-item>
+      </div>
     </el-form>
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
@@ -48,7 +57,7 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formData = ref<any>({
   id: undefined,
   cause: undefined,
-  rootCause: undefined,
+  causeDetailed: undefined,
   solution: undefined,
   handler: undefined,
   fixedTime: undefined,
@@ -73,7 +82,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     cause: undefined,
-    rootCause: undefined,
+    causeDetailed: undefined,
     solution: undefined,
     handler: undefined,
     fixedTime: undefined,

@@ -1,7 +1,24 @@
 <template>
-  <Dialog title="批量指派" v-model="visible" @close="onClose">
-    <el-form ref="formRef" v-loading="formLoading" :model="formData" label-width="100px">
-      <el-form-item label="处理人" prop="handler">
+  <Dialog :title="'【拒绝】' + title" v-model="visible" @close="onClose">
+    <el-form
+      ref="formRef"
+      v-loading="formLoading"
+      :model="formData"
+      :rules="formRules"
+      label-width="100px"
+    >
+      <el-form-item label="拒绝原因" prop="rejectedCause">
+        <el-input
+          v-model="formData.rejectedCause"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          type="textarea"
+          maxlength="255"
+          show-word-limit
+          placeholder="请输入拒绝原因"
+        />
+      </el-form-item>
+
+      <el-form-item label="指派给" prop="handler">
         <el-select filterable v-model="formData.handler" style="width: 100%">
           <el-option
             v-for="item in users"
@@ -20,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { assign, getData } from '@/api/quality/bug'
+import { reject, getData } from '@/api/quality/bug'
 
 defineProps({
   users: {
@@ -32,20 +49,30 @@ defineProps({
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+const title = ref('')
 const visible = ref(false)
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formData = ref<any>({
-  ids: undefined,
+  id: undefined,
+  rejectedCause: undefined,
   handler: undefined
 })
 
-defineOptions({ name: 'BatchAssign' })
+defineOptions({ name: 'BugRejecter' })
+
+const formRules = reactive({
+  rejectedCause: [{ required: true, message: '拒绝原因不能为空', trigger: 'blur' }],
+  handler: [{ required: true, message: '指派处理人不能为空', trigger: 'blur' }]
+})
 
 const formRef = ref() // 表单 Ref
 
-const open = (id: string) => {
+const open = async (bug: any) => {
   visible.value = true
-  const data = getData(id)
+  title.value = bug.title
+  const data = await getData(bug.id)
+  formData.value.id = data.id
+  formData.value.handler = data.creatorId
 }
 
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
@@ -53,7 +80,8 @@ defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
-    ids: undefined,
+    id: undefined,
+    rejectedCause: undefined,
     handler: undefined
   }
   formRef.value?.resetFields()
@@ -75,8 +103,8 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value
-    await assign(data)
-    message.success(t('common.updateSuccess'))
+    await reject(data)
+    message.success(t('common.optionSuccess'))
     visible.value = false
   } finally {
     formLoading.value = false

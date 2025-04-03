@@ -70,6 +70,19 @@ export const confirm = (data: any) => {
 }
 
 /**
+ * 拒绝缺陷
+ *
+ * @param data ids
+ * @returns
+ */
+export const reject = (data: any) => {
+  return request.put({
+    url: url + '/rejected',
+    data
+  })
+}
+
+/**
  * 修复缺陷
  *
  * @param data data

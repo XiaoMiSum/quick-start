@@ -1,25 +1,31 @@
 <template>
   <Dialog :title="'【关闭】' + title" v-model="visible" @close="onClose">
-    <el-form
-      ref="formRef"
-      v-loading="formLoading"
-      :model="formData"
-      :rules="formRules"
-      label-width="100px"
-    >
-      <el-form-item label="修复时间">
-        <user-tag :value="formData.fixer" type="danger" />
-        <el-text type="danger"> {{ '于' + formData.fixedTime }}</el-text>
-      </el-form-item>
-      <el-form-item label="产生原因">
-        <ones-tag :value="formData.cause" :type="DICT_TYPE.QUALITY_BUG_FIX_CAUSE" />
-      </el-form-item>
-      <el-form-item label="详细描述" prop="rootCause">
-        <el-text type="info"> {{ formData.rootCause }}</el-text>
-      </el-form-item>
-      <el-form-item label="解决方案" prop="solution">
-        <el-text type="info"> {{ formData.solution }}</el-text>
-      </el-form-item>
+    <el-form ref="formRef" :model="formData" label-width="100px">
+      <div v-if="formData.status === 'Rejected'">
+        <el-form-item label="拒绝时间">
+          <user-tag :value="formData.rejectedUser" type="danger" />
+          <el-text type="danger"> {{ ' 于 ' + formData.rejectedTime }}</el-text>
+        </el-form-item>
+        <el-form-item label="拒绝原因">
+          <el-text type="info"> {{ formData.rejectedCause }}</el-text>
+        </el-form-item>
+      </div>
+
+      <div v-else>
+        <el-form-item label="修复时间">
+          <user-tag :value="formData.fixer" type="danger" />
+          <el-text type="danger"> {{ '于' + formData.fixedTime }}</el-text>
+        </el-form-item>
+        <el-form-item label="产生原因">
+          <ones-tag :value="formData.cause" :type="DICT_TYPE.QUALITY_BUG_FIX_CAUSE" />
+        </el-form-item>
+        <el-form-item label="详细描述" prop="causeDetailed">
+          <el-text type="info"> {{ formData.causeDetailed }}</el-text>
+        </el-form-item>
+        <el-form-item label="解决方案" prop="solution">
+          <el-text type="info"> {{ formData.solution }}</el-text>
+        </el-form-item>
+      </div>
     </el-form>
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
@@ -58,14 +64,6 @@ const formData = ref<any>({
 })
 
 defineOptions({ name: 'BugCloser' })
-
-const formRules = reactive({
-  cause: [{ required: true, message: '产生原因不能为空', trigger: 'blur' }],
-  rootCause: [{ required: true, message: '详细描述不能为空', trigger: 'blur' }],
-  solution: [{ required: true, message: '解决方案不能为空', trigger: 'blur' }],
-  handler: [{ required: true, message: '指派处理人不能为空', trigger: 'blur' }],
-  fixedTime: [{ required: true, message: '修复时间不能为空', trigger: 'blur' }]
-})
 
 const formRef = ref() // 表单 Ref
 

@@ -167,17 +167,28 @@
             </template>
           </el-table-column>
 
-          <el-table-column align="center" fixed="right" label="操作" width="300">
+          <el-table-column align="center" fixed="right" label="操作" width="320">
             <template #default="{ row }">
               <el-button
                 v-hasPermi="['quality:bug:confirm']"
                 circle
                 text
                 :type="row.status === 'New' ? 'primary' : ''"
-                @click="openBugConfirmr(row)"
+                @click="openBugConfirmer(row)"
                 :disabled="row.status !== 'New'"
               >
                 确认
+              </el-button>
+
+              <el-button
+                v-hasPermi="['quality:bug:confirm']"
+                circle
+                text
+                :type="row.status === 'New' ? 'primary' : ''"
+                @click="openBugRejecter(row)"
+                :disabled="row.status !== 'New'"
+              >
+                拒绝
               </el-button>
 
               <el-button
@@ -195,9 +206,9 @@
                 v-hasPermi="['quality:bug:close']"
                 text
                 circle
-                :type="row.status === 'Fixed' ? 'primary' : ''"
+                :type="['Fixed', 'Rejected'].includes(row.status) ? 'primary' : ''"
                 @click="openBugCloser(row)"
-                :disabled="row.status !== 'Fixed'"
+                :disabled="!['Fixed', 'Rejected'].includes(row.status)"
               >
                 关闭
               </el-button>
@@ -275,6 +286,7 @@
   <BugCloser ref="bugCloser" :users="userList" @success="getList" />
   <BugOpener ref="bugOpener" :users="userList" @success="getList" />
   <BugConfirmer ref="bugConfirmer" :users="userList" @success="getList" />
+  <BugRejecter ref="bugRejecter" :users="userList" @success="getList" />
 </template>
 
 <script lang="ts" setup>
@@ -285,6 +297,7 @@ import BugFixer from './BugFixer.vue'
 import BugCloser from './BugCloser.vue'
 import BugOpener from './BugOpener.vue'
 import BugConfirmer from './BugConfirmer.vue'
+import BugRejecter from './BugRejecter.vue'
 
 import download from '@/utils/download'
 import { DICT_TYPE } from '@/utils/dictionary'
@@ -420,8 +433,13 @@ const openBugOpener = async (data: any) => {
 }
 
 const bugConfirmer = ref()
-const openBugConfirmr = async (data: any) => {
+const openBugConfirmer = async (data: any) => {
   bugConfirmer.value.open(data)
+}
+
+const bugRejecter = ref()
+const openBugRejecter = async (data: any) => {
+  bugRejecter.value.open(data)
 }
 
 const handleBatchConfirm = async (ids: any[]) => {

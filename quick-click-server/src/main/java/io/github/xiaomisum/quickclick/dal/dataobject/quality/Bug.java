@@ -105,6 +105,21 @@ public class Bug extends BaseDO<String> {
     private LocalDateTime confirmedTime;
 
     /**
+     * 拒绝原因
+     */
+    private String rejectedCause;
+
+    /**
+     * 拒绝人
+     */
+    private Long rejectedUser;
+
+    /**
+     * 拒绝时间
+     */
+    private LocalDateTime rejectedTime;
+
+    /**
      * 修复人
      */
     private Long fixer;
@@ -137,7 +152,7 @@ public class Bug extends BaseDO<String> {
     /**
      * 产生原因详细描述
      */
-    private String rootCause;
+    private String causeDetailed;
 
     /**
      * 解决方案

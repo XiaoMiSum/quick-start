@@ -26,11 +26,13 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="详细描述" prop="rootCause">
+      <el-form-item label="详细描述" prop="causeDetailed">
         <el-input
-          v-model="formData.rootCause"
+          v-model="formData.causeDetailed"
           :autosize="{ minRows: 2, maxRows: 4 }"
           type="textarea"
+          maxlength="255"
+          show-word-limit
           placeholder="请输入详细描述"
         />
       </el-form-item>
@@ -39,6 +41,8 @@
           v-model="formData.solution"
           :autosize="{ minRows: 2, maxRows: 4 }"
           type="textarea"
+          maxlength="255"
+          show-word-limit
           placeholder="请输入解决方案"
         />
       </el-form-item>
@@ -91,7 +95,7 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formData = ref<any>({
   id: undefined,
   cause: undefined,
-  rootCause: undefined,
+  causeDetailed: undefined,
   solution: undefined,
   handler: undefined,
   fixedTime: undefined,
@@ -102,7 +106,7 @@ defineOptions({ name: 'BugFixer' })
 
 const formRules = reactive({
   cause: [{ required: true, message: '产生原因不能为空', trigger: 'blur' }],
-  rootCause: [{ required: true, message: '详细描述不能为空', trigger: 'blur' }],
+  causeDetailed: [{ required: true, message: '详细描述不能为空', trigger: 'blur' }],
   solution: [{ required: true, message: '解决方案不能为空', trigger: 'blur' }],
   handler: [{ required: true, message: '指派处理人不能为空', trigger: 'blur' }],
   fixedTime: [{ required: true, message: '修复时间不能为空', trigger: 'blur' }],
@@ -127,7 +131,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     cause: undefined,
-    rootCause: undefined,
+    causeDetailed: undefined,
     solution: undefined,
     handler: undefined,
     fixedTime: undefined

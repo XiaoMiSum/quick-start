@@ -114,7 +114,7 @@
           <el-row>
             <el-col>
               <el-form-item label="详情">
-                <el-text type="info"> {{ formData.rootCause }}</el-text>
+                <el-text type="info"> {{ formData.causeDetailed }}</el-text>
               </el-form-item>
             </el-col>
           </el-row>
@@ -229,7 +229,7 @@ const handleCloseView = async () => {
 
 const handleGoBugList = async () => {
   try {
-    await message.confirm('确认返回测试用例列表？')
+    await message.confirm('确认返回缺陷跟踪列表？')
     await handleCloseView()
     toBugList()
   } finally {

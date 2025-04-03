@@ -7,16 +7,13 @@ import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-import xyz.migoo.framework.common.exception.util.ServiceExceptionUtil;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.security.core.util.SecurityFrameworkUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 import static io.github.xiaomisum.quickclick.enums.BugStatus.*;
-import static io.github.xiaomisum.quickclick.enums.ErrorCodeConstants.BUG_STATUS_ERROR;
 
 @Service
 public class BugServiceImpl implements BugService {
@@ -62,10 +59,16 @@ public class BugServiceImpl implements BugService {
 
     @Override
     public void confirm(Bug data) {
-        if (!Objects.equals(data.getStatus(), Opened) && !Objects.equals(data.getStatus(), Rejected)) {
-            throw ServiceExceptionUtil.get(BUG_STATUS_ERROR);
-        }
+        data.setStatus(Opened);
         data.setConfirmedTime(LocalDateTime.now());
+        mapper.updateById(data);
+    }
+
+    @Override
+    public void reject(Bug data) {
+        data.setStatus(Rejected);
+        data.setAssignedTime(LocalDateTime.now());
+        data.setRejectedTime(LocalDateTime.now());
         mapper.updateById(data);
     }
 
@@ -92,4 +95,5 @@ public class BugServiceImpl implements BugService {
     public void remove(String id) {
         mapper.deleteById(id);
     }
+
 }

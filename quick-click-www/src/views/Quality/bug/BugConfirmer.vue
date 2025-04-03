@@ -51,12 +51,7 @@
     </el-form>
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
-      <el-button :disabled="formLoading" type="danger" @click="submitForm('Rejected')">
-        拒 绝
-      </el-button>
-      <el-button :disabled="formLoading" type="primary" @click="submitForm('Opened')">
-        确 定
-      </el-button>
+      <el-button :disabled="formLoading" type="primary" @click="submitForm"> 确 定 </el-button>
     </template>
   </Dialog>
 </template>
@@ -119,7 +114,7 @@ const onClose = () => {
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 
-const submitForm = async (status: string) => {
+const submitForm = async () => {
   // 校验表单
   if (!formRef) return
   const valid = await formRef.value.validate()
@@ -133,8 +128,7 @@ const submitForm = async (status: string) => {
       assignedTime: data.assignedTime,
       priority: data.priority,
       supervisor: data.supervisor,
-      handler: data.handler,
-      status: status
+      handler: data.handler
     })
     message.success(t('common.optionSuccess'))
     visible.value = false
