@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="'【修复】' + title" v-model="visible" @close="onClose">
+  <Dialog :title="'【修复】' + title" v-model="visible" @close="onClose" width="1200px">
     <el-form
       ref="formRef"
       v-loading="formLoading"
@@ -65,6 +65,8 @@
         </el-select>
       </el-form-item>
     </el-form>
+
+    <BugCommenter ref="bugCommenter" v-model="comments" />
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
       <el-button :disabled="formLoading" type="primary" @click="submitForm">确 定</el-button>
@@ -73,11 +75,13 @@
 </template>
 
 <script setup lang="ts">
-import { fix, getData } from '@/api/quality/bug'
+import { fix, getData, getComment } from '@/api/quality/bug'
 
 import { DICT_TYPE, getDictOptions } from '@/utils/dictionary'
 
 import { formatDate } from '@/utils/formatTime'
+
+import BugCommenter from './BugCommenter.vue'
 
 defineProps({
   users: {
@@ -89,6 +93,7 @@ defineProps({
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+const comments = ref<any>([])
 const title = ref('缺陷修复')
 const visible = ref(false)
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -122,6 +127,7 @@ const open = async (bug: any) => {
   formData.value.id = data.id
   formData.value.handler = data.creatorId
   formData.value.fixedTime = formatDate(new Date())
+  comments.value = await getComment(bug.id)
 }
 
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗

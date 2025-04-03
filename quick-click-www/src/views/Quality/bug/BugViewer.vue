@@ -177,12 +177,7 @@
   <BugCloser ref="bugCloser" :users="users" @success="getData" />
   <BugOpener ref="bugOpener" :users="users" @success="getData" />
 
-  <BugCommenter
-    ref="bugCommenter"
-    v-model="comments"
-    :bug-id="formData.id"
-    @success="handleGetComment"
-  />
+  <BugCommenter ref="bugCommenter" v-model="comments" @success="handleGetComment" />
 </template>
 
 <script lang="ts" setup>
@@ -430,7 +425,7 @@ const handleReopen = async () => {
 
 const bugCommenter = ref()
 const handleComment = async () => {
-  bugCommenter.value.open()
+  bugCommenter.value.open(formData.value.id)
 }
 
 const getData = async () => {

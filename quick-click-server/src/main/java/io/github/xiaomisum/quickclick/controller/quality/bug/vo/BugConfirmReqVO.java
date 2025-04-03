@@ -1,7 +1,6 @@
 package io.github.xiaomisum.quickclick.controller.quality.bug.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.github.xiaomisum.quickclick.enums.BugStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -42,13 +41,15 @@ public class BugConfirmReqVO {
     @NotNull(message = "handler 不能为空")
     private Long handler;
 
-    @NotNull(message = "status 不能为空")
-    private BugStatus status;
-
     /**
      * 指派时间
      */
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime assignedTime;
+
+    /**
+     * 评论信息
+     */
+    private String comment;
 }

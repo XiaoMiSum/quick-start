@@ -114,9 +114,10 @@ export const reopen = (data: any) => {
  * @param id id
  * @returns
  */
-export const close = (id: string) => {
+export const close = (data: any) => {
   return request.put({
-    url: url + '/closed/' + id
+    url: url + '/closed',
+    data
   })
 }
 

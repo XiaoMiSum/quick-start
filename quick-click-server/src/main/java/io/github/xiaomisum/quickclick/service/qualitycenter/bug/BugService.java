@@ -21,15 +21,15 @@ public interface BugService {
 
     void confirm(List<String> ids);
 
-    void confirm(Bug data);
+    void confirm(Bug data, String comment);
 
     void reject(Bug data);
 
     void fix(Bug data);
 
-    void reopen(String id, Long handler);
+    void reopen(String id, Long handler, String comment);
 
-    void close(String id);
+    void close(String id, String comment);
 
     void remove(String id);
 

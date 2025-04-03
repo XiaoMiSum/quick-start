@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="'【确认】' + title" v-model="visible" @close="onClose">
+  <Dialog :title="'【确认】' + title" v-model="visible" @close="onClose" width="1200px">
     <el-form
       ref="formRef"
       v-loading="formLoading"
@@ -49,6 +49,8 @@
         </el-select>
       </el-form-item>
     </el-form>
+
+    <Editor ref="bugComment" v-model="formData.comment" height="300px" />
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
       <el-button :disabled="formLoading" type="primary" @click="submitForm"> 确 定 </el-button>
@@ -128,7 +130,8 @@ const submitForm = async () => {
       assignedTime: data.assignedTime,
       priority: data.priority,
       supervisor: data.supervisor,
-      handler: data.handler
+      handler: data.handler,
+      comment: data.comment
     })
     message.success(t('common.optionSuccess'))
     visible.value = false

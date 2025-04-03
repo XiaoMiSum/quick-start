@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="'【激活】' + title" v-model="visible" @close="onClose">
+  <Dialog :title="'【激活】' + title" v-model="visible" @close="onClose" width="1200px">
     <el-form ref="formRef" :model="formData" label-width="100px">
       <div v-if="formData.status === 'Rejected'">
         <el-form-item label="拒绝时间">
@@ -27,6 +27,9 @@
         </el-form-item>
       </div>
     </el-form>
+
+    <Editor ref="bugComment" v-model="formData.comment" height="300px" />
+
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
       <el-button :disabled="formLoading" type="primary" @click="submitForm">确 定</el-button>
@@ -40,6 +43,8 @@ import { reopen, getData } from '@/api/quality/bug'
 import { DICT_TYPE } from '@/utils/dictionary'
 
 import { formatDate } from '@/utils/formatTime'
+
+import { Editor } from '@/components/Editor'
 
 defineProps({
   users: {
@@ -107,7 +112,7 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value
-    await reopen({ id: data.id, handler: data.fixer })
+    await reopen({ id: data.id, handler: data.fixer, comment: data.comment })
     message.success(t('common.optionSuccess'))
     visible.value = false
   } finally {

@@ -37,10 +37,10 @@ public interface BugMapper extends BaseMapperX<Bug> {
             case LongTime ->
                     query.lt(Bug::getAssignedTime, DateUtils.addTime(Duration.ofDays(-7))).ne(Bug::getStatus, Closed);
             case null, default -> {
-                return selectPage(req, query);
+                return selectPage(req, query.orderByDesc(Bug::getId));
             }
         }
-        return selectPage(req, query);
+        return selectPage(req, query.orderByDesc(Bug::getId));
     }
 
     default void reopenById(String id, BugStatus status, Long handler) {

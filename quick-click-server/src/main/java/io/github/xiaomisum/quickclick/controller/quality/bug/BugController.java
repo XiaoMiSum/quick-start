@@ -132,7 +132,7 @@ public class BugController {
      */
     @PutMapping("confirmed")
     public Result<?> confirm(@RequestBody @Valid BugConfirmReqVO data) {
-        service.confirm(BugConvert.INSTANCE.convert(data));
+        service.confirm(BugConvert.INSTANCE.convert(data), data.getComment());
         return Result.getSuccessful();
     }
 
@@ -168,19 +168,19 @@ public class BugController {
      */
     @PutMapping("/reopened")
     public Result<?> reopen(@Valid @RequestBody BugReopenReqVO data) {
-        service.reopen(data.getId(), data.getHandler());
+        service.reopen(data.getId(), data.getHandler(), data.getComment());
         return Result.getSuccessful();
     }
 
     /**
      * 关闭缺陷
      *
-     * @param id 缺陷编号
+     * @param data 缺陷编号
      * @return 处理结果
      */
-    @PutMapping("/closed/{id}")
-    public Result<?> close(@PathVariable("id") String id) {
-        service.close(id);
+    @PutMapping("/closed")
+    public Result<?> close(@Valid @RequestBody BugCloseReqVO data) {
+        service.close(data.getId(), data.getComment());
         return Result.getSuccessful();
     }
 

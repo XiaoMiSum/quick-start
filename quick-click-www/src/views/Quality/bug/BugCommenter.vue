@@ -36,13 +36,9 @@ import { addComment } from '@/api/quality/bug'
 
 import { Editor, FulltextDisplay } from '@/components/Editor'
 
-const props = defineProps({
+defineProps({
   modelValue: {
     type: Array,
-    requried: true
-  },
-  bugId: {
-    type: String,
     requried: true
   },
   readonly: {
@@ -60,9 +56,9 @@ const formData = ref<any>({})
 
 defineOptions({ name: 'BugCommenter' })
 
-const open = async () => {
+const open = async (bugId: string) => {
   visible.value = true
-  formData.value.bugId = props.bugId
+  formData.value.bugId = bugId
 }
 
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗

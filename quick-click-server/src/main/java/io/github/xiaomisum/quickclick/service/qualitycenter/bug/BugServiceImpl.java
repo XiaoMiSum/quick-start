@@ -1,6 +1,7 @@
 package io.github.xiaomisum.quickclick.service.qualitycenter.bug;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import io.github.xiaomisum.quickclick.controller.quality.bug.vo.BugQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
@@ -62,10 +63,13 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public void confirm(Bug data) {
+    public void confirm(Bug data, String comment) {
         data.setStatus(Opened);
         data.setConfirmedTime(LocalDateTime.now());
         mapper.updateById(data);
+        if (StrUtil.isNotBlank(comment)) {
+            addComment(new BugComment().setBugId(data.getId()).setUserId(SecurityFrameworkUtils.getLoginUserId()).setContent(comment));
+        }
     }
 
     @Override
@@ -86,13 +90,19 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public void reopen(String id, Long handler) {
+    public void reopen(String id, Long handler, String comment) {
         mapper.reopenById(id, Reopened, handler);
+        if (StrUtil.isNotBlank(comment)) {
+            addComment(new BugComment().setBugId(id).setUserId(SecurityFrameworkUtils.getLoginUserId()).setContent(comment));
+        }
     }
 
     @Override
-    public void close(String id) {
+    public void close(String id, String comment) {
         mapper.closeById(id, Closed, SecurityFrameworkUtils.getLoginUserId());
+        if (StrUtil.isNotBlank(comment)) {
+            addComment(new BugComment().setBugId(id).setUserId(SecurityFrameworkUtils.getLoginUserId()).setContent(comment));
+        }
     }
 
     @Override

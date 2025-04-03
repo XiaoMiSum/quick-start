@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="'【关闭】' + title" v-model="visible" @close="onClose">
+  <Dialog :title="'【关闭】' + title" v-model="visible" @close="onClose" width="1200px">
     <el-form ref="formRef" :model="formData" label-width="100px">
       <div v-if="formData.status === 'Rejected'">
         <el-form-item label="拒绝时间">
@@ -27,6 +27,8 @@
         </el-form-item>
       </div>
     </el-form>
+
+    <Editor ref="bugComment" v-model="comment" height="200px" />
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
       <el-button :disabled="formLoading" type="primary" @click="submitForm">确 认</el-button>
@@ -62,6 +64,8 @@ const formData = ref<any>({
   handler: undefined,
   fixedTime: undefined
 })
+
+const comment = ref('')
 
 defineOptions({ name: 'BugCloser' })
 
@@ -104,8 +108,7 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    const data = formData.value
-    await close(data.id)
+    await close({ comment: comment.value, id: formData.value.id })
     message.success(t('common.optionSuccess'))
     visible.value = false
   } finally {
