@@ -11,7 +11,7 @@
  Target Server Version : 90100 (9.1.0)
  File Encoding         : 65001
 
- Date: 28/03/2025 14:01:06
+ Date: 03/04/2025 09:14:37
 */
 
 SET NAMES utf8mb4;
@@ -30,7 +30,8 @@ CREATE TABLE `qc_project`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `index_title`(`title` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -46,7 +47,8 @@ CREATE TABLE `qc_project_archive`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx_title_project`(`project_id` ASC, `title` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目归档表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -55,7 +57,6 @@ CREATE TABLE `qc_project_archive`  (
 DROP TABLE IF EXISTS `qc_project_archive_node`;
 CREATE TABLE `qc_project_archive_node`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '归属项目',
   `archive_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '归档id',
   `original_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '模块原始id',
   `parent_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '上级id',
@@ -67,7 +68,8 @@ CREATE TABLE `qc_project_archive_node`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx_archive`(`archive_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '归档模块表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -94,7 +96,8 @@ CREATE TABLE `qc_project_archive_testcase`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`original_id` ASC, `project_id` ASC, `node_id` ASC, `title` ASC, `priority` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '归档用例表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -111,7 +114,8 @@ CREATE TABLE `qc_project_member`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`project_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目成员表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -130,7 +134,8 @@ CREATE TABLE `qc_project_node`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`project_id` ASC, `title` ASC, `sort` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目模块表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -140,6 +145,8 @@ DROP TABLE IF EXISTS `qc_quality_bug`;
 CREATE TABLE `qc_quality_bug`  (
   `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `plan_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `testcase_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `node_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '标题',
   `severity` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '严重程度',
@@ -151,6 +158,7 @@ CREATE TABLE `qc_quality_bug`  (
   `confirmed_time` datetime NULL DEFAULT NULL COMMENT '确认时间',
   `fixer` bigint NULL DEFAULT NULL COMMENT '修复人',
   `fixed_time` datetime NULL DEFAULT NULL COMMENT '修复时间',
+  `fix_duration` decimal(10, 2) NULL DEFAULT NULL COMMENT '修复时长',
   `closer` bigint NULL DEFAULT NULL COMMENT '关闭人',
   `closed_time` datetime NULL DEFAULT NULL COMMENT '关闭时间',
   `status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'new' COMMENT '状态',
@@ -165,7 +173,8 @@ CREATE TABLE `qc_quality_bug`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`project_id` ASC, `plan_id` ASC, `testcase_id` ASC, `node_id` ASC, `title` ASC, `severity` ASC, `priority` ASC, `supervisor` ASC, `handler` ASC, `assigned_time` ASC, `fixer` ASC, `closer` ASC, `status` ASC, `source` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '质量缺陷表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -189,7 +198,8 @@ CREATE TABLE `qc_quality_test_plan`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`project_id` ASC, `title` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '测试计划表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -204,6 +214,8 @@ CREATE TABLE `qc_quality_test_plan_case`  (
   `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '标题',
   `path` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '模块路径',
   `priority` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '优先级',
+  `frontend_developer` bigint NULL DEFAULT NULL COMMENT '前端开发者',
+  `backend_developer` bigint NULL DEFAULT NULL COMMENT '后端开发者',
   `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标签',
   `prerequisite` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '前置条件',
   `steps` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '执行步骤',
@@ -216,7 +228,8 @@ CREATE TABLE `qc_quality_test_plan_case`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`plan_id` ASC, `node_id` ASC, `title` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '计划用例表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -240,7 +253,8 @@ CREATE TABLE `qc_quality_test_review`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`project_id` ASC, `title` ASC, `speaker` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '测试评审表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -255,6 +269,8 @@ CREATE TABLE `qc_quality_test_review_case`  (
   `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '测试用例名称',
   `path` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '模块路径',
   `priority` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '测试用例等级',
+  `frontend_developer` bigint NULL DEFAULT NULL COMMENT '前端开发者',
+  `backend_developer` bigint NULL DEFAULT NULL COMMENT '后端开发者',
   `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `prerequisite` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '前置条件',
   `steps` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '测试步骤',
@@ -267,7 +283,8 @@ CREATE TABLE `qc_quality_test_review_case`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`review_id` ASC, `node_id` ASC, `title` ASC, `priority` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '评审用例表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -283,6 +300,8 @@ CREATE TABLE `qc_quality_testcase`  (
   `supervisor` bigint NULL DEFAULT NULL COMMENT '负责人',
   `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '[]' COMMENT '标签',
   `priority` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '优先级',
+  `frontend_developer` bigint NULL DEFAULT NULL COMMENT '前端开发者',
+  `backend_developer` bigint NULL DEFAULT NULL COMMENT '后端开发者',
   `prerequisite` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '前置条件',
   `steps` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '步骤',
   `last_review_result` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT 'Preparing' COMMENT '最后一次评审结果',
@@ -293,27 +312,25 @@ CREATE TABLE `qc_quality_testcase`  (
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`project_id` ASC, `node_id` ASC, `title` ASC, `supervisor` ASC, `tags` ASC, `priority` ASC, `trash` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '测试用例表' ROW_FORMAT = DYNAMIC;
 
-
-ALTER TABLE `qc_quality_bug`
-ADD COLUMN `fix_duration` decimal(10, 2) NULL DEFAULT NULL COMMENT '修复时长' AFTER `fixed_time`;
-
-ALTER TABLE `qc_quality_bug`
-ADD COLUMN `plan_id` varchar(32) NULL AFTER `project_id`,
-ADD COLUMN `testcase_id` varchar(32) NULL AFTER `plan_id`;
-
-ALTER TABLE `qc_quality_testcase`
-ADD COLUMN `frontend_developer` bigint NULL COMMENT '前端开发者' AFTER `priority`,
-ADD COLUMN `backend_developer` bigint NULL COMMENT '后端开发者' AFTER `frontend_developer`;
-
-ALTER TABLE `qc_quality_test_plan_case`
-ADD COLUMN `frontend_developer` bigint NULL COMMENT '前端开发者' AFTER `priority`,
-ADD COLUMN `backend_developer` bigint NULL COMMENT '后端开发者' AFTER `frontend_developer`;
-
-ALTER TABLE `qc_quality_test_review_case`
-ADD COLUMN `frontend_developer` bigint NULL COMMENT '前端开发者' AFTER `priority`,
-ADD COLUMN `backend_developer` bigint NULL COMMENT '后端开发者' AFTER `frontend_developer`;
+-- ----------------------------
+-- Table structure for sys_user_profile
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_profile`;
+CREATE TABLE `sys_user_profile`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL COMMENT '用户编号',
+  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '项目编号',
+  `deleted` tinyint(1) NULL DEFAULT 0,
+  `create_time` datetime NULL DEFAULT NULL,
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL,
+  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `inx_user_id`(`user_id` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
