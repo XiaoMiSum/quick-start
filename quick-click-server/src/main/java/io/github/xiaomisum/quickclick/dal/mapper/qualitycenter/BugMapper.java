@@ -49,6 +49,8 @@ public interface BugMapper extends BaseMapperX<Bug> {
                 .set(Bug::getHandler, handler)
                 .set(Bug::getFixer, null)
                 .set(Bug::getFixedTime, null)
+                .set(Bug::getCloser, null)
+                .set(Bug::getClosedTime, null)
                 .set(Bug::getAssignedTime, LocalDateTime.now())
                 .setSql(true, "reopened_times = reopened_times + 1")
                 .eq(BaseDO::getId, id));
