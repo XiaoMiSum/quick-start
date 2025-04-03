@@ -1,5 +1,5 @@
 <template>
-  <ContentWrap class="h-1000px">
+  <ContentWrap class="h-900px">
     <el-form ref="formRef" :model="formData" label-width="100px">
       <el-row>
         <el-col :span="16">
@@ -7,7 +7,7 @@
             <el-text type="info"> {{ formData.title }}</el-text>
           </el-form-item>
           <el-form-item label="详细描述">
-            <Editor ref="bugStep" v-model="formData.content" height="600px" readonly />
+            <FulltextDisplay :rich-text="formData.content" />
           </el-form-item>
         </el-col>
 
@@ -168,7 +168,7 @@
     buttonType=""
     :menu-items="menuItems"
     position="right-bottom"
-    :offset="{ x: 550, y: 100 }"
+    :offset="{ x: 550, y: 50 }"
     @item-click="handleMenuItemClick"
   />
 
@@ -191,7 +191,7 @@ import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useR
 import { defaultProps2 } from '@/utils/tree'
 import { DICT_TYPE } from '@/utils/dictionary'
 
-import { Editor } from '@/components/Editor'
+import { FulltextDisplay } from '@/components/Editor'
 import { FloatingButton } from '@/components/XButton'
 
 import BugConfirmer from './BugConfirmer.vue'

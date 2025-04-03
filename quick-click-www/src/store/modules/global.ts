@@ -2,8 +2,10 @@ import { store } from '@/store'
 import { defineStore } from 'pinia'
 import { getProject } from '@/api/login'
 import * as User from '@/api/project/member'
+import * as Profile from '@/api/login/profile'
 import * as Node from '@/api/project/node'
 import { handleTree } from '@/utils/tree'
+import { profile } from 'console'
 
 interface GlobalData {
   currentProject: string
@@ -34,13 +36,21 @@ export const useGlobalStore = defineStore('global-data', {
     }
   },
   actions: {
+    async setUserProject() {
+      const data = await Profile.getProfile()
+      if (data?.projectId) {
+        this.setCurrentProject(data.projectId)
+      }
+    },
     setCurrentProject(projectId: string) {
-      this.currentProject = projectId
-      this.setGlobalUsers()
+      if (this.currentProject !== projectId) {
+        this.currentProject = projectId
+        this.setGlobalUsers()
+        Profile.saveProfile({ projectId })
+      }
     },
     async setProjects() {
       this.projects = await getProject()
-      // todo 这里要获取用户最后一次操作的项目数据
       if (this.projects && !this.currentProject) {
         this.setCurrentProject(this.projects[0].value)
       }
