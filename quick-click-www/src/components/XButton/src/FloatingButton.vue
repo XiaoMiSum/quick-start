@@ -17,12 +17,11 @@
       <div
         v-for="(item, index) in menuItems"
         :key="item.key"
-        v-show="isMenuOpen"
         class="menu-item"
+        v-show="isMenuOpen"
         :style="getMenuItemStyle(index)"
       >
         <el-button
-          v-if="item.permi"
           :type="item.type || ''"
           :size="size"
           :circle="circle"
@@ -104,12 +103,14 @@ const getMenuItemStyle = (index) => {
 
 // 切换菜单状态
 const toggleMenu = () => {
-  console.log(props.menuItems)
   isMenuOpen.value = !isMenuOpen.value
 }
 
 // 处理菜单项点击
 const handleItemClick = (item) => {
+  console.log(!!item.permi)
+  console.log(!item.permi)
+  console.log(item.permi)
   emit('item-click', item)
 }
 </script>

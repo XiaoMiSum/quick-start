@@ -1,12 +1,12 @@
 <template>
   <ContentWrap>
     <el-text tag="b"> 评论记录 </el-text>
-    <el-table :data="modelValue" style="width: 100%" :show-header="false" empty-text="">
+    <el-table :data="modelValue" style="margin-top: 10px" :show-header="false" empty-text="">
       <el-table-column type="expand">
         <template #default="{ row }">
           <FulltextDisplay
             :rich-text="row.content"
-            :style="{ maxHeight: '200px', minHeight: '50px', width: '1200px', overflow: 'auto' }"
+            :style="{ maxHeight: '200px', minHeight: '50px', width: '1000px', overflow: 'auto' }"
           />
         </template>
       </el-table-column>

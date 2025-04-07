@@ -168,11 +168,12 @@
     buttonType=""
     :menu-items="menuItems"
     position="right-bottom"
-    :offset="{ x: 550, y: 50 }"
+    :offset="{ x: 450, y: 50 }"
     @item-click="handleMenuItemClick"
   />
 
   <BugConfirmer ref="bugConfirmer" :users="users" @success="getData" />
+  <BugRejecter ref="bugRejecter" :users="users" @success="getData" />
   <BugFixer ref="bugFixer" :users="users" @success="getData" />
   <BugCloser ref="bugCloser" :users="users" @success="getData" />
   <BugOpener ref="bugOpener" :users="users" @success="getData" />
@@ -197,6 +198,7 @@ import { FulltextDisplay } from '@/components/Editor'
 import { FloatingButton } from '@/components/XButton'
 
 import BugConfirmer from './BugConfirmer.vue'
+import BugRejecter from './BugRejecter.vue'
 import BugFixer from './BugFixer.vue'
 import BugCloser from './BugCloser.vue'
 import BugOpener from './BugOpener.vue'
@@ -243,7 +245,7 @@ const handleGoBugList = async () => {
 }
 
 const toBugList = async () => {
-  push('/quality/bug')
+  push('/quality/bug/list')
 }
 
 /** 获得模块树 */
@@ -293,60 +295,65 @@ watch(
         key: 'comment',
         label: '评论',
         type: '',
-        permi: true,
         icon: 'ep:chat-line-square'
       },
       {
         key: 'delete',
         label: '删除',
         type: 'danger',
-        permi: checkPermi(['quality:bug:remove']),
+        disabled: !!checkPermi(['quality:bug:remove']),
         icon: 'ep:delete'
       },
       {
         key: 'edit',
         label: '编辑',
         type: 'primary',
-        permi: checkPermi(['quality:bug:update']),
+        disabled: !!checkPermi(['quality:bug:update']),
         icon: 'ep:edit'
       },
       {
         key: 'reopen',
         label: '激活',
-        disabled: !['Fixed', 'Rejected', 'Closed'].includes(formData.value.status),
+        disabled:
+          !['Fixed', 'Rejected', 'Closed'].includes(formData.value.status) &&
+          checkPermi(['quality:bug:reopen']),
         type: ['Fixed', 'Rejected', 'Closed'].includes(formData.value.status) ? 'primary' : '',
-        permi: checkPermi(['quality:bug:reopen']),
         icon: 'ep:timer'
       },
       {
         key: 'close',
         label: '关闭',
-        disabled: formData.value.status !== 'Fixed',
+        disabled: formData.value.status !== 'Fixed' && !!checkPermi(['quality:bug:close']),
         type: formData.value.status === 'Fixed' ? 'primary' : '',
-        permi: checkPermi(['quality:bug:close']),
         icon: 'ep:switch-button'
       },
       {
         key: 'fix',
         label: '修复',
-        disabled: !['Opened', 'Reopened'].includes(formData.value.status),
+        disabled:
+          !['Opened', 'Reopened'].includes(formData.value.status) &&
+          !!checkPermi(['quality:bug:fix']),
         type: ['Opened', 'Reopened'].includes(formData.value.status) ? 'primary' : '',
-        permi: checkPermi(['quality:bug:fix']),
         icon: 'ep:circle-check'
+      },
+      {
+        key: 'reject',
+        label: '拒绝',
+        disabled: formData.value.status !== 'New' && !!checkPermi(['quality:bug:reject']),
+        type: formData.value.status === 'New' ? 'primary' : '',
+        icon: 'ep:circle-close'
       },
       {
         key: 'confirm',
         label: '确认',
-        disabled: formData.value.status !== 'New',
+        disabled: formData.value.status !== 'New' && checkPermi(['quality:bug:confirm']),
         type: formData.value.status === 'New' ? 'primary' : '',
-        permi: checkPermi(['quality:bug:confirm']),
         icon: 'fa:bug'
       },
       {
         key: 'cancel',
         label: '返回',
         type: '',
-        permi: true,
         icon: 'ep:back'
       }
     ]
@@ -382,6 +389,9 @@ const handleMenuItemClick = async (item) => {
     case 'confirm':
       await handleConfirm()
       break
+    case 'reject':
+      await handleReject()
+      break
     case 'fix':
       await handleFix()
       break
@@ -406,6 +416,11 @@ const handleEditBug = async () => {
 const bugConfirmer = ref()
 const handleConfirm = async () => {
   bugConfirmer.value.open(formData.value)
+}
+
+const bugRejecter = ref()
+const handleReject = async () => {
+  bugRejecter.value.open(formData.value)
 }
 
 const bugFixer = ref()
