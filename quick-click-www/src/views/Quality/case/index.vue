@@ -377,14 +377,14 @@ const handleDelete = async (ids: string[]) => {
 }
 
 const handleAddCase = async () => {
-  await push('/quality/case/add')
+  await push('/quality/test-case/add')
 }
 
 const handleEditCase = async (id: string) => {
-  await push('/quality/case/edit/' + id)
+  await push('/quality/test-case/edit/' + id)
 }
 const handleCopyCase = async (id: string) => {
-  await push({ path: '/quality/case/add', query: { from: id } })
+  await push({ path: '/quality/test-case/add', query: { from: id } })
 }
 
 const handleNodeClick = async (row: any) => {

@@ -221,7 +221,7 @@ const handleGetData = async () => {
   const data = await HTTP.getData(currentPlanId.value)
   if (!data) {
     tagsViewStore.delView(unref(currentRoute))
-    push('/quality/plan')
+    push('/quality/test-plan/list')
     return
   }
   title.value = data.title
@@ -299,7 +299,7 @@ watch(
   async () => {
     if (pageInit.value) {
       tagsViewStore.delView(unref(currentRoute))
-      push('/quality/plan')
+      push('/quality/test-plan/list')
     }
     pageInit.value = true
   },

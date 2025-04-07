@@ -182,7 +182,7 @@ const submitForm = async (to?: Boolean) => {
       await HTTP.updateData(data)
     }
     if (to) {
-      push('/quality/plan/' + data.id + '/associated-use-cases')
+      push('/quality/test-plan/' + data.id + '/associated-use-cases')
     } else {
       // 发送操作成功的事件
       emit('success')

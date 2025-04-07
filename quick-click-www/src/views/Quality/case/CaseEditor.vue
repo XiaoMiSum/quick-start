@@ -280,11 +280,11 @@ const handleGoCaseList = async () => {
 }
 
 const toCaseList = async () => {
-  push('/quality/case')
+  push('/quality/test-case/list')
 }
 
 const toCaseAdd = async () => {
-  push('/quality/case/add')
+  push('/quality/test-case/add')
 }
 
 /** 获得模块树 */

@@ -285,7 +285,7 @@ const handleGoBugList = async () => {
 }
 
 const toBugList = async () => {
-  push('/quality/bug')
+  push('/quality/bug/list')
 }
 
 const toBugAdd = async () => {

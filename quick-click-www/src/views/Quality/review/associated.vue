@@ -236,7 +236,7 @@ const handleGetData = async () => {
   const data = await HTTP.getData(currentReviewId.value)
   if (!data) {
     tagsViewStore.delView(unref(currentRoute))
-    push('/quality/review')
+    push('/quality/test-review/list')
     return
   }
   title.value = data.title
@@ -297,7 +297,7 @@ watch(
   async () => {
     if (pageInit.value) {
       tagsViewStore.delView(unref(currentRoute))
-      push('/quality/review')
+      push('/quality/test-review/list')
     }
     pageInit.value = true
   },

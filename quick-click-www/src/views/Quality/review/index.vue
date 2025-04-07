@@ -235,7 +235,7 @@ const openForm = (type: string, id?: number) => {
 }
 
 const handleGoAssociCase = async (id: Number) => {
-  push('/quality/review/' + id + '/associated-use-cases')
+  push('/quality/test-review/' + id + '/associated-use-cases')
 }
 
 const handleDelete = async (id: number) => {
