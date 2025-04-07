@@ -5,7 +5,6 @@ import * as User from '@/api/project/member'
 import * as Profile from '@/api/login/profile'
 import * as Node from '@/api/project/node'
 import { handleTree } from '@/utils/tree'
-import { profile } from 'console'
 
 interface GlobalData {
   currentProject: string

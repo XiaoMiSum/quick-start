@@ -199,12 +199,8 @@ CREATE TABLE `sys_page_configurer`
 -- Records of sys_page_configurer
 -- ----------------------------
 INSERT INTO `sys_page_configurer`
-VALUES (1, 'title', '系统名称', '星星支付-开发', NULL, b'0', '系统', '2023-05-18 14:26:29', '超级管理员',
+VALUES (1, 'title', '系统名称', 'Quick-Click', NULL, b'0', '系统', '2023-05-18 14:26:29', '超级管理员',
         '2024-05-22 10:57:58');
-INSERT INTO `sys_page_configurer`
-VALUES (2, 'requiredCaptcha', '登录验证码', 'false',
-        '[{\"value\": \"true\", \"label\": \"开启\"},{\"value\": \"false\", \"label\": \"关闭\"}]', b'0', '系统',
-        '2023-05-18 14:26:29', '超级管理员', '2024-05-22 11:36:42');
 
 -- ----------------------------
 -- Table structure for sys_post
@@ -339,13 +335,13 @@ CREATE TABLE `sys_user`
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user`
-VALUES (1, 'superadmin', '$2a$10$UxsSdlstbdutt3vG51ltiOkyxCAHnC8Q9p3Ds3W3o62KJ9qHLXBSa', NULL, '超级管理员', '', 1, 1,
+VALUES (1, 'superadmin', '$2a$10$MALmAFQRKXWuSOaMpESIWOmE58Ws09i4VynZSGozXP4cIklvuEeM2', NULL, '超级管理员', '', 1, 1,
         1, NULL, NULL, '', 1, 0, 0, '1', '2022-04-29 16:06:56', '超级管理员', '2022-11-23 12:29:42');
 INSERT INTO `sys_user`
-VALUES (2, 'developer', '$2a$10$UxsSdlstbdutt3vG51ltiOkyxCAHnC8Q9p3Ds3W3o62KJ9qHLXBSa', NULL, '开发者', NULL, 1, 0, 2,
+VALUES (2, 'developer', '$2a$10$MALmAFQRKXWuSOaMpESIWOmE58Ws09i4VynZSGozXP4cIklvuEeM2', NULL, '开发者', NULL, 1, 0, 2,
         '[]', 'mail@cc.com', '', 0, 1, 0, '奥丁1', '2022-05-01 17:53:00', '奥丁1', '2022-05-31 20:14:42');
 INSERT INTO `sys_user`
-VALUES (3, 'admin', '$2a$10$UxsSdlstbdutt3vG51ltiOkyxCAHnC8Q9p3Ds3W3o62KJ9qHLXBSa', NULL, '管理员', NULL, 1, NULL, 1,
+VALUES (3, 'admin', '$2a$10$MALmAFQRKXWuSOaMpESIWOmE58Ws09i4VynZSGozXP4cIklvuEeM2', NULL, '管理员', NULL, 1, NULL, 1,
         '[]', NULL, '', 0, 1, 0, '超级管理员', '2022-07-16 21:52:15', '管理员', '2022-07-16 22:44:59');
 
 -- ----------------------------
