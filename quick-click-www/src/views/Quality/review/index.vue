@@ -58,6 +58,11 @@
           <user-tag v-for="(item, index) in scope.row.reviewer" :value="item" :key="index" />
         </template>
       </el-table-column>
+      <el-table-column align="center" label="状态" prop="reviewer" show-overflow-tooltip>
+        <template #default="scope">
+          <ones-tag :value="scope.row.status" :type="DICT_TYPE.QUALITY_TEST_STATUS" />
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         label="预计开始时间"
@@ -184,6 +189,7 @@ import ReviewForm from './ReviewForm.vue'
 import * as HTTP from '@/api/quality/review'
 
 import { useGlobalStore } from '@/store/modules/global'
+import { DICT_TYPE } from '@/utils/dictionary'
 
 const globalStore = useGlobalStore()
 

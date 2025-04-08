@@ -58,6 +58,11 @@
           <ones-tag :value="scope.row.stage" :type="DICT_TYPE.QUALITY_TEST_STAGE" />
         </template>
       </el-table-column>
+      <el-table-column align="center" label="状态" prop="reviewer" show-overflow-tooltip>
+        <template #default="scope">
+          <ones-tag :value="scope.row.status" :type="DICT_TYPE.QUALITY_TEST_STATUS" />
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         label="预计开始时间"
@@ -86,14 +91,14 @@
         show-overflow-tooltip
         width="170"
       />
-      <el-table-column align="right" label="用例总数" prop="total" width="100">
+      <el-table-column align="right" label="用例总数" prop="total" width="80">
         <template #default="scope">
           <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
             {{ scope.row.statistics.total }}
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column align="right" label="执行进度" width="120">
+      <el-table-column align="right" label="执行进度" width="115">
         <template #default="scope">
           <el-tooltip content="通过数" placement="top">
             <el-button link type="success" @click="handleGoAssociCase(scope.row.id)">
