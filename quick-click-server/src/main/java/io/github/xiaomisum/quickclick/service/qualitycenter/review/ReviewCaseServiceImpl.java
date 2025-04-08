@@ -28,7 +28,6 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.review;
 import cn.hutool.core.collection.CollectionUtil;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseExecuteVO;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.quality.Review;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.ReviewCaseMapper;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.ReviewMapper;
@@ -43,8 +42,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static io.github.xiaomisum.quickclick.enums.TestStatus.*;
 
 @Service
 public class ReviewCaseServiceImpl implements ReviewCaseService {
@@ -93,12 +90,6 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
                 .toList();
         if (CollectionUtil.isNotEmpty(cases)) {
             mapper.insertBatch(cases);
-            Review p = reviewMapper.selectById(cases.getFirst().getReviewId());
-            // 测试评审状态为 Failed \ Blocking \ Finished时，更新 评审状态
-            if (Objects.equals(Failed, p.getStatus()) || Objects.equals(Blocking, p.getStatus()) ||
-                    Objects.equals(Finished, p.getStatus())) {
-                reviewMapper.updateById(p.setStatus(Processing));
-            }
         }
     }
 

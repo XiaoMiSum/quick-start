@@ -28,7 +28,6 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.plan;
 import cn.hutool.core.collection.CollectionUtil;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseExecuteVO;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseQueryReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanCaseMapper;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanMapper;
@@ -43,8 +42,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static io.github.xiaomisum.quickclick.enums.TestStatus.*;
 
 @Service
 public class PlanCaseServiceImpl implements PlanCaseService {
@@ -93,12 +90,6 @@ public class PlanCaseServiceImpl implements PlanCaseService {
                 .toList();
         if (CollectionUtil.isNotEmpty(cases)) {
             mapper.insertBatch(cases);
-            Plan plan = planMapper.selectById(cases.getFirst().getPlanId());
-            // 测试计划状态为 Failed \ Blocking \ Finished时，更新 计划状态
-            if (Objects.equals(Failed, plan.getStatus()) || Objects.equals(Blocking, plan.getStatus()) ||
-                    Objects.equals(Finished, plan.getStatus())) {
-                planMapper.updateById(plan.setStatus(Processing));
-            }
         }
     }
 
