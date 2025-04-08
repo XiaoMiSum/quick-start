@@ -28,8 +28,10 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.review;
 import cn.hutool.core.collection.CollectionUtil;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseExecuteVO;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Review;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.ReviewCaseMapper;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.ReviewMapper;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import jakarta.annotation.Resource;
@@ -40,11 +42,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import static io.github.xiaomisum.quickclick.enums.TestStatus.*;
+
 @Service
 public class ReviewCaseServiceImpl implements ReviewCaseService {
 
     @Resource
     private ReviewCaseMapper mapper;
+    @Resource
+    private ReviewMapper reviewMapper;
 
     @Override
     public PageResult<ReviewCase> getPage(ReviewCaseQueryReqVO req) {
@@ -78,11 +84,20 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     }
 
     @Override
-    public void add(List<ReviewCase> list) {
+    public void add(List<ReviewCase> cases) {
         // 过滤已添加的
-        mapper.insertBatch(list.stream()
+        cases = cases.stream()
                 .filter(item -> CollectionUtil.isEmpty(mapper.selectList(item.getReviewId(), item.getOriginalId())))
-                .toList());
+                .toList();
+        if (CollectionUtil.isNotEmpty(cases)) {
+            mapper.insertBatch(cases);
+            Review p = reviewMapper.selectById(cases.getFirst().getReviewId());
+            // 测试评审状态为 Failed \ Blocking \ Finished时，更新 评审状态
+            if (Objects.equals(Failed, p.getStatus()) || Objects.equals(Blocking, p.getStatus()) ||
+                    Objects.equals(Finished, p.getStatus())) {
+                reviewMapper.updateById(p.setStatus(Processing));
+            }
+        }
     }
 
     @Override

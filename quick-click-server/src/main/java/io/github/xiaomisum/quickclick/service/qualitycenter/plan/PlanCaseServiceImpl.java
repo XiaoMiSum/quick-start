@@ -28,8 +28,10 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.plan;
 import cn.hutool.core.collection.CollectionUtil;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseExecuteVO;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanCaseMapper;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanMapper;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import jakarta.annotation.Resource;
@@ -40,11 +42,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import static io.github.xiaomisum.quickclick.enums.TestStatus.*;
+
 @Service
 public class PlanCaseServiceImpl implements PlanCaseService {
 
     @Resource
     private PlanCaseMapper mapper;
+    @Resource
+    private PlanMapper planMapper;
 
     @Override
     public PageResult<PlanCase> getPage(PlanCaseQueryReqVO req) {
@@ -80,9 +86,18 @@ public class PlanCaseServiceImpl implements PlanCaseService {
     @Override
     public void add(List<PlanCase> cases) {
         // 过滤已添加的
-        mapper.insertBatch(cases.stream()
+        cases = cases.stream()
                 .filter(item -> CollectionUtil.isEmpty(mapper.selectList(item.getPlanId(), item.getOriginalId())))
-                .toList());
+                .toList();
+        if (CollectionUtil.isNotEmpty(cases)) {
+            mapper.insertBatch(cases);
+            Plan plan = planMapper.selectById(cases.getFirst().getPlanId());
+            // 测试计划状态为 Failed \ Blocking \ Finished时，更新 计划状态
+            if (Objects.equals(Failed, plan.getStatus()) || Objects.equals(Blocking, plan.getStatus()) ||
+                    Objects.equals(Finished, plan.getStatus())) {
+                planMapper.updateById(plan.setStatus(Processing));
+            }
+        }
     }
 
     @Override
