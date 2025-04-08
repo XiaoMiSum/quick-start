@@ -27,6 +27,7 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.plan;
 
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
+import io.github.xiaomisum.quickclick.enums.TestStatus;
 import xyz.migoo.framework.common.pojo.PageResult;
 
 import java.util.List;
@@ -48,4 +49,6 @@ public interface PlanService {
     void setStartTime(String planId);
 
     void setEndTime(String planId);
+
+    Long count(Long userId, TestStatus... status);
 }

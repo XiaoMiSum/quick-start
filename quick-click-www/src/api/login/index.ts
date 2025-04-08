@@ -32,6 +32,12 @@ export const getProject = async () => {
   })
 }
 
+export const getTodoData = async () => {
+  return request.get({
+    url: '/self/todo'
+  })
+}
+
 export const getCodeApi = () => {}
 
 export const reqCheckApi = () => {}

@@ -35,6 +35,7 @@ import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Mapper
@@ -73,5 +74,13 @@ public interface ReviewMapper extends BaseMapperX<Review> {
 
     default List<Review> selectByStatus(TestStatus status) {
         return selectList(Review::getStatus, status.name());
+    }
+
+    default Long selectCount(Long userId, TestStatus... status) {
+        return selectCount(new LambdaQueryWrapperX<Review>()
+                .in(Review::getStatus, Arrays.stream(status).toList())
+                .eq(Review::getSpeaker, userId)
+                .or()
+                .like(Review::getReviewer, "," + userId));
     }
 }

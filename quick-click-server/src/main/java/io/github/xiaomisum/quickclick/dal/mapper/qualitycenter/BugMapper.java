@@ -13,6 +13,7 @@ import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import static io.github.xiaomisum.quickclick.enums.BugStatus.*;
 
@@ -64,5 +65,11 @@ public interface BugMapper extends BaseMapperX<Bug> {
                 .set(Bug::getClosedTime, LocalDateTime.now())
                 .set(Bug::getCloser, closer)
                 .eq(BaseDO::getId, id));
+    }
+
+    default Long selectCount(Long userId, BugStatus[] status) {
+        return selectCount(new LambdaQueryWrapperX<Bug>()
+                .eq(Bug::getHandler, userId)
+                .in(Bug::getStatus, Arrays.stream(status).toList()));
     }
 }

@@ -96,6 +96,11 @@ public class ReviewServiceImpl implements ReviewService {
         mapper.updateById((Review) new Review().setActualEndTime(LocalDateTime.now()).setId(reviewId));
     }
 
+    @Override
+    public Long count(Long id, TestStatus... status) {
+        return mapper.selectCount(id, status);
+    }
+
     @Scheduled(cron = CRON)
     public void scheduleUpdateStatus() {
         mapper.selectByStatus(Preparing).forEach(review -> {

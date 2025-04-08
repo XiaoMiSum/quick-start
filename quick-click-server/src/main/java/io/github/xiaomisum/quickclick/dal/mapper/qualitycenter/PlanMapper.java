@@ -37,6 +37,7 @@ import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Mapper
@@ -79,4 +80,10 @@ public interface PlanMapper extends BaseMapperX<Plan> {
             </script>
             """)
     void removeByIds(@Param("ids") List<Long> ids);
+
+    default Long selectCount(Long userId, TestStatus... status) {
+        return selectCount(new LambdaQueryWrapperX<Plan>()
+                .eq(Plan::getExecutor, userId)
+                .in(Plan::getStatus, Arrays.stream(status).toList()));
+    }
 }

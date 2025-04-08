@@ -8,6 +8,7 @@ import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugComment;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugCommentMapper;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugMapper;
+import io.github.xiaomisum.quickclick.enums.BugStatus;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -123,6 +124,11 @@ public class BugServiceImpl implements BugService {
     @Override
     public void removeComment(Long id) {
         commentMapper.deleteById(id);
+    }
+
+    @Override
+    public Long count(Long userId, BugStatus... status) {
+        return mapper.selectCount(userId, status);
     }
 
 }

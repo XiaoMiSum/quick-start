@@ -95,6 +95,11 @@ public class PlanServiceImpl implements PlanService {
         mapper.updateById((Plan) new Plan().setActualEndTime(LocalDateTime.now()).setId(planId));
     }
 
+    @Override
+    public Long count(Long userId, TestStatus... status) {
+        return mapper.selectCount(userId, status);
+    }
+
 
     @Scheduled(cron = CRON)
     public void scheduleUpdateStatus() {

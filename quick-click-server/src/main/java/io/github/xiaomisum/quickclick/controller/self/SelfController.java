@@ -32,6 +32,10 @@ import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
 import io.github.xiaomisum.quickclick.service.profile.ProfileService;
 import io.github.xiaomisum.quickclick.service.project.ProjectMemberService;
 import io.github.xiaomisum.quickclick.service.project.ProjectService;
+import io.github.xiaomisum.quickclick.service.qualitycenter.bug.BugService;
+import io.github.xiaomisum.quickclick.service.qualitycenter.plan.PlanService;
+import io.github.xiaomisum.quickclick.service.qualitycenter.review.ReviewService;
+import io.github.xiaomisum.quickclick.service.qualitycenter.testcase.TestcaseService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import xyz.migoo.framework.common.pojo.Result;
@@ -40,20 +44,37 @@ import xyz.migoo.framework.security.core.LoginUser;
 import xyz.migoo.framework.security.core.annotation.CurrentUser;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import static io.github.xiaomisum.quickclick.enums.BugStatus.*;
+import static io.github.xiaomisum.quickclick.enums.TestStatus.Preparing;
+import static io.github.xiaomisum.quickclick.enums.TestStatus.Processing;
 
 @RestController
 @RequestMapping("/self")
 public class SelfController {
 
     @Resource
-    private ProjectMemberService projectMemberService;
+    private ProjectMemberService projectMember;
 
     @Resource
-    private ProjectService projectService;
+    private ProjectService project;
 
     @Resource
-    private ProfileService profileService;
+    private TestcaseService testcase;
+
+    @Resource
+    private PlanService plan;
+
+    @Resource
+    private ReviewService review;
+
+    @Resource
+    private BugService bug;
+
+    @Resource
+    private ProfileService profile;
 
     /**
      * 获取当前登录用户的项目列表
@@ -63,11 +84,11 @@ public class SelfController {
     @GetMapping("/project")
     public Result<List<SimpleData>> getProject(@CurrentUser LoginUser user) {
         // 通过过当前登录用户 获取该用户参与的项目列表
-        List<String> ids = projectMemberService.getProjectIds(user.getId());
+        List<String> ids = projectMember.getProjectIds(user.getId());
         if (Objects.isNull(ids) || ids.isEmpty()) {
             return Result.getSuccessful();
         }
-        List<Project> projects = projectService.getList(ids);
+        List<Project> projects = project.getList(ids);
         return Result.getSuccessful(ProjectConvert.INSTANCE.convert(projects));
     }
 
@@ -78,7 +99,7 @@ public class SelfController {
      */
     @GetMapping("/profile")
     public Result<ProfileVO> getProfile(@CurrentUser LoginUser user) {
-        return Result.getSuccessful(ProfileConvert.INSTANCE.convert(profileService.get(user.getId())));
+        return Result.getSuccessful(ProfileConvert.INSTANCE.convert(profile.get(user.getId())));
     }
 
     /**
@@ -89,7 +110,22 @@ public class SelfController {
     @PostMapping("/profile")
     public Result<?> saveProfile(@CurrentUser LoginUser user, @RequestBody ProfileVO profile) {
         profile.setUserId(user.getId());
-        profileService.save(ProfileConvert.INSTANCE.convert(profile));
+        this.profile.save(ProfileConvert.INSTANCE.convert(profile));
         return Result.getSuccessful();
+    }
+
+    /**
+     * 保存用户配置
+     *
+     * @return 操作结果
+     */
+    @GetMapping("/todo")
+    public Result<?> getTodo(@CurrentUser LoginUser user) {
+        Map<String, Long> result = Map.of(
+                "plans", plan.count(user.getId(), Preparing, Processing),
+                "reviews", review.count(user.getId(), Preparing, Processing),
+                "bugs", bug.count(user.getId(), New, Opened, Reopened, Rejected, Fixed)
+        );
+        return Result.getSuccessful(result);
     }
 }

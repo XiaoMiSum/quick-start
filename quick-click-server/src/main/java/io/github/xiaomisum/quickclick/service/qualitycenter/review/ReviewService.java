@@ -27,6 +27,7 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.review;
 
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Review;
+import io.github.xiaomisum.quickclick.enums.TestStatus;
 import xyz.migoo.framework.common.pojo.PageResult;
 
 import java.util.List;
@@ -48,4 +49,7 @@ public interface ReviewService {
     void setStartTime(String reviewId);
 
     void setEndTime(String reviewId);
+
+    Long count(Long id, TestStatus... status);
+
 }
