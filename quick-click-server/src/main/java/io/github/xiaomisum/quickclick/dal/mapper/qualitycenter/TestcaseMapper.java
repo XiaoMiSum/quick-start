@@ -35,6 +35,7 @@ import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -91,4 +92,10 @@ public interface TestcaseMapper extends BaseMapperX<Testcase> {
                 .eq(Testcase::getProjectId, projectId)
                 .in(Testcase::getId, ids));
     }
+
+    default List<Testcase> selectByUpdateTimeAfter(LocalDateTime maxUpdateTime) {
+        return selectList(new LambdaQueryWrapperX<Testcase>()
+                .ge(Testcase::getUpdateTime, maxUpdateTime));
+    }
+
 }

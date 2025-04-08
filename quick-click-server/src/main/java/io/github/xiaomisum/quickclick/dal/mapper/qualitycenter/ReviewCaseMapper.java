@@ -37,7 +37,9 @@ import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 import xyz.migoo.framework.mybatis.core.MPJLambdaWrapperX;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface ReviewCaseMapper extends BaseMapperX<ReviewCase> {
@@ -119,5 +121,15 @@ public interface ReviewCaseMapper extends BaseMapperX<ReviewCase> {
         return selectList(new LambdaQueryWrapperX<ReviewCase>()
                 .eq(ReviewCase::getReviewId, reviewId)
                 .notInIfPresent(ReviewCase::getOriginalId, originalIds));
+    }
+
+    default List<ReviewCase> selectExistsByUpdateTimeAfter(LocalDateTime maxUpdateTime) {
+        return selectList(new LambdaQueryWrapperX<ReviewCase>()
+                .ge(ReviewCase::getUpdateTime, maxUpdateTime));
+    }
+
+    default List<ReviewCase> selectListByOriginalId(Set<String> originalId) {
+        return selectList(new LambdaQueryWrapperX<ReviewCase>()
+                .in(ReviewCase::getOriginalId, originalId));
     }
 }

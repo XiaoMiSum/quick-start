@@ -89,4 +89,9 @@ public class ReviewServiceImpl implements ReviewService {
     public Long count(Long id, TestStatus... status) {
         return mapper.selectCount(id, status);
     }
+
+    @Override
+    public void updateStatus(String id, TestStatus status) {
+        mapper.updateStatus(id, status);
+    }
 }

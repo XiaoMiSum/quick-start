@@ -37,7 +37,9 @@ import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 import xyz.migoo.framework.mybatis.core.MPJLambdaWrapperX;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface PlanCaseMapper extends BaseMapperX<PlanCase> {
@@ -49,7 +51,6 @@ public interface PlanCaseMapper extends BaseMapperX<PlanCase> {
                 .likeIfPresent(PlanCase::getTitle, req.getTitle())
         );
     }
-
 
     default List<PlanCase> selectList(String planId) {
         return selectList(new LambdaQueryWrapperX<PlanCase>().eq(PlanCase::getPlanId, planId));
@@ -113,4 +114,19 @@ public interface PlanCaseMapper extends BaseMapperX<PlanCase> {
             """)
     void removeByIds(@Param("ids") List<Long> ids);
 
+    default List<PlanCase> selectExistsByUpdateTimeAfter(LocalDateTime maxUpdateTime) {
+        return selectList(new LambdaQueryWrapperX<PlanCase>()
+                .ge(PlanCase::getUpdateTime, maxUpdateTime));
+    }
+
+    default List<PlanCase> selectList(LocalDateTime startTime, LocalDateTime endTime) {
+        return selectList(new LambdaQueryWrapperX<PlanCase>()
+                .ge(PlanCase::getExecuteTime, startTime)
+                .le(PlanCase::getExecuteTime, endTime));
+    }
+
+    default List<PlanCase> selectListByOriginalId(Set<String> originalId) {
+        return selectList(new LambdaQueryWrapperX<PlanCase>()
+                .in(PlanCase::getOriginalId, originalId));
+    }
 }

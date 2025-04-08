@@ -41,6 +41,8 @@ import xyz.migoo.framework.common.pojo.PageResult;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static io.github.xiaomisum.quickclick.enums.TestStatus.*;
 
@@ -128,5 +130,24 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     @Override
     public List<ReviewCase> getListNotInOriginalIds(String reviewId, List<String> caseIds) {
         return mapper.selectListNotInOriginalIds(reviewId, caseIds);
+    }
+
+    @Override
+    public List<String> loadReviewId(LocalDateTime maxUpdateTime, Integer offset) {
+        // 如果更新时间为空，则获取最近指定天数的所有数据
+        maxUpdateTime = Objects.isNull(maxUpdateTime) ? LocalDateTime.now().minusDays(offset) : maxUpdateTime;
+        List<ReviewCase> results = mapper.selectExistsByUpdateTimeAfter(maxUpdateTime);
+        return CollectionUtil.isEmpty(results) ? null :
+                results.stream().collect(Collectors.groupingBy(ReviewCase::getReviewId)).keySet().stream().toList();
+    }
+
+    @Override
+    public List<ReviewCase> loadCaseByOriginalId(Set<String> originalId) {
+        return mapper.selectListByOriginalId(originalId);
+    }
+
+    @Override
+    public void updateBatch(List<ReviewCase> items) {
+        mapper.updateBatch(items);
     }
 }

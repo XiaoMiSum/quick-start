@@ -41,6 +41,8 @@ import xyz.migoo.framework.common.pojo.PageResult;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static io.github.xiaomisum.quickclick.enums.TestStatus.*;
 
@@ -124,5 +126,29 @@ public class PlanCaseServiceImpl implements PlanCaseService {
                 .setResult(execute.getResult())
                 .setId(execute.getId());
         mapper.updateById(planCase);
+    }
+
+    @Override
+    public List<String> loadPlanId(LocalDateTime maxUpdateTime, Integer offset) {
+        // 如果更新时间为空，则获取最近指定天数的所有数据
+        maxUpdateTime = Objects.isNull(maxUpdateTime) ? LocalDateTime.now().minusDays(offset) : maxUpdateTime;
+        List<PlanCase> results = mapper.selectExistsByUpdateTimeAfter(maxUpdateTime);
+        return CollectionUtil.isEmpty(results) ? null :
+                results.stream().collect(Collectors.groupingBy(PlanCase::getPlanId)).keySet().stream().toList();
+    }
+
+    @Override
+    public List<PlanCase> loadExecutedCase(LocalDateTime startTime, LocalDateTime endTime) {
+        return mapper.selectList(startTime, endTime);
+    }
+
+    @Override
+    public List<PlanCase> loadCaseByOriginalId(Set<String> originalId) {
+        return mapper.selectListByOriginalId(originalId);
+    }
+
+    @Override
+    public void updateBatch(List<PlanCase> items) {
+        mapper.updateBatch(items);
     }
 }

@@ -32,7 +32,9 @@ import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import xyz.migoo.framework.common.pojo.PageResult;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface PlanCaseService {
 
@@ -58,4 +60,11 @@ public interface PlanCaseService {
 
     void execute(PlanCaseExecuteVO execute);
 
+    List<String> loadPlanId(LocalDateTime maxUpdateTime, Integer offset);
+
+    List<PlanCase> loadExecutedCase(LocalDateTime startTime, LocalDateTime endTime);
+
+    List<PlanCase> loadCaseByOriginalId(Set<String> originalId);
+
+    void updateBatch(List<PlanCase> items);
 }

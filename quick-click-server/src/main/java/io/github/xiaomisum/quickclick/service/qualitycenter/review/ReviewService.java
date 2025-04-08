@@ -52,4 +52,6 @@ public interface ReviewService {
 
     Long count(Long id, TestStatus... status);
 
+    void updateStatus(String id, TestStatus status);
+
 }

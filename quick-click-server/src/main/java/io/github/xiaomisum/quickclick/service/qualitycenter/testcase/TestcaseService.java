@@ -30,11 +30,14 @@ import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.model.dto.TestcasePageDTO;
 import xyz.migoo.framework.common.pojo.PageResult;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TestcaseService {
 
     PageResult<Testcase> getPage(TestcaseQueryReqVO req);
+
+    List<Testcase> loadIfUpdate(LocalDateTime maxUpdateTime, Integer offset);
 
     List<Testcase> getList(String projectId);
 

@@ -37,7 +37,9 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import xyz.migoo.framework.common.pojo.PageResult;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TestcaseServiceImpl implements TestcaseService {
@@ -50,6 +52,13 @@ public class TestcaseServiceImpl implements TestcaseService {
     @Override
     public PageResult<Testcase> getPage(TestcaseQueryReqVO req) {
         return mapper.selectPage(req);
+    }
+
+    @Override
+    public List<Testcase> loadIfUpdate(LocalDateTime maxUpdateTime, Integer offset) {
+        // 如果更新时间为空，则获取最近指定天数的所有数据
+        maxUpdateTime = Objects.isNull(maxUpdateTime) ? LocalDateTime.now().minusDays(offset) : maxUpdateTime;
+        return mapper.selectByUpdateTimeAfter(maxUpdateTime);
     }
 
     @Override

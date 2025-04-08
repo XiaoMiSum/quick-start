@@ -32,7 +32,9 @@ import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import xyz.migoo.framework.common.pojo.PageResult;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface ReviewCaseService {
 
@@ -59,4 +61,11 @@ public interface ReviewCaseService {
     Statistics statistics(String reviewId);
 
     List<ReviewCase> getListNotInOriginalIds(String reviewId, List<String> caseIds);
+
+    List<String> loadReviewId(LocalDateTime maxUpdateTime, Integer offset);
+
+    List<ReviewCase> loadCaseByOriginalId(Set<String> originalId);
+
+    void updateBatch(List<ReviewCase> items);
+
 }

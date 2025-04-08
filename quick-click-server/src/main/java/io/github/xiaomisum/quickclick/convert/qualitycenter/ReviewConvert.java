@@ -52,25 +52,13 @@ public interface ReviewConvert {
 
     ReviewRespVO convert(Review review);
 
-    default ReviewPageRespVO convert1(Review bean) {
-        return (ReviewPageRespVO) new ReviewPageRespVO()
-                .setId(bean.getId())
-                .setActualEndTime(bean.getActualEndTime())
-                .setActualStartTime(bean.getActualStartTime())
-                .setProjectId(bean.getProjectId())
-                .setSpeaker(bean.getSpeaker())
-                .setTitle(bean.getTitle())
-                .setExpectedStartTime(bean.getExpectedStartTime())
-                .setExpectedEndTime(bean.getExpectedEndTime())
-                .setReviewer(bean.getReviewer());
-    }
+    ReviewPageRespVO convert1(Review bean);
 
     default List<ReviewPageRespVO> convert1(List<Review> beans) {
         List<ReviewPageRespVO> result = Lists.newArrayList();
         beans.forEach(item -> result.add(convert1(item)));
         return result;
     }
-
 
     ReviewCaseRespVO convert(ReviewCase bean);
 

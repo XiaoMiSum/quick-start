@@ -90,4 +90,8 @@ public class PlanServiceImpl implements PlanService {
         return mapper.selectCount(userId, status);
     }
 
+    @Override
+    public void updateStatus(String id, TestStatus status) {
+        mapper.updateStatus(id, status);
+    }
 }

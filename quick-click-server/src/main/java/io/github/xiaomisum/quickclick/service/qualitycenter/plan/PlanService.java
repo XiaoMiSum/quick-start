@@ -51,4 +51,6 @@ public interface PlanService {
     void setEndTime(String planId);
 
     Long count(Long userId, TestStatus... status);
+
+    void updateStatus(String id, TestStatus status);
 }
