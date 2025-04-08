@@ -146,13 +146,13 @@ const openDetail = (id: number) => {
 const handleJobLog = (id: number) => {
   if (id > 0) {
     push({
-      path: '/developer/job/log',
+      path: '/management/developer/job/log',
       query: {
         jobId: id
       }
     })
   } else {
-    push('/developer/job/log')
+    push('/management/developer/job/log')
   }
 }
 
