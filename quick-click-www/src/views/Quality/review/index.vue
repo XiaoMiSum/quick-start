@@ -41,7 +41,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" highlight-current-row stripe>
-      <el-table-column align="left" label="评审名称" prop="title" show-overflow-tooltip width="200">
+      <el-table-column align="left" label="评审名称" prop="title" show-overflow-tooltip width="280">
         <template #default="scope">
           <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
             {{ scope.row.title }}
@@ -91,14 +91,14 @@
         show-overflow-tooltip
         width="170"
       />
-      <el-table-column align="right" label="用例总数" width="100">
+      <el-table-column align="right" label="用例总数" width="80">
         <template #default="scope">
           <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
             {{ scope.row.statistics.total }}
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column align="right" label="评审进度" width="180">
+      <el-table-column align="right" label="评审进度" width="115">
         <template #default="scope">
           <el-tooltip content="通过数" placement="top">
             <el-button link type="success" @click="handleGoAssociCase(scope.row.id)">
@@ -127,7 +127,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="通过率" width="100">
+      <el-table-column align="center" label="通过率" width="90">
         <template #default="scope">
           <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
             {{

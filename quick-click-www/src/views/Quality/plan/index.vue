@@ -41,7 +41,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" highlight-current-row stripe>
-      <el-table-column align="left" label="计划名称" prop="title" show-overflow-tooltip width="300">
+      <el-table-column align="left" label="计划名称" prop="title" show-overflow-tooltip width="280">
         <template #default="scope">
           <el-button link type="primary" @click="handleGoAssociCase(scope.row.id)">
             {{ scope.row.title }}
@@ -127,7 +127,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column align="right" label="通过率" width="70">
+      <el-table-column align="right" label="通过率" width="90">
         <template #default="scope">
           <el-button link type="primary">
             {{ (scope.row.statistics.passed / (scope.row.statistics.total | 1)) * 100 }} %
