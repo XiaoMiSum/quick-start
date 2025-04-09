@@ -1,6 +1,7 @@
 package io.github.xiaomisum.quickclick.controller.quality.bug.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.github.xiaomisum.quickclick.enums.BugStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,5 +24,10 @@ public class BugCommentRespVO extends BugCommentBaseVO {
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime createTime;
+
+    /**
+     * 操作
+     */
+    private BugStatus operation;
 
 }

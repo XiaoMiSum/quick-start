@@ -13,7 +13,13 @@
       <el-table-column>
         <template #default="{ row }">
           <user-tag :value="row.userId" />
-          <el-text type="info"> {{ ' 于 ' + row.createTime + '评论' }} </el-text>
+          <el-text type="info"> {{ ' 于 ' + row.createTime }} </el-text>
+          <ones-tag
+            v-if="row.operation"
+            :value="row.operation"
+            :type="DICT_TYPE.QUALITY_BUG_STATUS"
+          />
+          <el-text v-else type="info"> 评论</el-text>
         </template>
       </el-table-column>
     </el-table>
@@ -35,6 +41,7 @@
 import { addComment } from '@/api/quality/bug'
 
 import { Editor, FulltextDisplay } from '@/components/Editor'
+import { DICT_TYPE } from '@/utils/dictionary'
 
 defineProps({
   modelValue: {
