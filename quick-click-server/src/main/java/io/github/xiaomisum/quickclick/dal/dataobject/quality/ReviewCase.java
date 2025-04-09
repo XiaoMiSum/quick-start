@@ -43,6 +43,8 @@ import java.util.List;
 @Data
 public class ReviewCase extends BaseDO<Long> {
 
+    private String projectId;
+
     private String reviewId;
 
     private String nodeId;

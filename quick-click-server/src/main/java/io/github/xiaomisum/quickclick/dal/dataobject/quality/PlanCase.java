@@ -46,6 +46,8 @@ import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_D
 @Data
 public class PlanCase extends BaseDO<Long> {
 
+    private String projectId;
+
     private String planId;
 
     private String nodeId;
