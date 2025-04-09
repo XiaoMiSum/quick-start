@@ -2,7 +2,7 @@
   <Dialog
     v-model="visible"
     :tag="status"
-    :title="data.name"
+    :title="data.title"
     :enums="enums"
     width="80%"
     @close="close"
