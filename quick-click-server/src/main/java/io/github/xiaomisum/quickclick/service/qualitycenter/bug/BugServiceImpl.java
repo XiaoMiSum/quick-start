@@ -69,7 +69,10 @@ public class BugServiceImpl implements BugService {
         data.setConfirmedTime(LocalDateTime.now());
         mapper.updateById(data);
         if (StrUtil.isNotBlank(comment)) {
-            addComment(new BugComment().setBugId(data.getId()).setUserId(SecurityFrameworkUtils.getLoginUserId()).setContent(comment));
+            addComment(new BugComment().setBugId(data.getId())
+                    .setUserId(SecurityFrameworkUtils.getLoginUserId())
+                    .setOperation(Opened)
+                    .setContent(comment));
         }
     }
 
@@ -93,16 +96,20 @@ public class BugServiceImpl implements BugService {
     @Override
     public void reopen(String id, Long handler, String comment) {
         mapper.reopenById(id, Reopened, handler);
-        if (StrUtil.isNotBlank(comment)) {
-            addComment(new BugComment().setBugId(id).setUserId(SecurityFrameworkUtils.getLoginUserId()).setContent(comment));
-        }
+        addComment(new BugComment().setBugId(id)
+                .setUserId(SecurityFrameworkUtils.getLoginUserId())
+                .setOperation(Reopened)
+                .setContent(StrUtil.isBlank(comment) ? "" : comment));
     }
 
     @Override
     public void close(String id, String comment) {
         mapper.closeById(id, Closed, SecurityFrameworkUtils.getLoginUserId());
         if (StrUtil.isNotBlank(comment)) {
-            addComment(new BugComment().setBugId(id).setUserId(SecurityFrameworkUtils.getLoginUserId()).setContent(comment));
+            addComment(new BugComment().setBugId(id)
+                    .setUserId(SecurityFrameworkUtils.getLoginUserId())
+                    .setOperation(Closed)
+                    .setContent(comment));
         }
     }
 
