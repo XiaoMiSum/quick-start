@@ -60,7 +60,7 @@
             text
             type="primary"
             v-hasPermi="['project:member:update']"
-            @click="openForm('update', scope.row.id)"
+            @click="openForm('update', scope.row)"
           >
             编辑
           </el-button>
@@ -150,8 +150,8 @@ const resetQuery = async () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+const openForm = (type: string, data?: any) => {
+  formRef.value.open(type, data)
 }
 
 const handleDelete = async (ids: any) => {
