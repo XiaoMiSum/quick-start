@@ -112,7 +112,7 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value
-    await reopen({ id: data.id, handler: data.fixer, comment: data.comment })
+    await reopen({ id: data.id, handler: data.fixer || data.rejectedUser, comment: data.comment })
     message.success(t('common.optionSuccess'))
     visible.value = false
   } finally {
