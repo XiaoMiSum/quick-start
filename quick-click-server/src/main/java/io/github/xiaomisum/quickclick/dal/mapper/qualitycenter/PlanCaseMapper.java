@@ -49,6 +49,7 @@ public interface PlanCaseMapper extends BaseMapperX<PlanCase> {
                 .eq(PlanCase::getPlanId, req.getPlanId())
                 .eqIfPresent(PlanCase::getNodeId, req.getNodeId())
                 .likeIfPresent(PlanCase::getTitle, req.getTitle())
+                .orderByAsc(PlanCase::getOriginalId)
         );
     }
 
