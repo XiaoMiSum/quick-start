@@ -11,8 +11,8 @@
         <el-input-number
           v-model="formData.fixDuration"
           :precision="2"
-          placeholder="请输入修复时长（小时）"
-          :step="0.1"
+          placeholder="请输入修复时长（分钟）"
+          :step="1"
           style="width: 100%"
         />
       </el-form-item>

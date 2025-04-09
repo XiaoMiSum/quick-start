@@ -158,7 +158,7 @@ CREATE TABLE `qc_quality_bug`  (
   `confirmed_time` datetime NULL DEFAULT NULL COMMENT '确认时间',
   `fixer` bigint NULL DEFAULT NULL COMMENT '修复人',
   `fixed_time` datetime NULL DEFAULT NULL COMMENT '修复时间',
-  `fix_duration` decimal(10, 2) NULL DEFAULT NULL COMMENT '修复时长',
+  `fix_duration` int 0 DEFAULT NULL COMMENT '修复时长',
   `closer` bigint NULL DEFAULT NULL COMMENT '关闭人',
   `closed_time` datetime NULL DEFAULT NULL COMMENT '关闭时间',
   `status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'new' COMMENT '状态',
@@ -226,6 +226,7 @@ CREATE TABLE `qc_quality_test_plan`  (
 DROP TABLE IF EXISTS `qc_quality_test_plan_case`;
 CREATE TABLE `qc_quality_test_plan_case`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
+  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '关联计划id',
   `plan_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '关联计划id',
   `node_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '关联模块id',
   `original_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '测试用例id',
@@ -281,6 +282,7 @@ CREATE TABLE `qc_quality_test_review`  (
 DROP TABLE IF EXISTS `qc_quality_test_review_case`;
 CREATE TABLE `qc_quality_test_review_case`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
+  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '关联计划id',
   `review_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '关联评审id',
   `node_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '关联模块id',
   `original_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '测试用例id',

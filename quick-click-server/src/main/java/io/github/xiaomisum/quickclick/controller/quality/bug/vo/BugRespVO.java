@@ -1,15 +1,12 @@
 package io.github.xiaomisum.quickclick.controller.quality.bug.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import xyz.migoo.framework.jackson.databind.BigDecimalSerializer;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
@@ -70,8 +67,7 @@ public class BugRespVO extends BugBaseVO {
     @JsonFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime fixedTime;
 
-    @JsonSerialize(using = BigDecimalSerializer.class)
-    private BigDecimal fixDuration;
+    private Integer fixDuration;
 
     /**
      * 关闭人

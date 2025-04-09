@@ -31,7 +31,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
@@ -132,7 +131,7 @@ public class Bug extends BaseDO<String> {
     /**
      * 修复时长
      */
-    private BigDecimal fixDuration;
+    private Integer fixDuration;
 
     /**
      * 关闭人
