@@ -50,7 +50,7 @@ const formData = ref<any>({
   memo: ''
 })
 const formRules = reactive({
-  name: [{ required: true, message: '项目名称不能为空', trigger: 'blur' }]
+  title: [{ required: true, message: '项目名称不能为空', trigger: 'blur' }]
 })
 
 const formRef = ref() // 表单 Ref
