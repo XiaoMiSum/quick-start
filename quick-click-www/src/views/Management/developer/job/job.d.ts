@@ -78,7 +78,9 @@ export const handleRemove = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 /** 修改状态操作 */
@@ -103,9 +105,11 @@ export const handleRun = async (row: any) => {
     // 二次确认
     await message.confirm('确认要立即执行一次' + row.name + '?', t('common.reminder'))
     // 提交执行
-    await JobApi.runJob(row.id)
+    await HTTP.runJob(row.id)
     message.success('执行成功')
     // 刷新列表
     await getList()
-  } catch {}
+  } catch (error) {
+    console.log(error)
+  }
 }
