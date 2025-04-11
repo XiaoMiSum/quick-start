@@ -122,5 +122,10 @@ public class TestcaseServiceImpl implements TestcaseService {
         mapper.clear(ids, projectId);
     }
 
+    @Override
+    public List<Testcase> loadTestCase(LocalDateTime startTime, LocalDateTime endTime) {
+        return mapper.selectList(startTime, endTime);
+    }
+
 
 }

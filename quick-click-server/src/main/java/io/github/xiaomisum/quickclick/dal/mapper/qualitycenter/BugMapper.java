@@ -88,4 +88,12 @@ public interface BugMapper extends BaseMapperX<Bug> {
                 .le(Bug::getClosedTime, endTime));
     }
 
+    default List<Bug> selectListByCreator(String projectId, Collection<Long> creator,
+                                          LocalDateTime startTime, LocalDateTime endTime) {
+        return selectList(new LambdaQueryWrapperX<Bug>()
+                .eq(Bug::getProjectId, projectId)
+                .in(Bug::getCreatorId, creator)
+                .ge(Bug::getCreateTime, startTime)
+                .le(Bug::getCreateTime, endTime));
+    }
 }

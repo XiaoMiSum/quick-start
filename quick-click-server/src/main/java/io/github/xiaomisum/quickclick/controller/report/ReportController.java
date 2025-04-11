@@ -3,6 +3,8 @@ package io.github.xiaomisum.quickclick.controller.report;
 import io.github.xiaomisum.quickclick.controller.report.vo.ReportQueryReqVO;
 import io.github.xiaomisum.quickclick.controller.report.vo.days.DeveloperDaysPageRespVO;
 import io.github.xiaomisum.quickclick.controller.report.vo.days.DeveloperDaysUpdateReqVO;
+import io.github.xiaomisum.quickclick.controller.report.vo.days.TesterDaysPageRespVO;
+import io.github.xiaomisum.quickclick.controller.report.vo.days.TesterDaysUpdateReqVO;
 import io.github.xiaomisum.quickclick.convert.report.ReportConvert;
 import io.github.xiaomisum.quickclick.service.report.ReportService;
 import jakarta.annotation.Resource;
@@ -27,6 +29,17 @@ public class ReportController {
     @PutMapping("/days/developer")
     private Result<?> updateDevDays(@RequestBody @Valid DeveloperDaysUpdateReqVO req) {
         service.updateDevDays(ReportConvert.INSTANCE.convert(req));
+        return Result.getSuccessful();
+    }
+
+    @GetMapping("/days/tester")
+    private Result<PageResult<TesterDaysPageRespVO>> getTestDays(ReportQueryReqVO req) {
+        return Result.getSuccessful(service.getTestDays(req));
+    }
+
+    @PutMapping("/days/tester")
+    private Result<?> updateTestDays(@RequestBody @Valid TesterDaysUpdateReqVO req) {
+        service.updateTestDays(ReportConvert.INSTANCE.convert(req));
         return Result.getSuccessful();
     }
 }

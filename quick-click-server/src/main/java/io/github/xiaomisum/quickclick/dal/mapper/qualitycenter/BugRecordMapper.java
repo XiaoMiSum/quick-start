@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-import static io.github.xiaomisum.quickclick.enums.BugStatus.Fixed;
-import static io.github.xiaomisum.quickclick.enums.BugStatus.Reopened;
+import static io.github.xiaomisum.quickclick.enums.BugStatus.*;
 
 @Mapper
 public interface BugRecordMapper extends BaseMapperX<BugExecRecord> {
@@ -42,6 +41,24 @@ public interface BugRecordMapper extends BaseMapperX<BugExecRecord> {
                 .ge(BugExecRecord::getCreateTime, startTime)
                 .le(BugExecRecord::getCreateTime, endTime)
                 .eq(BugExecRecord::getOperation, Fixed)
+                .eq(Bug::getProjectId, projectId));
+    }
+
+    default List<BugExecRecord> selectCloseRecords(String projectId, Collection<Long> closer, LocalDateTime startTime, LocalDateTime endTime) {
+        return selectList(new MPJLambdaWrapperX<BugExecRecord>()
+                .in(BugExecRecord::getUserId, closer)
+                .ge(BugExecRecord::getCreateTime, startTime)
+                .le(BugExecRecord::getCreateTime, endTime)
+                .eq(BugExecRecord::getOperation, Closed)
+                .eq(Bug::getProjectId, projectId));
+    }
+
+    default List<BugExecRecord> selectReopenRecords(String projectId, Collection<Long> users, LocalDateTime startTime, LocalDateTime endTime) {
+        return selectList(new MPJLambdaWrapperX<BugExecRecord>()
+                .in(BugExecRecord::getUserId, users)
+                .ge(BugExecRecord::getCreateTime, startTime)
+                .le(BugExecRecord::getCreateTime, endTime)
+                .eq(BugExecRecord::getOperation, Reopened)
                 .eq(Bug::getProjectId, projectId));
     }
 }

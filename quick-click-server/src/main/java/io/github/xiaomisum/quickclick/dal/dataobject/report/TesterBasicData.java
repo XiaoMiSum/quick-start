@@ -49,12 +49,7 @@ public class TesterBasicData extends BaseDO<Long> {
     private Integer closedBugTotal;
 
     /**
-     * 修复缺陷耗时
-     */
-    private Integer fixedBugDuration;
-
-    /**
-     * 归属缺陷激活数
+     * 激活缺陷数
      */
     private Integer reopenedBugTotal;
 }
