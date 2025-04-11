@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectMember;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
-import io.github.xiaomisum.quickclick.dal.dataobject.report.ReportBasicData;
-import io.github.xiaomisum.quickclick.dal.mapper.report.ReportBasicDataMapper;
+import io.github.xiaomisum.quickclick.dal.dataobject.report.DeveloperBasicData;
+import io.github.xiaomisum.quickclick.dal.mapper.report.DeveloperBasicDataMapper;
 import io.github.xiaomisum.quickclick.job.param.JobParam;
 import io.github.xiaomisum.quickclick.service.project.ProjectMemberService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.bug.BugService;
@@ -35,7 +35,7 @@ public class DeveloperDayDataJobHandler implements JobHandler {
     @Resource
     private BugService bugService;
     @Resource
-    private ReportBasicDataMapper reportBasicDataMapper;
+    private DeveloperBasicDataMapper developerBasicDataMapper;
 
     @Override
     public String execute(String param, Long jobLogId) throws Exception {
@@ -54,7 +54,7 @@ public class DeveloperDayDataJobHandler implements JobHandler {
 
         // 按项目分组 测试用例
         var projectCaseGrouping = planCases.stream().collect(Collectors.groupingBy(PlanCase::getProjectId));
-        List<ReportBasicData> results = Lists.newArrayList();
+        List<DeveloperBasicData> results = Lists.newArrayList();
         for (String projectId : developerGrouping.keySet()) {
             var developers = developerGrouping.get(projectId).stream().map(ProjectMember::getUserId).toList();
             // 项目下的测试用例
@@ -79,7 +79,7 @@ public class DeveloperDayDataJobHandler implements JobHandler {
             var supervisorClosedGrouping = bugs4.stream().collect(Collectors.groupingBy(Bug::getSupervisor));
             // 遍历项目下的开发人员
             developers.forEach(userId -> {
-                var data = new ReportBasicData().setDate(date).setUserId(userId).setProjectId(projectId);
+                var data = new DeveloperBasicData().setDate(date).setUserId(userId).setProjectId(projectId);
                 if (Objects.nonNull(projectTestcases)) {
                     // 项目下的开发人员
                     var backend = projectTestcases.stream().collect(Collectors.groupingBy(PlanCase::getBackendDeveloper));
@@ -103,7 +103,7 @@ public class DeveloperDayDataJobHandler implements JobHandler {
             });
         }
         if (!results.isEmpty()) {
-            reportBasicDataMapper.insertBatch(results);
+            developerBasicDataMapper.insertBatch(results);
         }
         return "success";
     }

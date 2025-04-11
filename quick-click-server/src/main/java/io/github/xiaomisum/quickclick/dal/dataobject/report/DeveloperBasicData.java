@@ -11,7 +11,7 @@ import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "qc_report_quality_developer_day", autoResultMap = true)
 @Data
-public class ReportBasicData extends BaseDO<Long> {
+public class DeveloperBasicData extends BaseDO<Long> {
 
     /**
      * 日期
