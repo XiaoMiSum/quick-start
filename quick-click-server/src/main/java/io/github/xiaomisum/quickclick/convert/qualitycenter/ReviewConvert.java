@@ -29,6 +29,7 @@ import com.google.common.collect.Lists;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.*;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Review;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCaseExecRecord;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
 import jakarta.validation.Valid;
@@ -82,4 +83,8 @@ public interface ReviewConvert {
                 .setLastReviewTime(LocalDateTime.now())
                 .setId(execute.getOriginalId());
     }
+
+    ReviewCaseExecRecord convert(ReviewCaseExecRecordAddReqVO bean);
+
+    List<ReviewCaseExecRecordRespVO> convert2(List<ReviewCaseExecRecord> beans);
 }

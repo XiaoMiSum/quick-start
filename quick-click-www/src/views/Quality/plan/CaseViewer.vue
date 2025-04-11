@@ -1,13 +1,23 @@
 <template>
   <Dialog
     v-model="visible"
-    :tag="status"
+    :dict-value="status"
+    :dict-code="DICT_TYPE.QUALITY_TEST_STATUS"
     :title="data.title"
-    :enums="enums"
     width="80%"
     @close="close"
   >
     <InfoViewer v-model="data" :show-actual="true" v-loading="loading" />
+
+    <div class="mt-10px"></div>
+    <Record
+      ref="caseRecord"
+      v-model="comments"
+      :dict-code="DICT_TYPE.QUALITY_TEST_STATUS"
+      :add-record="PLAN.addRecord"
+      :filed-object="{ projectId: data.projectId, reviewId: data.reviewId }"
+      @success="handleGetRecords"
+    />
 
     <template #footer>
       <el-button link @click="handleLastClick">
@@ -23,7 +33,7 @@
         <Icon class="mr-5px" icon="ep:refresh" />
         同步用例
       </el-button>
-      <el-button link>
+      <el-button link @click="handleComment">
         <Icon class="mr-5px" icon="ep:chat-dot-square" />
         评论
       </el-button>
@@ -37,21 +47,15 @@
 import { InfoViewer, Executer } from '@/views/components/case'
 
 import * as PLAN from '@/api/quality/plan'
+import { DICT_TYPE } from '@/utils/dictionary'
 
 const message = useMessage() // 消息弹窗
-
-const props = defineProps({
-  enums: {
-    required: true,
-    type: Array
-  }
-})
-const { enums } = toRefs(props)
 
 const visible = ref(false)
 const data = ref<any>({})
 const loading = ref(false)
 const status = ref('')
+const comments = ref([])
 
 /** 打开弹窗 */
 const open = async (id: any) => {
@@ -108,6 +112,7 @@ const handleExecuteCase = async (result: string) => {
     id: data.value.id,
     originalId: data.value.originalId,
     planId: data.value.planId,
+    projectId: data.value.projectId,
     steps: data.value.steps,
     result: result
   })
@@ -118,6 +123,15 @@ const handleExecuteCase = async (result: string) => {
   } else {
     visible.value = false
   }
+}
+
+const caseRecord = ref()
+const handleComment = async () => {
+  caseRecord.value.open(data.value.id, 'dataId')
+}
+
+const handleGetRecords = async () => {
+  comments.value = await PLAN.getRecords(data.value.id)
 }
 
 const emit = defineEmits(['close']) // 定义 close 事件，用于操作成功后的回调

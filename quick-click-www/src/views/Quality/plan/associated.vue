@@ -163,11 +163,7 @@
     source="plan"
     @close="handleQuery"
   />
-  <CaseViewer
-    ref="caseViewer"
-    :enums="getDictOptions(DICT_TYPE.QUALITY_TEST_STATUS)"
-    @close="handleQuery"
-  />
+  <CaseViewer ref="caseViewer" @close="handleQuery" />
   <CaseImports ref="caseImports" @close="getList" />
 </template>
 

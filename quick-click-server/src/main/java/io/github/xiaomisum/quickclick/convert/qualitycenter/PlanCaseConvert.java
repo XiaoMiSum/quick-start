@@ -26,9 +26,12 @@
 package io.github.xiaomisum.quickclick.convert.qualitycenter;
 
 import com.google.common.collect.Lists;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseExecRecordAddReqVO;
+import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseExecRecordRespVO;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCasePageRespVO;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseRespVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCaseExecRecord;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
@@ -71,5 +74,9 @@ public interface PlanCaseConvert {
                 .setPrerequisite(reviewCase.getPrerequisite())
                 .setSteps(reviewCase.getSteps());
     }
+
+    PlanCaseExecRecord convert(PlanCaseExecRecordAddReqVO bean);
+
+    List<PlanCaseExecRecordRespVO> convert1(List<PlanCaseExecRecord> beans);
 
 }

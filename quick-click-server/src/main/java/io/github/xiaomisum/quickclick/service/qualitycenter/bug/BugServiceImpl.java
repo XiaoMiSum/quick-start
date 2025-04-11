@@ -6,8 +6,8 @@ import com.google.common.collect.Lists;
 import io.github.xiaomisum.quickclick.controller.quality.bug.vo.BugQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugExecRecord;
-import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugCommentMapper;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugMapper;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugRecordMapper;
 import io.github.xiaomisum.quickclick.enums.BugStatus;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class BugServiceImpl implements BugService {
     @Resource
     private BugMapper mapper;
     @Resource
-    private BugCommentMapper commentMapper;
+    private BugRecordMapper commentMapper;
 
     @Override
     public PageResult<Bug> getPage(BugQueryReqVO req) {

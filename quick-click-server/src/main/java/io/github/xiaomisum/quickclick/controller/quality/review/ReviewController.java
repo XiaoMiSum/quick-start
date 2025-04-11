@@ -44,6 +44,7 @@ import xyz.migoo.framework.common.pojo.SimpleData;
 import xyz.migoo.framework.common.util.string.StrUtils;
 import xyz.migoo.framework.security.core.LoginUser;
 import xyz.migoo.framework.security.core.annotation.CurrentUser;
+import xyz.migoo.framework.security.core.util.SecurityFrameworkUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -281,5 +282,30 @@ public class ReviewController {
     @GetMapping("/simple")
     public Result<List<SimpleData>> getSimple(@RequestParam("projectId") String projectId) {
         return Result.getSuccessful(ReviewConvert.INSTANCE.convert3(service.getList(projectId)));
+    }
+
+
+    /**
+     * 获取测试计划执行记录
+     *
+     * @param dataId 测试用例关联数据编号
+     * @return 处理结果
+     */
+    @GetMapping("/case/record")
+    public Result<?> getRecords(@RequestParam("dataId") Long dataId) {
+        return Result.getSuccessful(ReviewConvert.INSTANCE.convert2(reviewCaseService.getRecords(dataId)));
+    }
+
+    /**
+     * 添加测试计划执行记录
+     *
+     * @param data 测试用例关联数据编号
+     * @return 处理结果
+     */
+    @PostMapping("/case/record")
+    public Result<?> addRecord(@RequestBody @Valid ReviewCaseExecRecordAddReqVO data) {
+        data.setUserId(SecurityFrameworkUtils.getLoginUserId());
+        reviewCaseService.addRecord(ReviewConvert.INSTANCE.convert(data));
+        return Result.getSuccessful();
     }
 }

@@ -15,7 +15,7 @@ import static io.github.xiaomisum.quickclick.enums.BugStatus.Fixed;
 import static io.github.xiaomisum.quickclick.enums.BugStatus.Reopened;
 
 @Mapper
-public interface BugCommentMapper extends BaseMapperX<BugExecRecord> {
+public interface BugRecordMapper extends BaseMapperX<BugExecRecord> {
 
     default List<BugExecRecord> selectList(String bugId) {
         return selectList(new LambdaQueryWrapperX<BugExecRecord>()

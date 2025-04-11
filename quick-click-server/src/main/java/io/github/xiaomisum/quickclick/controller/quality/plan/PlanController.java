@@ -44,6 +44,7 @@ import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
 import xyz.migoo.framework.security.core.LoginUser;
 import xyz.migoo.framework.security.core.annotation.CurrentUser;
+import xyz.migoo.framework.security.core.util.SecurityFrameworkUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -314,7 +315,31 @@ public class PlanController {
      * @return 处理结果
      */
     @GetMapping("/case/failed")
-    public Result<?> unassociatedCase(@RequestParam("planId") String planId) {
+    public Result<?> getFailedCase(@RequestParam("planId") String planId) {
         return Result.getSuccessful(PlanConvert.INSTANCE.convert1(planCaseService.getList(planId, Failed)));
+    }
+
+    /**
+     * 获取测试计划执行记录
+     *
+     * @param dataId 测试用例关联数据编号
+     * @return 处理结果
+     */
+    @GetMapping("/case/record")
+    public Result<?> getRecords(@RequestParam("dataId") Long dataId) {
+        return Result.getSuccessful(PlanCaseConvert.INSTANCE.convert1(planCaseService.getRecords(dataId)));
+    }
+
+    /**
+     * 添加测试计划执行记录
+     *
+     * @param data 测试用例关联数据编号
+     * @return 处理结果
+     */
+    @PostMapping("/case/record")
+    public Result<?> addRecord(@RequestBody @Valid PlanCaseExecRecordAddReqVO data) {
+        data.setUserId(SecurityFrameworkUtils.getLoginUserId());
+        planCaseService.addRecord(PlanCaseConvert.INSTANCE.convert(data));
+        return Result.getSuccessful();
     }
 }

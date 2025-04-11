@@ -115,3 +115,17 @@ export const syncCase = (data: any) => {
     data
   })
 }
+
+export const getRecords = (dataId: number) => {
+  return request.get({
+    url: url + '/case/record',
+    params: { dataId }
+  })
+}
+
+export const addRecord = (data: any) => {
+  return request.post({
+    url: url + '/case/record',
+    data
+  })
+}

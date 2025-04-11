@@ -29,7 +29,9 @@ import cn.hutool.core.collection.CollectionUtil;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseExecuteVO;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCaseExecRecord;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.ReviewCaseMapper;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.ReviewCaseRecordMapper;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.ReviewMapper;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
@@ -50,6 +52,8 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     private ReviewCaseMapper mapper;
     @Resource
     private ReviewMapper reviewMapper;
+    @Resource
+    private ReviewCaseRecordMapper recordMapper;
 
     @Override
     public PageResult<ReviewCase> getPage(ReviewCaseQueryReqVO req) {
@@ -105,12 +109,20 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
 
     @Override
     public void reviewed(ReviewCaseExecuteVO execute) {
-        ReviewCase reviewCase = (ReviewCase) new ReviewCase()
+        ReviewCase data = (ReviewCase) new ReviewCase()
                 .setReviewer(execute.getReviewer())
                 .setReviewTime(LocalDateTime.now())
                 .setResult(execute.getResult())
                 .setId(execute.getId());
-        mapper.updateById(reviewCase);
+        mapper.updateById(data);
+        addRecord(new ReviewCaseExecRecord()
+                .setProjectId(execute.getProjectId())
+                .setReviewId(execute.getReviewId())
+                .setDataId(execute.getId())
+                .setUserId(execute.getReviewer())
+                .setOperation(execute.getResult())
+                .setContent("")
+        );
     }
 
     @Override
@@ -140,5 +152,15 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     @Override
     public void updateBatch(List<ReviewCase> items) {
         mapper.updateBatch(items);
+    }
+
+    @Override
+    public List<ReviewCaseExecRecord> getRecords(Long dataId) {
+        return recordMapper.selectList(dataId);
+    }
+
+    @Override
+    public void addRecord(ReviewCaseExecRecord data) {
+        recordMapper.insert(data);
     }
 }

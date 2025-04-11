@@ -45,6 +45,9 @@ public class ReviewCaseExecuteVO {
 
     @NotEmpty(message = "测试评审编号不能为空")
     private String reviewId;
+    
+    @NotEmpty(message = "项目编号不能为空")
+    private String projectId;
 
     @NotNull(message = "评审结果不能为空")
     private TestStatus result;

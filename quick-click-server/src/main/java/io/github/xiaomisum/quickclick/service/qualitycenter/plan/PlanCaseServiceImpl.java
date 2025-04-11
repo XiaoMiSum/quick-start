@@ -29,7 +29,9 @@ import cn.hutool.core.collection.CollectionUtil;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseExecuteVO;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCaseExecRecord;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanCaseMapper;
+import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanCaseRecordMapper;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanMapper;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
@@ -50,6 +52,8 @@ public class PlanCaseServiceImpl implements PlanCaseService {
     private PlanCaseMapper mapper;
     @Resource
     private PlanMapper planMapper;
+    @Resource
+    private PlanCaseRecordMapper recordMapper;
 
     @Override
     public PageResult<PlanCase> getPage(PlanCaseQueryReqVO req) {
@@ -110,13 +114,21 @@ public class PlanCaseServiceImpl implements PlanCaseService {
 
     @Override
     public void execute(PlanCaseExecuteVO execute) {
-        PlanCase planCase = (PlanCase) new PlanCase()
+        PlanCase data = (PlanCase) new PlanCase()
                 .setSteps(execute.getSteps())
                 .setExecutor(execute.getExecutor())
                 .setExecuteTime(LocalDateTime.now())
                 .setResult(execute.getResult())
                 .setId(execute.getId());
-        mapper.updateById(planCase);
+        mapper.updateById(data);
+        addRecord(new PlanCaseExecRecord()
+                .setProjectId(execute.getProjectId())
+                .setPlanId(execute.getPlanId())
+                .setDataId(execute.getId())
+                .setUserId(execute.getExecutor())
+                .setOperation(execute.getResult())
+                .setContent("")
+        );
     }
 
     @Override
@@ -141,5 +153,15 @@ public class PlanCaseServiceImpl implements PlanCaseService {
     @Override
     public void updateBatch(List<PlanCase> items) {
         mapper.updateBatch(items);
+    }
+
+    @Override
+    public List<PlanCaseExecRecord> getRecords(Long dataId) {
+        return recordMapper.selectList(dataId);
+    }
+
+    @Override
+    public void addRecord(PlanCaseExecRecord data) {
+        recordMapper.insert(data);
     }
 }

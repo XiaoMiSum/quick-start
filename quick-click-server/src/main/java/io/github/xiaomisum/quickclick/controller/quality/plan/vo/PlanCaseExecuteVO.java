@@ -43,6 +43,9 @@ public class PlanCaseExecuteVO {
     @NotNull(message = "测试计划关联用例记录编号不能为空")
     private Long id;
 
+    @NotEmpty(message = "项目编号不能为空")
+    private String projectId;
+
     @NotEmpty(message = "测试计划编号不能为空")
     private String planId;
 

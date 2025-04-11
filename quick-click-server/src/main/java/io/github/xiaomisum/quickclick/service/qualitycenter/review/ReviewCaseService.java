@@ -28,6 +28,7 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.review;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseExecuteVO;
 import io.github.xiaomisum.quickclick.controller.quality.review.vo.ReviewCaseQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCaseExecRecord;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -68,4 +69,7 @@ public interface ReviewCaseService {
 
     void updateBatch(List<ReviewCase> items);
 
+    List<ReviewCaseExecRecord> getRecords(Long dataId);
+
+    void addRecord(ReviewCaseExecRecord convert);
 }

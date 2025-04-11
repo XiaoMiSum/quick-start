@@ -48,6 +48,11 @@ const props = defineProps({
   addRecord: {
     type: Function,
     required: false
+  },
+  filedObject: {
+    type: Object,
+    required: false,
+    default: () => {}
   }
 })
 
@@ -80,10 +85,19 @@ const onClose = () => {
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 
 const submitForm = async () => {
+  if (!props.addRecord) {
+    message.error('请设置Function: addRecord')
+    return
+  }
   // 提交请求
   formLoading.value = true
   try {
     const data = formData.value
+    if (props.filedObject) {
+      Object.keys(props.filedObject).forEach((key) => {
+        data[key] = props.filedObject[key]
+      })
+    }
     await props.addRecord(data)
     message.success(t('common.optionSuccess'))
     emit('success')

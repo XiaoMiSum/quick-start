@@ -23,31 +23,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.quality.plan.vo;
+package io.github.xiaomisum.quickclick.dal.mapper.qualitycenter;
 
-import lombok.Data;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCaseExecRecord;
+import org.apache.ibatis.annotations.Mapper;
+import xyz.migoo.framework.mybatis.core.BaseMapperX;
+import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
 import java.util.List;
 
-@Data
-public class PlanCaseBaseVO {
+@Mapper
+public interface ReviewCaseRecordMapper extends BaseMapperX<ReviewCaseExecRecord> {
 
-    private String projectId;
-
-    private String planId;
-
-    private String nodeId;
-
-    private String originalId;
-
-    private String title;
-
-    private String priority;
-
-    private List<String> tags;
-
-    private Long backendDeveloper;
-
-    private Long frontendDeveloper;
+    default List<ReviewCaseExecRecord> selectList(Long dataId) {
+        return selectList(new LambdaQueryWrapperX<ReviewCaseExecRecord>()
+                .eq(ReviewCaseExecRecord::getDataId, dataId)
+                .orderByAsc(ReviewCaseExecRecord::getId));
+    }
 
 }

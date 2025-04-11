@@ -28,6 +28,7 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.plan;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseExecuteVO;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.PlanCaseQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCaseExecRecord;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -67,4 +68,8 @@ public interface PlanCaseService {
     List<PlanCase> loadCaseByOriginalId(Set<String> originalId);
 
     void updateBatch(List<PlanCase> items);
+
+    List<PlanCaseExecRecord> getRecords(Long dataId);
+
+    void addRecord(PlanCaseExecRecord data);
 }
