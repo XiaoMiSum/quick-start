@@ -178,7 +178,7 @@
   <BugCloser ref="bugCloser" :users="users" @success="getData" />
   <BugOpener ref="bugOpener" :users="users" @success="getData" />
 
-  <BugCommenter ref="bugCommenter" v-model="comments" @success="handleGetComment" />
+  <BugCommenter ref="bugCommenter" v-model="comments" @success="handlegetRecords" />
 </template>
 
 <script lang="ts" setup>
@@ -272,9 +272,9 @@ const handleDelete = async (id: string) => {
   }
 }
 
-const handleGetComment = async () => {
+const handlegetRecords = async () => {
   try {
-    const data = await HTTP.getComment(params.id)
+    const data = await HTTP.getRecords(params.id)
     comments.value = data
   } finally {
     showOptionButton.value = true
@@ -452,7 +452,7 @@ onMounted(async () => {
   getTree()
   getUsers()
   getData()
-  handleGetComment()
+  handlegetRecords()
 })
 </script>
 

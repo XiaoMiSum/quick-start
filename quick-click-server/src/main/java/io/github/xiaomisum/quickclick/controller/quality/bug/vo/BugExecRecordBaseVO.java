@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class BugCommentBaseVO {
+public class BugExecRecordBaseVO {
 
     /**
      * 缺陷编号

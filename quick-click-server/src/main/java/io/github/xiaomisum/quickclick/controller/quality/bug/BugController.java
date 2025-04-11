@@ -202,9 +202,9 @@ public class BugController {
      * @param bugId 缺陷编号
      * @return 评论列表
      */
-    @GetMapping("/comment")
-    public Result<List<BugCommentRespVO>> getComment(@RequestParam("bugId") String bugId) {
-        return Result.getSuccessful(BugConvert.INSTANCE.convert(service.getComment(bugId)));
+    @GetMapping("/record")
+    public Result<List<BugExecRecordRespVO>> records(@RequestParam("bugId") String bugId) {
+        return Result.getSuccessful(BugConvert.INSTANCE.convert(service.getRecords(bugId)));
     }
 
     /**
@@ -213,23 +213,10 @@ public class BugController {
      * @param data 评论信息
      * @return 处理结果
      */
-    @PostMapping("/comment")
-    public Result<?> addComment(@Valid @RequestBody BugCommentAddReqVO data) {
+    @PostMapping("/record")
+    public Result<?> addRecord(@Valid @RequestBody BugExecRecordAddReqVO data) {
         data.setUserId(SecurityFrameworkUtils.getLoginUserId());
-        service.addComment(BugConvert.INSTANCE.convert(data));
-        return Result.getSuccessful();
-    }
-
-
-    /**
-     * 删除评论
-     *
-     * @param id 编号
-     * @return 处理结果
-     */
-    @DeleteMapping("/comment/{id}")
-    public Result<?> removeComment(@RequestParam("id") Long id) {
-        service.removeComment(id);
+        service.addRecord(BugConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
     }
 }

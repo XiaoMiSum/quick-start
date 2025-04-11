@@ -50,7 +50,7 @@
       </el-form-item>
     </el-form>
 
-    <Editor ref="bugComment" v-model="formData.comment" height="300px" />
+    <Editor ref="bugExecRecord" v-model="formData.comment" height="300px" />
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
       <el-button :disabled="formLoading" type="primary" @click="submitForm"> 确 定 </el-button>

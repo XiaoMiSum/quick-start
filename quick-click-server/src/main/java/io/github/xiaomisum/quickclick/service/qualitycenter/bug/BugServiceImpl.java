@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import io.github.xiaomisum.quickclick.controller.quality.bug.vo.BugQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
-import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugComment;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugExecRecord;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugCommentMapper;
 import io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.BugMapper;
 import io.github.xiaomisum.quickclick.enums.BugStatus;
@@ -42,7 +42,7 @@ public class BugServiceImpl implements BugService {
     public String add(Bug data) {
         data.setId(IdUtil.getSnowflakeNextIdStr());
         mapper.insert(data);
-        addComment(new BugComment().setBugId(data.getId())
+        addRecord(new BugExecRecord().setBugId(data.getId())
                 .setUserId(SecurityFrameworkUtils.getLoginUserId())
                 .setOperation(New)
                 .setContent(""));
@@ -64,10 +64,10 @@ public class BugServiceImpl implements BugService {
     @Override
     public void confirm(List<String> ids) {
         List<Bug> bugs = Lists.newArrayList();
-        List<BugComment> comments = Lists.newArrayList();
+        List<BugExecRecord> comments = Lists.newArrayList();
         ids.forEach(id -> {
             bugs.add((Bug) new Bug().setConfirmedTime(LocalDateTime.now()).setStatus(Opened).setId(id));
-            comments.add(new BugComment().setBugId(id).setUserId(SecurityFrameworkUtils.getLoginUserId()).setOperation(Opened).setContent(""));
+            comments.add(new BugExecRecord().setBugId(id).setUserId(SecurityFrameworkUtils.getLoginUserId()).setOperation(Opened).setContent(""));
         });
         mapper.updateBatch(bugs);
         commentMapper.insertBatch(comments);
@@ -78,7 +78,7 @@ public class BugServiceImpl implements BugService {
         data.setStatus(Opened);
         data.setConfirmedTime(LocalDateTime.now());
         mapper.updateById(data);
-        addComment(new BugComment().setBugId(data.getId())
+        addRecord(new BugExecRecord().setBugId(data.getId())
                 .setUserId(SecurityFrameworkUtils.getLoginUserId())
                 .setOperation(Opened)
                 .setContent(StrUtil.isBlank(comment) ? "" : comment));
@@ -91,7 +91,7 @@ public class BugServiceImpl implements BugService {
         data.setAssignedTime(LocalDateTime.now());
         data.setRejectedTime(LocalDateTime.now());
         mapper.updateById(data);
-        addComment(new BugComment().setBugId(data.getId())
+        addRecord(new BugExecRecord().setBugId(data.getId())
                 .setUserId(SecurityFrameworkUtils.getLoginUserId())
                 .setOperation(Rejected)
                 .setContent(""));
@@ -104,7 +104,7 @@ public class BugServiceImpl implements BugService {
         data.setFixer(SecurityFrameworkUtils.getLoginUserId());
         data.setAssignedTime(LocalDateTime.now());
         mapper.updateById(data);
-        addComment(new BugComment().setBugId(data.getId())
+        addRecord(new BugExecRecord().setBugId(data.getId())
                 .setUserId(SecurityFrameworkUtils.getLoginUserId())
                 .setOperation(Fixed)
                 // 评论内容为修复时长，用于统计修复时长
@@ -114,7 +114,7 @@ public class BugServiceImpl implements BugService {
     @Override
     public void reopen(String id, Long handler, String comment) {
         mapper.reopenById(id, Reopened, handler);
-        addComment(new BugComment().setBugId(id)
+        addRecord(new BugExecRecord().setBugId(id)
                 .setUserId(SecurityFrameworkUtils.getLoginUserId())
                 .setOperation(Reopened)
                 .setContent(StrUtil.isBlank(comment) ? "" : comment));
@@ -123,7 +123,7 @@ public class BugServiceImpl implements BugService {
     @Override
     public void close(String id, String comment) {
         mapper.closeById(id, Closed, SecurityFrameworkUtils.getLoginUserId());
-        addComment(new BugComment().setBugId(id)
+        addRecord(new BugExecRecord().setBugId(id)
                 .setUserId(SecurityFrameworkUtils.getLoginUserId())
                 .setOperation(Closed)
                 .setContent(StrUtil.isBlank(comment) ? "" : comment));
@@ -136,18 +136,13 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public List<BugComment> getComment(String bugId) {
+    public List<BugExecRecord> getRecords(String bugId) {
         return commentMapper.selectList(bugId);
     }
 
     @Override
-    public void addComment(BugComment data) {
+    public void addRecord(BugExecRecord data) {
         commentMapper.insert(data);
-    }
-
-    @Override
-    public void removeComment(Long id) {
-        commentMapper.deleteById(id);
     }
 
     @Override

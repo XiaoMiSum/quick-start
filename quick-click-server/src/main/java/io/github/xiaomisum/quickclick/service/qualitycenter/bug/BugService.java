@@ -2,7 +2,7 @@ package io.github.xiaomisum.quickclick.service.qualitycenter.bug;
 
 import io.github.xiaomisum.quickclick.controller.quality.bug.vo.BugQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
-import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugComment;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugExecRecord;
 import io.github.xiaomisum.quickclick.enums.BugStatus;
 import xyz.migoo.framework.common.pojo.PageResult;
 
@@ -36,11 +36,9 @@ public interface BugService {
 
     void remove(String id);
 
-    List<BugComment> getComment(String bugId);
+    List<BugExecRecord> getRecords(String bugId);
 
-    void addComment(BugComment data);
-
-    void removeComment(Long id);
+    void addRecord(BugExecRecord data);
 
     Long count(Long id, BugStatus... status);
 

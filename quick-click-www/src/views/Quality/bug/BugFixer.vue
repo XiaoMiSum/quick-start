@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { fix, getData, getComment } from '@/api/quality/bug'
+import { fix, getData, getRecords } from '@/api/quality/bug'
 
 import { DICT_TYPE, getDictOptions } from '@/utils/dictionary'
 
@@ -127,7 +127,7 @@ const open = async (bug: any) => {
   formData.value.id = data.id
   formData.value.handler = data.creatorId
   formData.value.fixedTime = formatDate(new Date())
-  comments.value = await getComment(bug.id)
+  comments.value = await getRecords(bug.id)
 }
 
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗

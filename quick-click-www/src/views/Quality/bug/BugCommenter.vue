@@ -26,7 +26,7 @@
   </ContentWrap>
 
   <Dialog title="【评论】" v-model="visible" @close="onClose" width="900px">
-    <Editor ref="bugComment" v-model="formData.content" height="300px" />
+    <Editor ref="bugExecRecord" v-model="formData.content" height="300px" />
 
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { addComment } from '@/api/quality/bug'
+import { addRecord } from '@/api/quality/bug'
 
 import { Editor, FulltextDisplay } from '@/components/Editor'
 import { DICT_TYPE } from '@/utils/dictionary'
@@ -88,7 +88,7 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value
-    await addComment(data)
+    await addRecord(data)
     message.success(t('common.optionSuccess'))
     visible.value = false
   } finally {

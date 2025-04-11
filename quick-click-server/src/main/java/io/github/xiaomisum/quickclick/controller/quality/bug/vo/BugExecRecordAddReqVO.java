@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class BugCommentAddReqVO extends BugCommentBaseVO {
+public class BugExecRecordAddReqVO extends BugExecRecordBaseVO {
 
     /**
      * 用户编号

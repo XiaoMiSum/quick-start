@@ -2,7 +2,7 @@ package io.github.xiaomisum.quickclick.convert.qualitycenter;
 
 import io.github.xiaomisum.quickclick.controller.quality.bug.vo.*;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
-import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugComment;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugExecRecord;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -28,7 +28,7 @@ public interface BugConvert {
 
     Bug convert(BugRejectedReqVO data);
 
-    BugComment convert(BugCommentAddReqVO data);
+    BugExecRecord convert(BugExecRecordAddReqVO data);
 
-    List<BugCommentRespVO> convert(List<BugComment> comment);
+    List<BugExecRecordRespVO> convert(List<BugExecRecord> comment);
 }

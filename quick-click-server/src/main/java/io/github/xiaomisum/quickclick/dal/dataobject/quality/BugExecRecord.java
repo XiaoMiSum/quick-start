@@ -7,9 +7,9 @@ import lombok.EqualsAndHashCode;
 import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "qc_quality_bug_comment", autoResultMap = true)
+@TableName(value = "qc_quality_bug_exec_record", autoResultMap = true)
 @Data
-public class BugComment extends BaseDO<Long> {
+public class BugExecRecord extends BaseDO<Long> {
 
     /**
      * 缺陷编号

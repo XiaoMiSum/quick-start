@@ -28,7 +28,7 @@
       </div>
     </el-form>
 
-    <Editor ref="bugComment" v-model="formData.comment" height="300px" />
+    <Editor ref="bugExecRecord" v-model="formData.comment" height="300px" />
 
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>

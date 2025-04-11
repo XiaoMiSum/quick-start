@@ -12,7 +12,7 @@ import static xyz.migoo.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_D
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class BugCommentRespVO extends BugCommentBaseVO {
+public class BugExecRecordRespVO extends BugExecRecordBaseVO {
 
     private Long id;
 
