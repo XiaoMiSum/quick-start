@@ -57,8 +57,8 @@ public interface MemberMapper extends BaseMapperX<ProjectMember> {
                 .selectAll(ProjectMember.class)
                 .selectAs(User::getName, "username")
                 .selectAs(Post::getName, "postName")
-                .leftJoinX(User.class, on -> on.eq(ProjectMember::getUserId, User::getId))
-                .leftJoinX(Post.class, on -> on.eq(ProjectMember::getPostId, Post::getId))
+                .leftJoin(User.class, on -> on.eq(ProjectMember::getUserId, User::getId))
+                .leftJoin(Post.class, on -> on.eq(ProjectMember::getPostId, Post::getId))
                 .eq(ProjectMember::getProjectId, req.getProjectId())
                 .likeIfPresent(User::getName, req.getMemberName())
                 .orderByDesc(ProjectMember::getId));
@@ -68,7 +68,7 @@ public interface MemberMapper extends BaseMapperX<ProjectMember> {
         return selectJoinList(MemberPageRespVO.class, new MPJLambdaWrapperX<ProjectMember>()
                 .selectAll(ProjectMember.class)
                 .selectAs(User::getName, "username")
-                .leftJoinX(User.class, on -> on.eq(ProjectMember::getUserId, User::getId))
+                .leftJoin(User.class, on -> on.eq(ProjectMember::getUserId, User::getId))
                 .eq(ProjectMember::getProjectId, projectId)
                 .orderByDesc(ProjectMember::getId));
     }
@@ -77,5 +77,9 @@ public interface MemberMapper extends BaseMapperX<ProjectMember> {
         return selectOne(new LambdaQueryWrapperX<ProjectMember>()
                 .eq(ProjectMember::getProjectId, projectId)
                 .eq(ProjectMember::getUserId, userId));
+    }
+
+    default List<ProjectMember> selectListByPost(Long postId) {
+        return selectList(ProjectMember::getPostId, postId);
     }
 }

@@ -15,6 +15,7 @@ import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.security.core.util.SecurityFrameworkUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 import static io.github.xiaomisum.quickclick.enums.BugStatus.*;
@@ -41,6 +42,10 @@ public class BugServiceImpl implements BugService {
     public String add(Bug data) {
         data.setId(IdUtil.getSnowflakeNextIdStr());
         mapper.insert(data);
+        addComment(new BugComment().setBugId(data.getId())
+                .setUserId(SecurityFrameworkUtils.getLoginUserId())
+                .setOperation(New)
+                .setContent(""));
         return data.getId();
     }
 
@@ -59,8 +64,13 @@ public class BugServiceImpl implements BugService {
     @Override
     public void confirm(List<String> ids) {
         List<Bug> bugs = Lists.newArrayList();
-        ids.forEach(id -> bugs.add((Bug) new Bug().setConfirmedTime(LocalDateTime.now()).setStatus(Opened).setId(id)));
+        List<BugComment> comments = Lists.newArrayList();
+        ids.forEach(id -> {
+            bugs.add((Bug) new Bug().setConfirmedTime(LocalDateTime.now()).setStatus(Opened).setId(id));
+            comments.add(new BugComment().setBugId(id).setUserId(SecurityFrameworkUtils.getLoginUserId()).setOperation(Opened).setContent(""));
+        });
         mapper.updateBatch(bugs);
+        commentMapper.insertBatch(comments);
     }
 
     @Override
@@ -68,12 +78,11 @@ public class BugServiceImpl implements BugService {
         data.setStatus(Opened);
         data.setConfirmedTime(LocalDateTime.now());
         mapper.updateById(data);
-        if (StrUtil.isNotBlank(comment)) {
-            addComment(new BugComment().setBugId(data.getId())
-                    .setUserId(SecurityFrameworkUtils.getLoginUserId())
-                    .setOperation(Opened)
-                    .setContent(comment));
-        }
+        addComment(new BugComment().setBugId(data.getId())
+                .setUserId(SecurityFrameworkUtils.getLoginUserId())
+                .setOperation(Opened)
+                .setContent(StrUtil.isBlank(comment) ? "" : comment));
+
     }
 
     @Override
@@ -82,6 +91,10 @@ public class BugServiceImpl implements BugService {
         data.setAssignedTime(LocalDateTime.now());
         data.setRejectedTime(LocalDateTime.now());
         mapper.updateById(data);
+        addComment(new BugComment().setBugId(data.getId())
+                .setUserId(SecurityFrameworkUtils.getLoginUserId())
+                .setOperation(Rejected)
+                .setContent(""));
     }
 
     @Override
@@ -91,6 +104,11 @@ public class BugServiceImpl implements BugService {
         data.setFixer(SecurityFrameworkUtils.getLoginUserId());
         data.setAssignedTime(LocalDateTime.now());
         mapper.updateById(data);
+        addComment(new BugComment().setBugId(data.getId())
+                .setUserId(SecurityFrameworkUtils.getLoginUserId())
+                .setOperation(Fixed)
+                // 评论内容为修复时长，用于统计修复时长
+                .setContent(data.getFixDuration() + ""));
     }
 
     @Override
@@ -105,12 +123,11 @@ public class BugServiceImpl implements BugService {
     @Override
     public void close(String id, String comment) {
         mapper.closeById(id, Closed, SecurityFrameworkUtils.getLoginUserId());
-        if (StrUtil.isNotBlank(comment)) {
-            addComment(new BugComment().setBugId(id)
-                    .setUserId(SecurityFrameworkUtils.getLoginUserId())
-                    .setOperation(Closed)
-                    .setContent(comment));
-        }
+        addComment(new BugComment().setBugId(id)
+                .setUserId(SecurityFrameworkUtils.getLoginUserId())
+                .setOperation(Closed)
+                .setContent(StrUtil.isBlank(comment) ? "" : comment));
+
     }
 
     @Override
@@ -138,4 +155,25 @@ public class BugServiceImpl implements BugService {
         return mapper.selectCount(userId, status);
     }
 
+    @Override
+    public List<Bug> loadProjectBugBySupervisor(String projectId, Collection<Long> supervisor,
+                                                LocalDateTime startTime, LocalDateTime endTime) {
+        return mapper.selectListBySupervisor(projectId, supervisor, startTime, endTime);
+    }
+
+    @Override
+    public List<Bug> loadProjectBugByFixer(String projectId, Collection<Long> fixer,
+                                           LocalDateTime startTime, LocalDateTime endTime) {
+        return commentMapper.selectBugByFixer(projectId, fixer, startTime, endTime);
+    }
+
+    @Override
+    public List<Bug> loadProjectReopenBug(String projectId, LocalDateTime startTime, LocalDateTime endTime) {
+        return commentMapper.selectBugByReopen(projectId, startTime, endTime);
+    }
+
+    @Override
+    public List<Bug> loadProjectCloseBug(String projectId, LocalDateTime startTime, LocalDateTime endTime) {
+        return mapper.selectListByClose(projectId, startTime, endTime);
+    }
 }

@@ -6,6 +6,8 @@ import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugComment;
 import io.github.xiaomisum.quickclick.enums.BugStatus;
 import xyz.migoo.framework.common.pojo.PageResult;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 public interface BugService {
@@ -41,4 +43,12 @@ public interface BugService {
     void removeComment(Long id);
 
     Long count(Long id, BugStatus... status);
+
+    List<Bug> loadProjectBugBySupervisor(String projectId, Collection<Long> Supervisor, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Bug> loadProjectBugByFixer(String projectId, Collection<Long> fixer, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Bug> loadProjectReopenBug(String projectId, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Bug> loadProjectCloseBug(String projectId, LocalDateTime startTime, LocalDateTime endTime);
 }

@@ -54,4 +54,9 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         this.add(new ProjectMember().setProjectId(projectId).setUserId(userId));
     }
 
+    @Override
+    public List<ProjectMember> loadByPost(Long postId) {
+        return mapper.selectListByPost(postId);
+    }
+
 }

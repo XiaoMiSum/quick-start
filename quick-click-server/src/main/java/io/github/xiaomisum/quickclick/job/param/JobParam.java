@@ -9,4 +9,9 @@ public class JobParam {
      * 偏移量
      */
     private Integer offset;
+
+    /**
+     * 岗位编号
+     */
+    private Long postId;
 }

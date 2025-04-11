@@ -24,4 +24,6 @@ public interface ProjectMemberService {
 
 
     void add(String projectId, Long userId);
+
+    List<ProjectMember> loadByPost(Long postId);
 }

@@ -14,6 +14,8 @@ import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import static io.github.xiaomisum.quickclick.enums.BugStatus.*;
 
@@ -48,10 +50,6 @@ public interface BugMapper extends BaseMapperX<Bug> {
         update(new LambdaUpdateWrapper<Bug>()
                 .set(Bug::getStatus, status)
                 .set(Bug::getHandler, handler)
-                .set(Bug::getFixer, null)
-                .set(Bug::getFixedTime, null)
-                .set(Bug::getCloser, null)
-                .set(Bug::getClosedTime, null)
                 .set(Bug::getAssignedTime, LocalDateTime.now())
                 .setSql(true, "reopened_times = reopened_times + 1")
                 .eq(BaseDO::getId, id));
@@ -72,4 +70,22 @@ public interface BugMapper extends BaseMapperX<Bug> {
                 .eq(Bug::getHandler, userId)
                 .in(Bug::getStatus, Arrays.stream(status).toList()));
     }
+
+    default List<Bug> selectListBySupervisor(String projectId, Collection<Long> supervisor,
+                                             LocalDateTime startTime, LocalDateTime endTime) {
+        return selectList(new LambdaQueryWrapperX<Bug>()
+                .eq(Bug::getProjectId, projectId)
+                .in(Bug::getSupervisor, supervisor)
+                .ge(Bug::getCreateTime, startTime)
+                .le(Bug::getCreateTime, endTime));
+    }
+
+    default List<Bug> selectListByClose(String projectId, LocalDateTime startTime, LocalDateTime endTime) {
+        return selectList(new LambdaQueryWrapperX<Bug>()
+                .eq(Bug::getStatus, Closed)
+                .eq(Bug::getProjectId, projectId)
+                .ge(Bug::getClosedTime, startTime)
+                .le(Bug::getClosedTime, endTime));
+    }
+
 }

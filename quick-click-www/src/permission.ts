@@ -20,7 +20,7 @@ const loader = usePageLoading()
 // 路由不重定向白名单
 const whiteList = ['/login', '/register']
 
-const useProjectPickerList = ['/project/profile', '/quality']
+const useProjectPickerList = ['/project/profile', '/quality', '/charts']
 
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
