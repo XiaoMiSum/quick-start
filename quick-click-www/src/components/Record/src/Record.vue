@@ -1,6 +1,6 @@
 <template>
   <ContentWrap>
-    <el-text tag="b"> 评论记录 </el-text>
+    <el-text tag="b"> 操作记录 </el-text>
     <el-table :data="modelValue" style="margin-top: 10px" :show-header="false" empty-text="">
       <el-table-column type="expand">
         <template #default="{ row }">
@@ -14,11 +14,7 @@
         <template #default="{ row }">
           <user-tag :value="row.userId" />
           <el-text type="info"> {{ ' 于 ' + row.createTime }} </el-text>
-          <ones-tag
-            v-if="row.operation"
-            :value="row.operation"
-            :type="DICT_TYPE.QUALITY_BUG_STATUS"
-          />
+          <ones-tag v-if="row.operation" :value="row.operation" :type="dictCode" />
           <el-text v-else type="info"> 评论</el-text>
         </template>
       </el-table-column>
@@ -38,19 +34,20 @@
 </template>
 
 <script setup lang="ts">
-import { addRecord } from '@/api/quality/bug'
-
 import { Editor, FulltextDisplay } from '@/components/Editor'
-import { DICT_TYPE } from '@/utils/dictionary'
 
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Array,
     requried: true
   },
-  readonly: {
-    type: Boolean,
-    default: false
+  dictCode: {
+    type: String,
+    required: true
+  },
+  addRecord: {
+    type: Function,
+    required: false
   }
 })
 
@@ -61,11 +58,11 @@ const visible = ref(false)
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formData = ref<any>({})
 
-defineOptions({ name: 'BugCommenter' })
+defineOptions({ name: 'Record' })
 
-const open = async (bugId: string) => {
+const open = async (dataId: any, key: string) => {
   visible.value = true
-  formData.value.bugId = bugId
+  formData.value[key] = dataId
 }
 
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
@@ -77,7 +74,6 @@ const resetForm = () => {
 
 const onClose = () => {
   resetForm()
-  emit('success')
 }
 
 /** 提交表单 */
@@ -88,8 +84,9 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value
-    await addRecord(data)
+    await props.addRecord(data)
     message.success(t('common.optionSuccess'))
+    emit('success')
     visible.value = false
   } finally {
     formLoading.value = false

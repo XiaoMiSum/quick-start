@@ -178,7 +178,13 @@
   <BugCloser ref="bugCloser" :users="users" @success="getData" />
   <BugOpener ref="bugOpener" :users="users" @success="getData" />
 
-  <BugCommenter ref="bugCommenter" v-model="comments" @success="handlegetRecords" />
+  <Record
+    ref="bugRecord"
+    v-model="comments"
+    :add-record="HTTP.addRecord"
+    :dict-code="DICT_TYPE.QUALITY_BUG_STATUS"
+    @success="handlegetRecords"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -196,13 +202,13 @@ import { DICT_TYPE } from '@/utils/dictionary'
 
 import { FulltextDisplay } from '@/components/Editor'
 import { FloatingButton } from '@/components/XButton'
+import { Record } from '@/components/Record'
 
 import BugConfirmer from './BugConfirmer.vue'
 import BugRejecter from './BugRejecter.vue'
 import BugFixer from './BugFixer.vue'
 import BugCloser from './BugCloser.vue'
 import BugOpener from './BugOpener.vue'
-import BugCommenter from './BugCommenter.vue'
 
 const globalStore = useGlobalStore()
 
@@ -438,9 +444,9 @@ const handleReopen = async () => {
   bugOpener.value.open(formData.value)
 }
 
-const bugCommenter = ref()
+const bugRecord = ref()
 const handleComment = async () => {
-  bugCommenter.value.open(formData.value.id)
+  bugRecord.value.open(formData.value.id, 'bugId')
 }
 
 const getData = async () => {

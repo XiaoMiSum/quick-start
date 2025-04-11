@@ -66,7 +66,7 @@
       </el-form-item>
     </el-form>
 
-    <BugCommenter ref="bugCommenter" v-model="comments" />
+    <Record ref="bugRecord" v-model="comments" :dict-code="DICT_TYPE.QUALITY_BUG_STATUS" />
     <template #footer>
       <el-button @click="visible = false">取 消</el-button>
       <el-button :disabled="formLoading" type="primary" @click="submitForm">确 定</el-button>
@@ -79,9 +79,9 @@ import { fix, getData, getRecords } from '@/api/quality/bug'
 
 import { DICT_TYPE, getDictOptions } from '@/utils/dictionary'
 
-import { formatDate } from '@/utils/formatTime'
+import { Record } from '@/components/Record'
 
-import BugCommenter from './BugCommenter.vue'
+import { formatDate } from '@/utils/formatTime'
 
 defineProps({
   users: {
