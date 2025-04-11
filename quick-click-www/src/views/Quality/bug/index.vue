@@ -47,7 +47,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="修复人" prop="fixer" v-if="activeName !== '4'">
+          <el-form-item label="修复人" prop="fixer">
             <el-select
               v-model="queryParams.fixer"
               filterable
@@ -320,7 +320,7 @@ const queryParams = ref<any>({
   nodeId: null
 })
 
-const activeName = ref('0')
+const activeName = ref('ToMe')
 
 const loading = ref(false)
 const list = ref<any>([])
@@ -335,6 +335,7 @@ const getList = async () => {
   loading.value = true
   try {
     queryParams.value.projectId = globalStore.getCurrentProject
+    queryParams.value.tab = activeName
     const data = await HTTP.getPage(queryParams.value)
     list.value = data.list
     total.value = data.total
@@ -400,7 +401,6 @@ const getTree = async () => {
   modules.value = await globalStore.getNodes
 }
 const tabChange = async () => {
-  queryParams.value.tab = activeName
   checked.value = []
   list.value = []
   total.value = 0

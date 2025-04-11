@@ -35,6 +35,7 @@ const crudColumns = reactive<CrudSchema[]>([
     dictClass: 'number',
     search: {
       show: true,
+      formItemProps: { style: { width: '200px' } },
       hiddenLabel: true
     }
   },
@@ -65,7 +66,9 @@ export const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const { getList, setSearchParams } = tableMethods

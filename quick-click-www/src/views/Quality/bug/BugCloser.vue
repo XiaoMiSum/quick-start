@@ -90,6 +90,7 @@ const resetForm = () => {
     handler: undefined,
     fixedTime: undefined
   }
+  comment.value = ''
   formRef.value?.resetFields()
 }
 

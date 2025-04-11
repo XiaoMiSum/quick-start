@@ -162,6 +162,7 @@ import { getDictOptions, DICT_TYPE } from '@/utils/dictionary'
 
 import { Editor } from '@/components/Editor'
 import { FloatingButton } from '@/components/XButton'
+import { handleRemove } from '@/views/Management/developer/errorlog/ErrorLog'
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
@@ -177,6 +178,8 @@ const { t } = useI18n() // 国际化
 
 const formData = ref<any>({
   nodeId: undefined,
+  planId: undefined,
+  testcaseId: undefined,
   projectId: globalStore.getCurrentProject,
   supervisor: undefined,
   handler: undefined,
@@ -262,6 +265,8 @@ const handleCloseView = async () => {
 const resetData = () => {
   formData.value = {
     nodeId: undefined,
+    planId: undefined,
+    testcaseId: undefined,
     projectId: globalStore.getCurrentProject,
     supervisor: undefined,
     handler: undefined,
@@ -387,9 +392,13 @@ onMounted(async () => {
   if (query && query.from && query.originalId) {
     if (query.from === 'bug') {
       const data = await HTTP.getData(query.originalId)
-      Object.keys(formData.value).forEach((key) => (formData.value[key] = data[key]))
+      Object.keys(formData.value)
+        .filter((key) => !['status', 'handler', 'supervisor'].includes(key))
+        .forEach((key) => (formData.value[key] = data[key]))
       formData.value.title = formData.value.title + '_copy'
       formData.value.status = 'New'
+      formData.value.handler = undefined
+      formData.value.supervisor = undefined
     } else if (query.from === 'testplan') {
       const data = Plan.getData(query.originalId)
       formData.value.title = data.title

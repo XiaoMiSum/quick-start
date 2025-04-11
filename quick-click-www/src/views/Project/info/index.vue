@@ -35,7 +35,7 @@ import * as HTTP from '@/api/project'
 import { useGlobalStore } from '@/store/modules/global'
 const globalStore = useGlobalStore()
 
-const data = ref<any>({ productManagers: [], developers: [], testers: [], links: [] })
+const data = ref<any>({})
 const active = ref('0')
 
 const getInfo = async () => {

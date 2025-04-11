@@ -85,8 +85,6 @@ import ProjectForm from './ProjectForm.vue'
 
 import * as HTTP from '@/api/project'
 
-import { useAppStore } from '@/store/modules/app'
-
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
