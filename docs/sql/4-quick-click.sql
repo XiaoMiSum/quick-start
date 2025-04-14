@@ -378,6 +378,7 @@ CREATE TABLE `qc_report_quality_developer_day`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '开发基础数据表' ROW_FORMAT = Dynamic;
 
 
+
 -- ----------------------------
 -- Table structure for qc_quality_test_plan_exec_record
 -- ----------------------------
@@ -389,6 +390,7 @@ CREATE TABLE `qc_quality_test_plan_exec_record`  (
   `data_id` bigint NOT NULL COMMENT '关联编号',
   `user_id` bigint NOT NULL COMMENT '用户编号',
   `operation` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '操作类型',
+  `duration` int NOT NULL DEFAULT 0 COMMENT '操作耗时，修复、激活、关闭缺陷时记录消耗时间',
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `deleted` tinyint NULL DEFAULT 0,
   `create_time` datetime NULL DEFAULT NULL,
@@ -421,5 +423,30 @@ CREATE TABLE `qc_quality_test_review_exec_record`  (
   INDEX `inx`(`project_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '评审记录表' ROW_FORMAT = Dynamic;
 
+
+-- ----------------------------
+-- Table structure for qc_report_quality_tester_day
+-- ----------------------------
+DROP TABLE IF EXISTS `qc_report_quality_tester_day`;
+CREATE TABLE `qc_report_quality_tester_day`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `date` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '日期：yyyy-mm-dd',
+  `user_id` bigint NOT NULL COMMENT '用户编号',
+  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '项目编号',
+  `testcase_total` int NOT NULL DEFAULT 0 COMMENT '新增用例数',
+  `execute_testcase_total` int NOT NULL DEFAULT 0 COMMENT '执行用例数',
+  `new_bug_total` int NOT NULL DEFAULT 0 COMMENT '归属Bug数',
+  `validated_bug_total` int NOT NULL DEFAULT 0 COMMENT '验证Bug数',
+  `validated_bug_duration` int NOT NULL DEFAULT 0 COMMENT '验证Bug耗时',
+  `closed_bug_total` int NOT NULL DEFAULT 0 COMMENT '关闭Bug数',
+  `reopened_bug_total` int NOT NULL DEFAULT 0 COMMENT '激活Bug数',
+  `deleted` bit(1) NULL DEFAULT b'0',
+  `create_time` datetime NULL DEFAULT NULL,
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL,
+  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`user_id` ASC, `project_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '报表基础数据表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

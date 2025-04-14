@@ -168,7 +168,7 @@ public class BugController {
      */
     @PutMapping("/reopened")
     public Result<?> reopen(@Valid @RequestBody BugReopenReqVO data) {
-        service.reopen(data.getId(), data.getHandler(), data.getComment());
+        service.reopen(data.getId(), data.getHandler(), data.getComment(), data.getDuration());
         return Result.getSuccessful();
     }
 
@@ -180,7 +180,7 @@ public class BugController {
      */
     @PutMapping("/closed")
     public Result<?> close(@Valid @RequestBody BugCloseReqVO data) {
-        service.close(data.getId(), data.getComment());
+        service.close(data.getId(), data.getComment(), data.getDuration());
         return Result.getSuccessful();
     }
 

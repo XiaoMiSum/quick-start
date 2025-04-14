@@ -107,7 +107,7 @@ public class DeveloperDayDataJobHandler implements JobHandler {
                 data.setClosedBugTotal(getSize(supervisorClosedGrouping.get(userId)));
                 // 计算修复人的修复时长
                 var fixerBugs = fixerGrouping.get(userId);
-                data.setFixedBugDuration(Objects.isNull(fixerBugs) ? 0 : fixerBugs.stream().mapToInt(item -> Integer.parseInt(item.getContent())).sum());
+                data.setFixedBugDuration(CollectionUtil.isEmpty(fixerBugs) ? 0 : fixerBugs.stream().mapToInt(BugExecRecord::getDuration).sum());
 
                 // 获取 激活次数：按修复人 + 拒绝人
                 var fixerReopenTotal = getSize(fixerGroupingReopenBug.get(userId));

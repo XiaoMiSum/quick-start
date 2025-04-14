@@ -1,6 +1,6 @@
 <template>
   <Dialog :title="'【激活】' + title" v-model="visible" @close="onClose" width="1200px">
-    <el-form ref="formRef" :model="formData" label-width="100px">
+    <el-form ref="formRef" :rules="formRules" :model="formData" label-width="100px">
       <div v-if="formData.status === 'Rejected'">
         <el-form-item label="拒绝时间">
           <user-tag :value="formData.rejectedUser" type="danger" />
@@ -26,6 +26,16 @@
           <el-text type="info"> {{ formData.solution }}</el-text>
         </el-form-item>
       </div>
+
+      <el-form-item label="验证时长" prop="duration">
+        <el-input-number
+          v-model="formData.duration"
+          :precision="0"
+          placeholder="请输入验证时长（分钟）"
+          :step="1"
+          style="width: 100%"
+        />
+      </el-form-item>
     </el-form>
 
     <Editor ref="bugExecRecord" v-model="formData.comment" height="300px" />
@@ -66,7 +76,12 @@ const formData = ref<any>({
   solution: undefined,
   handler: undefined,
   fixedTime: undefined,
-  status: ''
+  status: '',
+  duration: undefined
+})
+
+const formRules = reactive({
+  duration: [{ required: true, message: '验证时长不能为空', trigger: 'blur' }]
 })
 
 defineOptions({ name: 'BugOpener' })
@@ -91,14 +106,14 @@ const resetForm = () => {
     solution: undefined,
     handler: undefined,
     fixedTime: undefined,
-    status: ''
+    status: '',
+    duration: undefined
   }
   formRef.value?.resetFields()
 }
 
 const onClose = () => {
   resetForm()
-  emit('success')
 }
 
 /** 提交表单 */
@@ -112,8 +127,14 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value
-    await reopen({ id: data.id, handler: data.fixer || data.rejectedUser, comment: data.comment })
+    await reopen({
+      id: data.id,
+      handler: data.fixer || data.rejectedUser,
+      comment: data.comment,
+      duration: data.duration
+    })
     message.success(t('common.optionSuccess'))
+    emit('success')
     visible.value = false
   } finally {
     formLoading.value = false

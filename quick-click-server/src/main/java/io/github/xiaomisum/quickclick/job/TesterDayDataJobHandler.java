@@ -99,10 +99,11 @@ public class TesterDayDataJobHandler implements JobHandler {
                         .setExecuteTestcaseTotal(getSize(executor.get(userId)))
                         // 获取创建的Bug数量
                         .setNewBugTotal(getSize(creatorGrouping.get(userId)))
-
                         // 关闭的Bug数量
                         .setClosedBugTotal(getSize(closeGrouping.get(userId)))
-                        .setReopenedBugTotal(getSize(reopenGrouping.get(userId)));
+                        .setReopenedBugTotal(getSize(reopenGrouping.get(userId)))
+                        // 验证Bug总时长 = 关闭Bug总时长 + 激活Bug总时长
+                        .setValidatedBugDuration(getSum(closeGrouping.get(userId)) + getSum(reopenGrouping.get(userId)));
                 // 验证Bug总数 = 关闭数量+激活数量
                 data.setValidatedBugTotal(data.getClosedBugTotal() + data.getReopenedBugTotal());
                 results.add(data);
@@ -116,6 +117,10 @@ public class TesterDayDataJobHandler implements JobHandler {
 
     private int getSize(List<?> items) {
         return Objects.isNull(items) ? 0 : items.size();
+    }
+
+    private int getSum(List<BugExecRecord> items) {
+        return CollectionUtil.isEmpty(items) ? 0 : items.stream().mapToInt(BugExecRecord::getDuration).sum();
     }
 
 }

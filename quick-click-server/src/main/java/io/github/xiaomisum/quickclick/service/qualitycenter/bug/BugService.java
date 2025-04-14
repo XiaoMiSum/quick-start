@@ -30,9 +30,9 @@ public interface BugService {
 
     void fix(Bug data);
 
-    void reopen(String id, Long handler, String comment);
+    void reopen(String id, Long handler, String comment, Integer duration);
 
-    void close(String id, String comment);
+    void close(String id, String comment, Integer duration);
 
     void remove(String id);
 

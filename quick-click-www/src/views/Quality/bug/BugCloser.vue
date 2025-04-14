@@ -1,6 +1,6 @@
 <template>
   <Dialog :title="'【关闭】' + title" v-model="visible" @close="onClose" width="1200px">
-    <el-form ref="formRef" :model="formData" label-width="100px">
+    <el-form ref="formRef" :rules="formRules" :model="formData" label-width="100px">
       <div v-if="formData.status === 'Rejected'">
         <el-form-item label="拒绝时间">
           <user-tag :value="formData.rejectedUser" type="danger" />
@@ -26,6 +26,16 @@
           <el-text type="info"> {{ formData.solution }}</el-text>
         </el-form-item>
       </div>
+
+      <el-form-item label="验证时长" prop="duration">
+        <el-input-number
+          v-model="formData.duration"
+          :precision="0"
+          placeholder="请输入验证时长（分钟）"
+          :step="1"
+          style="width: 100%"
+        />
+      </el-form-item>
     </el-form>
 
     <Editor ref="bugExecRecord" v-model="comment" height="200px" />
@@ -62,10 +72,15 @@ const formData = ref<any>({
   rootCause: '',
   solution: '',
   handler: undefined,
-  fixedTime: undefined
+  fixedTime: undefined,
+  duration: undefined
 })
 
 const comment = ref('')
+
+const formRules = reactive({
+  duration: [{ required: true, message: '验证时长不能为空', trigger: 'blur' }]
+})
 
 defineOptions({ name: 'BugCloser' })
 
@@ -88,7 +103,8 @@ const resetForm = () => {
     rootCause: '',
     solution: '',
     handler: undefined,
-    fixedTime: undefined
+    fixedTime: undefined,
+    duration: undefined
   }
   comment.value = ''
   formRef.value?.resetFields()
@@ -96,7 +112,6 @@ const resetForm = () => {
 
 const onClose = () => {
   resetForm()
-  emit('success')
 }
 
 /** 提交表单 */
@@ -109,8 +124,13 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    await close({ comment: comment.value, id: formData.value.id })
+    await close({
+      comment: comment.value,
+      id: formData.value.id,
+      duration: formData.value.duration
+    })
     message.success(t('common.optionSuccess'))
+    emit('success')
     visible.value = false
   } finally {
     formLoading.value = false

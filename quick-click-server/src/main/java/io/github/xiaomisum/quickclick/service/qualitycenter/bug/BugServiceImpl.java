@@ -107,25 +107,30 @@ public class BugServiceImpl implements BugService {
         addRecord(new BugExecRecord().setBugId(data.getId())
                 .setUserId(SecurityFrameworkUtils.getLoginUserId())
                 .setOperation(Fixed)
-                // 评论内容为修复时长，用于统计修复时长
-                .setContent(data.getFixDuration() + ""));
+                // 修复bug 需记录耗时
+                .setDuration(data.getFixDuration())
+                .setContent(""));
     }
 
     @Override
-    public void reopen(String id, Long handler, String comment) {
+    public void reopen(String id, Long handler, String comment, Integer duration) {
         mapper.reopenById(id, Reopened, handler);
         addRecord(new BugExecRecord().setBugId(id)
                 .setUserId(SecurityFrameworkUtils.getLoginUserId())
                 .setOperation(Reopened)
+                // todo 激活Bug 需要消耗测试人员工时，记录测试工时
+                .setDuration(duration)
                 .setContent(StrUtil.isBlank(comment) ? "" : comment));
     }
 
     @Override
-    public void close(String id, String comment) {
+    public void close(String id, String comment, Integer duration) {
         mapper.closeById(id, Closed, SecurityFrameworkUtils.getLoginUserId());
         addRecord(new BugExecRecord().setBugId(id)
                 .setUserId(SecurityFrameworkUtils.getLoginUserId())
                 .setOperation(Closed)
+                // todo 关闭Bug 需要消耗测试人员工时，记录测试工时
+                .setDuration(duration)
                 .setContent(StrUtil.isBlank(comment) ? "" : comment));
 
     }

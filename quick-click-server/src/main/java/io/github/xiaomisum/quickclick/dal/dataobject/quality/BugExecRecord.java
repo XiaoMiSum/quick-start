@@ -27,6 +27,11 @@ public class BugExecRecord extends BaseDO<Long> {
     private BugStatus operation;
 
     /**
+     * 耗时
+     */
+    private Integer duration;
+
+    /**
      * 内容
      */
     private String content;

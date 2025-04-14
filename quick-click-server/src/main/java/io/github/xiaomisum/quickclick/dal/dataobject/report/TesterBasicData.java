@@ -49,6 +49,11 @@ public class TesterBasicData extends BaseDO<Long> {
     private Integer validatedBugTotal;
 
     /**
+     * 验证耗时
+     */
+    private Integer validatedBugDuration;
+
+    /**
      * 关闭缺陷数
      */
     private Integer closedBugTotal;
