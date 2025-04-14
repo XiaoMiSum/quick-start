@@ -34,6 +34,7 @@ import org.apache.ibatis.annotations.Update;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import xyz.migoo.framework.mybatis.core.dataobject.BaseDO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,11 +54,14 @@ public interface TestcaseMapper extends BaseMapperX<Testcase> {
     }
 
     default List<Testcase> selectList(String projectId) {
-        return selectList(new LambdaQueryWrapperX<Testcase>().eq(Testcase::getProjectId, projectId));
+        return selectList(new LambdaQueryWrapperX<Testcase>()
+                .eq(Testcase::getProjectId, projectId)
+                .eq(Testcase::getTrash, 0));
     }
 
     default PageResult<Testcase> selectPage(TestcaseQueryReqVO req, List<String> notInIds) {
         return selectPage(req, new LambdaQueryWrapperX<Testcase>()
+                .eq(Testcase::getTrash, 0)
                 .eq(Testcase::getProjectId, req.getProjectId())
                 .eqIfPresent(Testcase::getNodeId, req.getNodeId())
                 .likeIfPresent(Testcase::getTitle, req.getTitle())
@@ -95,7 +99,14 @@ public interface TestcaseMapper extends BaseMapperX<Testcase> {
 
     default List<Testcase> selectByUpdateTimeAfter(LocalDateTime maxUpdateTime) {
         return selectList(new LambdaQueryWrapperX<Testcase>()
-                .ge(Testcase::getUpdateTime, maxUpdateTime));
+                .ge(Testcase::getUpdateTime, maxUpdateTime)
+                .eq(Testcase::getTrash, 0));
     }
 
+    default List<Testcase> selectList(LocalDateTime startTime, LocalDateTime endTime) {
+        return selectList(new LambdaQueryWrapperX<Testcase>()
+                .eq(Testcase::getTrash, 0)
+                .ge(Testcase::getCreateTime, startTime)
+                .le(BaseDO::getCreateTime, endTime));
+    }
 }

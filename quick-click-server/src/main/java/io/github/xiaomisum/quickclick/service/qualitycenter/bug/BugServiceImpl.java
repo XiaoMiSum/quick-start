@@ -151,15 +151,24 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
+    public List<Bug> loadProjectBugByCreator(String projectId, Collection<Long> creator, LocalDateTime startTime, LocalDateTime endTime) {
+        return mapper.selectListByCreator(projectId, creator, startTime, endTime);
+    }
+
+    @Override
     public List<Bug> loadProjectBugBySupervisor(String projectId, Collection<Long> supervisor,
                                                 LocalDateTime startTime, LocalDateTime endTime) {
         return mapper.selectListBySupervisor(projectId, supervisor, startTime, endTime);
     }
 
     @Override
-    public List<Bug> loadProjectBugByFixer(String projectId, Collection<Long> fixer,
-                                           LocalDateTime startTime, LocalDateTime endTime) {
-        return commentMapper.selectBugByFixer(projectId, fixer, startTime, endTime);
+    public List<BugExecRecord> loadProjectClosedRecords(String projectId, Collection<Long> closer, LocalDateTime startTime, LocalDateTime endTime) {
+        return commentMapper.selectClosedBug(projectId, closer, startTime, endTime);
+    }
+
+    @Override
+    public List<BugExecRecord> loadProjectFixedRecords(String projectId, Collection<Long> fixer, LocalDateTime startTime, LocalDateTime endTime) {
+        return commentMapper.selectRecordsByOperation(projectId, fixer, Fixed, startTime, endTime);
     }
 
     @Override
@@ -170,5 +179,10 @@ public class BugServiceImpl implements BugService {
     @Override
     public List<Bug> loadProjectCloseBug(String projectId, LocalDateTime startTime, LocalDateTime endTime) {
         return mapper.selectListByClose(projectId, startTime, endTime);
+    }
+
+    @Override
+    public List<BugExecRecord> loadProjectReopenRecords(String projectId, List<Long> testers, LocalDateTime startTime, LocalDateTime endTime) {
+        return commentMapper.selectRecordsByOperation(projectId, testers, Reopened, startTime, endTime);
     }
 }

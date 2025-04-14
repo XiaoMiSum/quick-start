@@ -17,3 +17,19 @@ export const updateDeveloper = (data: any) => {
     data
   })
 }
+
+// 查询开发人员每日数据
+export const getTester = (params: any) => {
+  return request.get({
+    url: url + '/tester',
+    params
+  })
+}
+
+// 更新开发人员每日数据
+export const updateTester = (data: any) => {
+  return request.put({
+    url: url + '/tester',
+    data
+  })
+}

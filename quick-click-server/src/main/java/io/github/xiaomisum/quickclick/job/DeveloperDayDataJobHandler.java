@@ -1,8 +1,11 @@
 package io.github.xiaomisum.quickclick.job;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectMember;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.Bug;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.BugExecRecord;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
 import io.github.xiaomisum.quickclick.dal.dataobject.report.DeveloperBasicData;
 import io.github.xiaomisum.quickclick.dal.mapper.report.DeveloperBasicDataMapper;
@@ -21,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -57,15 +61,28 @@ public class DeveloperDayDataJobHandler implements JobHandler {
         List<DeveloperBasicData> results = Lists.newArrayList();
         for (String projectId : developerGrouping.keySet()) {
             var developers = developerGrouping.get(projectId).stream().map(ProjectMember::getUserId).toList();
+            if (CollectionUtil.isEmpty(developers)) {
+                continue;
+            }
             // 项目下的测试用例
             var projectTestcases = projectCaseGrouping.get(projectId);
+            Map<?, List<PlanCase>> backend;
+            Map<?, List<PlanCase>> frontend;
+            if (Objects.nonNull(projectTestcases)) {
+                // 项目下的开发人员
+                backend = projectTestcases.stream().collect(Collectors.groupingBy(PlanCase::getBackendDeveloper));
+                frontend = projectTestcases.stream().collect(Collectors.groupingBy(PlanCase::getFrontendDeveloper));
+            } else {
+                frontend = Maps.newHashMap();
+                backend = Maps.newHashMap();
+            }
 
-            // 获取责任人为项目下开发人员的Bug
+            // 获取当日新增Bug
             var bugs1 = bugService.loadProjectBugBySupervisor(projectId, developers, startTime, endTime);
             var supervisorGrouping = bugs1.stream().collect(Collectors.groupingBy(Bug::getSupervisor));
-            // 获取修复人为项目下开发人员的Bug
-            var bugs2 = bugService.loadProjectBugByFixer(projectId, developers, startTime, endTime);
-            var fixerGrouping = bugs2.stream().collect(Collectors.groupingBy(Bug::getFixer));
+            // 获取当日修复记录
+            var bugs2 = bugService.loadProjectFixedRecords(projectId, developers, startTime, endTime);
+            var fixerGrouping = bugs2.stream().collect(Collectors.groupingBy(BugExecRecord::getUserId));
             // 获取项目下的有激活记录的Bug
             var bugs3 = bugService.loadProjectReopenBug(projectId, startTime, endTime);
             // 开发修复的激活Bug分组
@@ -80,21 +97,17 @@ public class DeveloperDayDataJobHandler implements JobHandler {
             // 遍历项目下的开发人员
             developers.forEach(userId -> {
                 var data = new DeveloperBasicData().setDate(date).setUserId(userId).setProjectId(projectId);
-                if (Objects.nonNull(projectTestcases)) {
-                    // 项目下的开发人员
-                    var backend = projectTestcases.stream().collect(Collectors.groupingBy(PlanCase::getBackendDeveloper));
-                    var frontend = projectTestcases.stream().collect(Collectors.groupingBy(PlanCase::getFrontendDeveloper));
-                    // 获取该开发人员的测试用例数量
-                    data.setTestcaseTotal(getSize(backend.get(userId)) + getSize(frontend.get(userId)));
-                }
+                // 获取该开发人员的测试用例数量
+                data.setTestcaseTotal(getSize(backend.get(userId)) + getSize(frontend.get(userId)));
+
                 // 获取责任人的Bug数量
                 data.setNewBugTotal(getSize(supervisorGrouping.get(userId)));
 
                 // 获取关闭的Bug数量
                 data.setClosedBugTotal(getSize(supervisorClosedGrouping.get(userId)));
-                // 获取修复人的 修复时长
+                // 计算修复人的修复时长
                 var fixerBugs = fixerGrouping.get(userId);
-                data.setFixedBugDuration(Objects.isNull(fixerBugs) ? 0 : fixerBugs.stream().mapToInt(Bug::getFixDuration).sum());
+                data.setFixedBugDuration(Objects.isNull(fixerBugs) ? 0 : fixerBugs.stream().mapToInt(item -> Integer.parseInt(item.getContent())).sum());
 
                 // 获取 激活次数：按修复人 + 拒绝人
                 var fixerReopenTotal = getSize(fixerGroupingReopenBug.get(userId));

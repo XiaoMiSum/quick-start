@@ -35,6 +35,13 @@ public class TesterDaysBaseVO {
     private Integer newBugTotal;
 
     /**
+     * 验证缺陷数
+     */
+    @NotNull(message = "validatedBugTotal 不能为空")
+    @Min(value = 0, message = "validatedBugTotal 不能小于0")
+    private Integer validatedBugTotal;
+
+    /**
      * 关闭缺陷数
      */
     @NotNull(message = "closedBugTotal 不能为空")
@@ -42,7 +49,7 @@ public class TesterDaysBaseVO {
     private Integer closedBugTotal;
 
     /**
-     * 归属缺陷激活数
+     * 激活曲线数
      */
     @NotNull(message = "reopenedBugTotal 不能为空")
     @Min(value = 0, message = "reopenedBugTotal 不能小于0")

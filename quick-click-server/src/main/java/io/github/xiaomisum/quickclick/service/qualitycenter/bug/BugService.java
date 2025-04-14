@@ -42,11 +42,17 @@ public interface BugService {
 
     Long count(Long id, BugStatus... status);
 
+    List<Bug> loadProjectBugByCreator(String projectId, Collection<Long> creator, LocalDateTime startTime, LocalDateTime endTime);
+
     List<Bug> loadProjectBugBySupervisor(String projectId, Collection<Long> Supervisor, LocalDateTime startTime, LocalDateTime endTime);
 
-    List<Bug> loadProjectBugByFixer(String projectId, Collection<Long> fixer, LocalDateTime startTime, LocalDateTime endTime);
+    List<BugExecRecord> loadProjectClosedRecords(String projectId, Collection<Long> closer, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<BugExecRecord> loadProjectFixedRecords(String projectId, Collection<Long> fixer, LocalDateTime startTime, LocalDateTime endTime);
 
     List<Bug> loadProjectReopenBug(String projectId, LocalDateTime startTime, LocalDateTime endTime);
 
     List<Bug> loadProjectCloseBug(String projectId, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<BugExecRecord> loadProjectReopenRecords(String projectId, List<Long> testers, LocalDateTime startTime, LocalDateTime endTime);
 }

@@ -1,8 +1,11 @@
 <template>
   <ContentWrap>
-    <el-tabs v-model="active" :tab-change="tabChange">
+    <el-tabs v-model="active" @tab-change="tabChange">
       <el-tab-pane label="开发人员" name="0" v-if="checkPermi(['charts:days:query'])">
         <DevDaysData ref="devDaysData" :users="users" />
+      </el-tab-pane>
+      <el-tab-pane label="测试人员" name="1" v-if="checkPermi(['charts:days:query'])">
+        <TesterDaysData ref="testerDaysData" :users="users" />
       </el-tab-pane>
     </el-tabs>
   </ContentWrap>
@@ -13,6 +16,7 @@ import * as Days from '@/api/charts/days'
 import { checkPermi } from '@/utils/permission'
 
 import DevDaysData from './DevDaysData.vue'
+import TesterDaysData from './TesterDaysData.vue'
 
 const active = ref('0')
 const flag = ref(false)
@@ -37,10 +41,14 @@ const tabChange = (name) => {
 }
 
 const devDaysData = ref(null)
+const testerDaysData = ref(null)
 const handleChangeTabData = () => {
   switch (active.value) {
     case '0':
       devDaysData.value.getList()
+      break
+    case '1':
+      testerDaysData.value.getList()
       break
   }
 }

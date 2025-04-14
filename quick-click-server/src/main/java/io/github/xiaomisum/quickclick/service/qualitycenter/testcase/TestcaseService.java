@@ -61,4 +61,6 @@ public interface TestcaseService {
 
     void removeTrash(List<String> ids, String projectId);
 
+    List<Testcase> loadTestCase(LocalDateTime startTime, LocalDateTime endTime);
+
 }
