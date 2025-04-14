@@ -99,7 +99,10 @@ const message = useMessage() // 消息弹窗
 import { defineProps } from 'vue'
 
 const props = defineProps({
-  currentProject: String
+  currentProject: {
+    type: String,
+    required: true
+  }
 })
 
 const { t } = useI18n() // 国际化
@@ -112,7 +115,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   memberName: '',
-  projectId: props.currentProject
+  projectId: ''
 })
 const loading = ref(false)
 const list = ref<any>([])
@@ -125,6 +128,7 @@ const queryFormRef = ref() // 搜索的表单
 const getList = async () => {
   loading.value = true
   try {
+    queryParams.projectId = props.currentProject
     const data = await HTTP.getPage(queryParams)
     list.value = data.list
     total.value = data.total
@@ -166,6 +170,9 @@ const handleDelete = async (ids: any) => {
     await getList()
   } catch {}
 }
+
+// 提供 getList 方法，用于获取数据
+defineExpose({ getList })
 
 /** 初始化 **/
 onMounted(async () => {

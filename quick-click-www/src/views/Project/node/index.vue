@@ -98,7 +98,10 @@ const message = useMessage() // 消息弹窗
 import { defineProps } from 'vue'
 
 const props = defineProps({
-  currentProject: String
+  currentProject: {
+    type: String,
+    required: true
+  }
 })
 
 const treeProps = ref({})
@@ -110,7 +113,7 @@ defineOptions({ name: 'ProjectManager' })
 let multipleSelection = ref<number[]>([])
 
 const queryParams = reactive({
-  projectId: props.currentProject
+  projectId: ''
 })
 const loading = ref(false)
 const list = ref<any>([])
@@ -122,6 +125,7 @@ const queryFormRef = ref() // 搜索的表单
 const getList = async () => {
   loading.value = true
   try {
+    queryParams.projectId = props.currentProject
     const data = await HTTP.getList(queryParams)
     list.value = handleTree(data)
   } finally {
@@ -161,6 +165,9 @@ const handleDelete = async (ids: any) => {
     await getList()
   } catch {}
 }
+
+// 提供 getList 方法，用于获取数据
+defineExpose({ getList })
 
 /** 初始化 **/
 onMounted(async () => {
