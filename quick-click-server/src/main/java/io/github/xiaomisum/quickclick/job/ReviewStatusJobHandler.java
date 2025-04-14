@@ -1,6 +1,7 @@
 package io.github.xiaomisum.quickclick.job;
 
 import cn.hutool.core.collection.CollectionUtil;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Review;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.ReviewCase;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.job.param.JobParam;
@@ -43,6 +44,7 @@ public class ReviewStatusJobHandler implements JobHandler {
             log.info("获取到用例更新时间 {} 的测试评审 {}", maxUpdateTime, reviewIds.size());
             reviewIds.forEach(item -> {
                 // 根据评审编号获取所有评审用例
+                Review review = reviewService.get(item);
                 List<ReviewCase> cases = caseService.getList(item);
                 Map<TestStatus, List<ReviewCase>> group = cases.stream()
                         .collect(Collectors.groupingBy(ReviewCase::getResult));
@@ -52,15 +54,16 @@ public class ReviewStatusJobHandler implements JobHandler {
                 List<ReviewCase> blocking = Blocking.get(group);
                 List<ReviewCase> skipped = Skipped.get(group);
                 List<ReviewCase> processing = Processing.get(group);
-                if (preparing.isEmpty() && processing.isEmpty()) {
+                if (preparing.isEmpty() && processing.isEmpty() && !review.getStatus().equals(Finished)) {
                     // 进行中和未开始的都为空，评审完成
                     log.info("没有【preparing】【processing】的用例，更新状态为【Finished】");
                     reviewService.updateStatus(item, Finished);
-                } else if (preparing.size() == cases.size()) {
+                } else if (preparing.size() == cases.size() && !review.getStatus().equals(Preparing)) {
                     // 准备中的数量与规划的测试用例总数一致，准备中
                     log.info("【preparing】的用例数量与规划用例总数一致，更新状态为【Preparing】");
                     reviewService.updateStatus(item, Preparing);
-                } else if ((passed.size() + failed.size() + blocking.size() + skipped.size() + processing.size()) < cases.size()) {
+                } else if ((passed.size() + failed.size() + blocking.size() + skipped.size() + processing.size()) < cases.size()
+                        && !review.getStatus().equals(Processing)) {
                     // 成功数量 + 失败数量 + 阻塞数量 + 跳过数量 + 进行中数量 之和 小于 总数，评审进行中
                     log.info("除【preparing】之外的用例数量总和小于规划用例总数，更新状态为【Processing】");
                     reviewService.updateStatus(item, Processing);

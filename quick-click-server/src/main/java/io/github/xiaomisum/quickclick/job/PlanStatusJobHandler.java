@@ -1,6 +1,7 @@
 package io.github.xiaomisum.quickclick.job;
 
 import cn.hutool.core.collection.CollectionUtil;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
 import io.github.xiaomisum.quickclick.enums.TestStatus;
 import io.github.xiaomisum.quickclick.job.param.JobParam;
@@ -43,6 +44,7 @@ public class PlanStatusJobHandler implements JobHandler {
             log.info("获取到用例更新时间 {} 的测试计划 {}", maxUpdateTime, planIds.size());
             planIds.forEach(item -> {
                 // 根据计划编号获取所有计划用例
+                Plan plan = planService.get(item);
                 List<PlanCase> cases = caseService.getList(item);
                 Map<TestStatus, List<PlanCase>> group = cases.stream()
                         .collect(Collectors.groupingBy(PlanCase::getResult));
@@ -52,15 +54,16 @@ public class PlanStatusJobHandler implements JobHandler {
                 List<PlanCase> blocking = Blocking.get(group);
                 List<PlanCase> skipped = Skipped.get(group);
                 List<PlanCase> processing = Processing.get(group);
-                if (preparing.isEmpty() && processing.isEmpty()) {
+                if (preparing.isEmpty() && processing.isEmpty() && !plan.getStatus().equals(Finished)) {
                     // 进行中和未开始的都为空，完成
                     log.info("没有【preparing】【processing】的用例，更新状态为【Finished】");
                     planService.updateStatus(item, Finished);
-                } else if (preparing.size() == cases.size()) {
+                } else if (preparing.size() == cases.size() && !plan.getStatus().equals(Preparing)) {
                     // 准备中的数量与规划的测试用例总数一致，准备中
                     log.info("【preparing】的用例数量与规划用例总数一致，更新状态为【Preparing】");
                     planService.updateStatus(item, Preparing);
-                } else if ((passed.size() + failed.size() + blocking.size() + skipped.size() + processing.size()) < cases.size()) {
+                } else if ((passed.size() + failed.size() + blocking.size() + skipped.size() + processing.size()) < cases.size()
+                        && !plan.getStatus().equals(Preparing)) {
                     // 成功数量 + 失败数量 + 阻塞数量 + 跳过数量 + 进行中数量 之和 小于 总数，进行中
                     log.info("除【preparing】之外的用例数量总和小于规划用例总数，更新状态为【Processing】");
                     planService.updateStatus(item, Processing);
