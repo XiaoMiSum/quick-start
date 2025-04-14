@@ -110,7 +110,6 @@ const changeHandler = () => {
 
 const onClose = () => {
   resetForm()
-  emit('success')
 }
 
 /** 提交表单 */
@@ -134,6 +133,7 @@ const submitForm = async () => {
       comment: data.comment
     })
     message.success(t('common.optionSuccess'))
+    emit('success')
     visible.value = false
   } finally {
     formLoading.value = false

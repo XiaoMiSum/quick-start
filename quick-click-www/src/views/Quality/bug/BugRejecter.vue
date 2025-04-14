@@ -90,7 +90,6 @@ const resetForm = () => {
 
 const onClose = () => {
   resetForm()
-  emit('success')
 }
 
 /** 提交表单 */
@@ -107,6 +106,7 @@ const submitForm = async () => {
     await reject(data)
     message.success(t('common.optionSuccess'))
     visible.value = false
+    emit('success')
   } finally {
     formLoading.value = false
   }
