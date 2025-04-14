@@ -94,9 +94,8 @@ export const handleChangeStatus = async (row: any) => {
     message.success(text + '成功')
     // 刷新列表
     await getList()
-  } catch {
-    // 取消后，进行恢复按钮
-    row.status = row.status === InfraJobStatus.STOP ? InfraJobStatus.NORMAL : InfraJobStatus.STOP
+  } catch (error) {
+    console.log(error)
   }
 }
 /** 执行一次 */

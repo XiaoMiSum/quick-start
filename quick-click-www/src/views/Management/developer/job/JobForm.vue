@@ -21,7 +21,10 @@
         <el-input v-model="formData.handlerParam" placeholder="请输入处理器的参数" />
       </el-form-item>
       <el-form-item label="CRON 表达式" prop="cronExpression">
-        <crontab v-model="formData.cronExpression" />
+        <crontab
+          :modelValue="formData.cronExpression"
+          @update:model-value="formData.cronExpression = $event"
+        />
       </el-form-item>
       <el-form-item label="重试次数" prop="retryCount">
         <el-input
@@ -105,6 +108,8 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value
+    console.log(formData.value)
+    console.log(data)
     if (formType.value === 'create') {
       await JobApi.addJob(data)
       message.success(t('common.createSuccess'))

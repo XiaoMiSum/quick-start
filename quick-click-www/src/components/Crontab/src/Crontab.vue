@@ -505,7 +505,7 @@ const submit = () => {
 }
 </script>
 <template>
-  <el-input v-model="defaultValue" class="input-with-select" v-bind="$attrs">
+  <el-input disabled v-model="defaultValue" class="input-with-select" v-bind="$attrs">
     <template #append>
       <el-select v-model="select" placeholder="生成器" style="width: 115px">
         <el-option label="每分钟" value="0 * * * * ?" />
