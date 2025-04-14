@@ -162,7 +162,6 @@ import { getDictOptions, DICT_TYPE } from '@/utils/dictionary'
 
 import { Editor } from '@/components/Editor'
 import { FloatingButton } from '@/components/XButton'
-import { handleRemove } from '@/views/Management/developer/errorlog/ErrorLog'
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
@@ -406,9 +405,6 @@ onMounted(async () => {
       formData.value.testcaseId = data.originalId
       formData.value.status = 'New'
     }
-  }
-  if (!formData.value.id && !formData.value.supervisor) {
-    formData.value.supervisor = userStore.getUser.id
   }
 })
 </script>
