@@ -3,7 +3,7 @@ interface User {
   username: string
   name: string
   deptId?: number
-  postIds?: string[]
+  postId?: number
   email?: string
   mobile?: string
   gender?: number

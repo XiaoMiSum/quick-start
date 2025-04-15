@@ -8,13 +8,23 @@
       label-width="100px"
     >
       <el-form-item label="成员" prop="userId">
-        <el-select v-model="formData.userId" placeholder="请选择">
-          <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item.id" />
+        <el-select v-model="formData.userId" placeholder="请选择" @change="handleUserChange">
+          <el-option
+            v-for="item in userList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="岗位" prop="postId">
         <el-select v-model="formData.postId" placeholder="请选择">
-          <el-option v-for="item in postList" :key="item.id" :label="item.name" :value="item.id" />
+          <el-option
+            v-for="item in postList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
     </el-form>
@@ -119,5 +129,9 @@ const submitForm = async () => {
   } finally {
     formLoading.value = false
   }
+}
+
+const handleUserChange = (value) => {
+  formData.value.postId = userList.value.filter((user) => user.value === value)[0].extend?.post
 }
 </script>

@@ -61,7 +61,7 @@
               <el-radio
                 v-for="item in getIntDictOptions(DICT_TYPE.SYSTEM_USER_GENDER)"
                 :key="item.value"
-                :label="item.value"
+                :value="item.value"
                 border
               >
                 {{ item.label }}
@@ -90,13 +90,13 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="岗位" prop="postIds">
-            <el-select v-model="formData.postIds" multiple placeholder="请选择">
+          <el-form-item label="岗位" prop="postId">
+            <el-select v-model="formData.postId" placeholder="请选择">
               <el-option
                 v-for="item in postList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
