@@ -1,6 +1,6 @@
 import request from '@/config/axios'
 
-const url = '/charts/days'
+const url = '/project/days'
 
 // 查询开发人员每日数据
 export const getDeveloper = (params: any) => {

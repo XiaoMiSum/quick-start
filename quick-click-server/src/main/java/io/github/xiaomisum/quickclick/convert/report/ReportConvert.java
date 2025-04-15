@@ -1,7 +1,7 @@
 package io.github.xiaomisum.quickclick.convert.report;
 
-import io.github.xiaomisum.quickclick.controller.report.vo.days.DeveloperDaysUpdateReqVO;
-import io.github.xiaomisum.quickclick.controller.report.vo.days.TesterDaysUpdateReqVO;
+import io.github.xiaomisum.quickclick.controller.project.days.vo.DeveloperDaysUpdateReqVO;
+import io.github.xiaomisum.quickclick.controller.project.days.vo.TesterDaysUpdateReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.report.DeveloperBasicData;
 import io.github.xiaomisum.quickclick.dal.dataobject.report.TesterBasicData;
 import org.mapstruct.Mapper;

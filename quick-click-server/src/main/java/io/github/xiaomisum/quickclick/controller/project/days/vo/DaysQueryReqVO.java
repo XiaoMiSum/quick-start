@@ -23,7 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.controller.report.vo;
+package io.github.xiaomisum.quickclick.controller.project.days.vo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +32,7 @@ import xyz.migoo.framework.common.util.json.JsonUtils;
 
 @Getter
 @Setter
-public class ReportQueryReqVO extends PageParam {
+public class DaysQueryReqVO extends PageParam {
 
     private String projectId;
 

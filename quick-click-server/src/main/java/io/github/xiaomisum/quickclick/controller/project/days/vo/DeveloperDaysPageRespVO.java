@@ -1,4 +1,4 @@
-package io.github.xiaomisum.quickclick.controller.report.vo.days;
+package io.github.xiaomisum.quickclick.controller.project.days.vo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

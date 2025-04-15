@@ -14,7 +14,7 @@
         <el-select
           filterable
           v-model="queryParams.userId"
-          placeholder="请选择测试人员"
+          placeholder="请选择开发者"
           style="width: 100%"
         >
           <el-option
@@ -40,12 +40,15 @@
     <el-table v-loading="loading" :data="list" highlight-current-row stripe>
       <el-table-column label="日期" align="center" prop="date" />
       <el-table-column label="姓名" align="center" prop="name" />
-      <el-table-column label="新增用例数" align="center" prop="testcaseTotal" />
-      <el-table-column label="执行用例数" align="center" prop="executeTestcaseTotal" />
+      <el-table-column label="归属用例数" align="center" prop="testcaseTotal" />
       <el-table-column label="新增缺陷数" align="center" prop="newBugTotal" />
-      <el-table-column label="验证缺陷数" align="center" prop="validatedBugTotal" />
       <el-table-column label="关闭缺陷数" align="center" prop="closedBugTotal" />
-      <el-table-column label="激活缺陷数" prop="reopenedBugTotal" />
+      <el-table-column label="修复耗时" align="center">
+        <template #default="{ row }">
+          {{ (row.fixedBugDuration / 60).toFixed(2) + ' h' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="激活数" prop="reopenedBugTotal" />
       <el-table-column :width="80" align="center" label="操作">
         <template #default="{ row }">
           <el-button
@@ -53,7 +56,7 @@
             text
             type="primary"
             v-hasPermi="['charts:days:update']"
-            @click="openDaysFrom(row)"
+            @click="openDevDaysFrom(row)"
           >
             编辑
           </el-button>
@@ -68,15 +71,15 @@
       @pagination="getList"
     />
 
-    <TesterDaysFrom ref="daysFrom" @success="getList" />
+    <DevDaysFrom ref="devDaysFrom" @success="getList" />
   </ContentWrap>
 </template>
 
 <script setup>
-import * as Days from '@/api/charts/days'
+import * as Days from '@/api/project/days'
 import { checkPermi } from '@/utils/permission'
 
-import TesterDaysFrom from './TesterDaysFrom.vue'
+import DevDaysFrom from './DevDaysFrom.vue'
 
 const active = ref('0')
 
@@ -93,7 +96,7 @@ defineProps({
   }
 })
 
-defineOptions({ name: 'TesterDaysData' })
+defineOptions({ name: 'DevDaysData' })
 
 const queryParams = ref({
   pageNo: 1,
@@ -109,7 +112,7 @@ const getList = async () => {
   loading.value = true
   try {
     queryParams.value.projectId = globalStore.getCurrentProject
-    const data = await Days.getTester(queryParams.value)
+    const data = await Days.getDeveloper(queryParams.value)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -130,9 +133,9 @@ const resetQuery = async () => {
   handleQuery()
 }
 
-const daysFrom = ref() // 编辑的表单
-const openDaysFrom = (data) => {
-  daysFrom.value.open(data)
+const devDaysFrom = ref() // 编辑的表单
+const openDevDaysFrom = (data) => {
+  devDaysFrom.value.open(data)
 }
 
 /** 初始化 **/

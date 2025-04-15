@@ -1,4 +1,4 @@
-package io.github.xiaomisum.quickclick.controller.report.vo.days;
+package io.github.xiaomisum.quickclick.controller.project.days.vo;
 
 public class DeveloperDaysUpdateReqVO extends DeveloperDaysBaseVO {
 }

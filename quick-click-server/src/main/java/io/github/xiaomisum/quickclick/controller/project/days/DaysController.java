@@ -1,10 +1,6 @@
-package io.github.xiaomisum.quickclick.controller.report;
+package io.github.xiaomisum.quickclick.controller.project.days;
 
-import io.github.xiaomisum.quickclick.controller.report.vo.ReportQueryReqVO;
-import io.github.xiaomisum.quickclick.controller.report.vo.days.DeveloperDaysPageRespVO;
-import io.github.xiaomisum.quickclick.controller.report.vo.days.DeveloperDaysUpdateReqVO;
-import io.github.xiaomisum.quickclick.controller.report.vo.days.TesterDaysPageRespVO;
-import io.github.xiaomisum.quickclick.controller.report.vo.days.TesterDaysUpdateReqVO;
+import io.github.xiaomisum.quickclick.controller.project.days.vo.*;
 import io.github.xiaomisum.quickclick.convert.report.ReportConvert;
 import io.github.xiaomisum.quickclick.service.report.ReportService;
 import jakarta.annotation.Resource;
@@ -14,30 +10,30 @@ import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
 
 @RestController
-@RequestMapping("charts")
-public class ReportController {
+@RequestMapping("/project/days")
+public class DaysController {
 
     @Resource
     private ReportService service;
 
-    @GetMapping("/days/developer")
-    private Result<PageResult<DeveloperDaysPageRespVO>> getDevDays(ReportQueryReqVO req) {
+    @GetMapping("/developer")
+    private Result<PageResult<DeveloperDaysPageRespVO>> getDevDays(DaysQueryReqVO req) {
 
         return Result.getSuccessful(service.getDevDays(req));
     }
 
-    @PutMapping("/days/developer")
+    @PutMapping("/developer")
     private Result<?> updateDevDays(@RequestBody @Valid DeveloperDaysUpdateReqVO req) {
         service.updateDevDays(ReportConvert.INSTANCE.convert(req));
         return Result.getSuccessful();
     }
 
-    @GetMapping("/days/tester")
-    private Result<PageResult<TesterDaysPageRespVO>> getTestDays(ReportQueryReqVO req) {
+    @GetMapping("/tester")
+    private Result<PageResult<TesterDaysPageRespVO>> getTestDays(DaysQueryReqVO req) {
         return Result.getSuccessful(service.getTestDays(req));
     }
 
-    @PutMapping("/days/tester")
+    @PutMapping("/tester")
     private Result<?> updateTestDays(@RequestBody @Valid TesterDaysUpdateReqVO req) {
         service.updateTestDays(ReportConvert.INSTANCE.convert(req));
         return Result.getSuccessful();

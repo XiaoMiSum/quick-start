@@ -1,7 +1,7 @@
 package io.github.xiaomisum.quickclick.dal.mapper.report;
 
-import io.github.xiaomisum.quickclick.controller.report.vo.ReportQueryReqVO;
-import io.github.xiaomisum.quickclick.controller.report.vo.days.DeveloperDaysPageRespVO;
+import io.github.xiaomisum.quickclick.controller.project.days.vo.DaysQueryReqVO;
+import io.github.xiaomisum.quickclick.controller.project.days.vo.DeveloperDaysPageRespVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.report.DeveloperBasicData;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -12,7 +12,7 @@ import xyz.migoo.framework.mybatis.core.MPJLambdaWrapperX;
 @Mapper
 public interface DeveloperBasicDataMapper extends BaseMapperX<DeveloperBasicData> {
 
-    default PageResult<DeveloperDaysPageRespVO> selectPage(ReportQueryReqVO req) {
+    default PageResult<DeveloperDaysPageRespVO> selectPage(DaysQueryReqVO req) {
         return selectJoinPage(req, DeveloperDaysPageRespVO.class, new MPJLambdaWrapperX<DeveloperBasicData>()
                 .selectAs(User::getName, "name")
                 .selectAll(DeveloperBasicData.class)

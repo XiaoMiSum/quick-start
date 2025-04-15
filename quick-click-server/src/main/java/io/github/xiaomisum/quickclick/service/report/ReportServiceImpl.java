@@ -1,8 +1,8 @@
 package io.github.xiaomisum.quickclick.service.report;
 
-import io.github.xiaomisum.quickclick.controller.report.vo.ReportQueryReqVO;
-import io.github.xiaomisum.quickclick.controller.report.vo.days.DeveloperDaysPageRespVO;
-import io.github.xiaomisum.quickclick.controller.report.vo.days.TesterDaysPageRespVO;
+import io.github.xiaomisum.quickclick.controller.project.days.vo.DaysQueryReqVO;
+import io.github.xiaomisum.quickclick.controller.project.days.vo.DeveloperDaysPageRespVO;
+import io.github.xiaomisum.quickclick.controller.project.days.vo.TesterDaysPageRespVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.report.DeveloperBasicData;
 import io.github.xiaomisum.quickclick.dal.dataobject.report.TesterBasicData;
 import io.github.xiaomisum.quickclick.dal.mapper.report.DeveloperBasicDataMapper;
@@ -20,7 +20,7 @@ public class ReportServiceImpl implements ReportService {
     private TesterBasicDataMapper testerBasicDataMapper;
 
     @Override
-    public PageResult<DeveloperDaysPageRespVO> getDevDays(ReportQueryReqVO req) {
+    public PageResult<DeveloperDaysPageRespVO> getDevDays(DaysQueryReqVO req) {
         return developerBasicDataMapper.selectPage(req);
     }
 
@@ -30,7 +30,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public PageResult<TesterDaysPageRespVO> getTestDays(ReportQueryReqVO req) {
+    public PageResult<TesterDaysPageRespVO> getTestDays(DaysQueryReqVO req) {
         return testerBasicDataMapper.selectPage(req);
     }
 

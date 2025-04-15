@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { updateDeveloper } from '@/api/charts/days'
+import { updateDeveloper } from '@/api/project/days'
 
 defineOptions({ name: 'DevDaysForm' })
 
