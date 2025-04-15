@@ -55,7 +55,7 @@
             circle
             text
             type="primary"
-            v-hasPermi="['charts:days:update']"
+            v-hasPermi="['project:days:update']"
             @click="openDevDaysFrom(row)"
           >
             编辑

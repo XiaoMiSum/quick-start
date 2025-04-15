@@ -16,21 +16,21 @@
         </el-tab-pane>
         <el-tab-pane name="2" v-if="checkPermi(['project:node:query'])">
           <template #label>
-            <Icon icon="fa:file-archive-o" class="mr-2px" />
+            <Icon icon="ep:files" class="mr-2px" />
             <span>模块管理</span>
           </template>
           <ProjectNode ref="projectNode" :currentProject="currentProject" />
         </el-tab-pane>
-        <el-tab-pane name="3" v-if="checkPermi(['project:node:query'])">
+        <el-tab-pane name="3" v-if="checkPermi(['project:days:query'])">
           <template #label>
-            <Icon icon="fa:file-archive-o" class="mr-2px" />
+            <Icon icon="ep:trend-charts" class="mr-2px" />
             <span>每日统计-开发</span>
           </template>
           <DevDaysData ref="devDaysData" :users="users" />
         </el-tab-pane>
-        <el-tab-pane name="4" v-if="checkPermi(['project:node:query'])">
+        <el-tab-pane name="4" v-if="checkPermi(['project:days:query'])">
           <template #label>
-            <Icon icon="fa:file-archive-o" class="mr-2px" />
+            <Icon icon="ep:trend-charts" class="mr-2px" />
             <span>每日统计-测试</span>
           </template>
           <TesterDaysData ref="testerDaysData" :users="users" />
