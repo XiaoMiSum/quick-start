@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `qc_project`;
 CREATE TABLE `qc_project`  (
   `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '项目名称',
+  `production_line_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '产线编号',
   `memo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `deleted` bit(1) NOT NULL DEFAULT b'0',
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -469,5 +470,23 @@ CREATE TABLE `qc_report_quality_tester_day`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `inx`(`user_id` ASC, `project_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '报表基础数据表' ROW_FORMAT = Dynamic;
+
+
+-- ----------------------------
+-- Table structure for qc_production_line
+-- ----------------------------
+DROP TABLE IF EXISTS `qc_production_line`;
+CREATE TABLE `qc_production_line`  (
+  `id` varchar(32) NOT NULL,
+  `title` varchar(64) NOT NULL COMMENT '名称',
+  `manager` bigint NOT NULL COMMENT '总监',
+  `memo` varchar(255) NULL,
+  `deleted` tinyint(1) NULL DEFAULT 0,
+  `create_time` datetime NULL,
+  `creator` varchar(64) NULL,
+  `update_time` datetime NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updater` varchar(64) NULL,
+  PRIMARY KEY (`id`)
+) COMMENT = '产品线信息表';
 
 SET FOREIGN_KEY_CHECKS = 1;

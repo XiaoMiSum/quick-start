@@ -23,33 +23,16 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.convert.project;
+package io.github.xiaomisum.quickclick.controller.project.management.vo;
 
-import com.google.common.collect.Lists;
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectAddReqVO;
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectRespVO;
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectUpdateReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-import xyz.migoo.framework.common.pojo.SimpleData;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.util.List;
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class ProjectPageRespVO extends ProjectBaseVO {
 
-@Mapper
-public interface ProjectConvert {
+    private String id;
 
-    ProjectConvert INSTANCE = Mappers.getMapper(ProjectConvert.class);
-
-    Project convert(ProjectAddReqVO bean);
-
-    Project convert(ProjectUpdateReqVO bean);
-
-    ProjectRespVO convert(Project bean);
-
-    default List<SimpleData> convert(List<Project> projects) {
-        List<SimpleData> result = Lists.newArrayList();
-        projects.forEach(item -> result.add(new SimpleData(item.getId(), item.getTitle())));
-        return result;
-    }
+    private String productionLine;
 }

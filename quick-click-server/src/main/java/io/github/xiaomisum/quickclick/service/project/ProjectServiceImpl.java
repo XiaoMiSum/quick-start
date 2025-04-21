@@ -26,6 +26,7 @@
 package io.github.xiaomisum.quickclick.service.project;
 
 import cn.hutool.core.util.IdUtil;
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectPageRespVO;
 import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
 import io.github.xiaomisum.quickclick.dal.mapper.project.ProjectMapper;
@@ -42,7 +43,7 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectMapper mapper;
 
     @Override
-    public PageResult<Project> getPage(ProjectQueryReqVO req) {
+    public PageResult<ProjectPageRespVO> getPage(ProjectQueryReqVO req) {
         return mapper.selectPage(req);
     }
 

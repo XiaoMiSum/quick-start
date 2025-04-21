@@ -25,20 +25,26 @@
 
 package io.github.xiaomisum.quickclick.dal.mapper.project;
 
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectPageRespVO;
 import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.productionline.ProductionLine;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
+import xyz.migoo.framework.mybatis.core.MPJLambdaWrapperX;
 
 import java.util.List;
 
 @Mapper
 public interface ProjectMapper extends BaseMapperX<Project> {
 
-    default PageResult<Project> selectPage(ProjectQueryReqVO req) {
-        return selectPage(req, new LambdaQueryWrapperX<Project>()
+    default PageResult<ProjectPageRespVO> selectPage(ProjectQueryReqVO req) {
+        return selectJoinPage(req, ProjectPageRespVO.class, new MPJLambdaWrapperX<Project>()
+                .selectAll(Project.class)
+                .selectAs(ProductionLine::getTitle, ProjectPageRespVO::getProductionLine)
+                .leftJoin(ProductionLine.class, on -> on.eq(Project::getProductionLineId, ProductionLine::getId))
                 .likeIfPresent(Project::getTitle, req.getTitle())
                 .orderByDesc(Project::getId));
     }

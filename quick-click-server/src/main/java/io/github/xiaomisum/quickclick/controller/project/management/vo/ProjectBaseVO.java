@@ -40,6 +40,12 @@ public class ProjectBaseVO {
     private String title;
 
     /**
+     * 项目名称
+     */
+    @NotBlank(message = "productionLineId 不能为空")
+    private String productionLineId;
+
+    /**
      * 备注
      */
     @Size(max = 255, message = "memo 最大长度255")

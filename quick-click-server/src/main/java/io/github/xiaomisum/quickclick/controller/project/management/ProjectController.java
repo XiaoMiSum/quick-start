@@ -59,7 +59,7 @@ public class ProjectController {
      */
     @GetMapping
     public Result<?> getPage(ProjectQueryReqVO req) {
-        return Result.getSuccessful(ProjectConvert.INSTANCE.convert(service.getPage(req)));
+        return Result.getSuccessful(service.getPage(req));
     }
 
     /**
@@ -83,7 +83,6 @@ public class ProjectController {
     public Result<?> add(@RequestBody ProjectAddReqVO data, @CurrentUser LoginUser user) {
         String projectId = service.add(ProjectConvert.INSTANCE.convert(data));
         memberService.add(projectId, user.getId());
-        // todo 添加当前用户到成员
         return Result.getSuccessful();
     }
 

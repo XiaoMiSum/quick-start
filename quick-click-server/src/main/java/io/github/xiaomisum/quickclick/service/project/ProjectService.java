@@ -25,6 +25,7 @@
 
 package io.github.xiaomisum.quickclick.service.project;
 
+import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectPageRespVO;
 import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectQueryReqVO;
 import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
 import xyz.migoo.framework.common.pojo.PageResult;
@@ -33,7 +34,7 @@ import java.util.List;
 
 public interface ProjectService {
 
-    PageResult<Project> getPage(ProjectQueryReqVO req);
+    PageResult<ProjectPageRespVO> getPage(ProjectQueryReqVO req);
 
     List<Project> getList(List<String> ids);
 

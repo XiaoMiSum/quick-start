@@ -23,33 +23,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.xiaomisum.quickclick.convert.project;
+package io.github.xiaomisum.quickclick.dal.mapper.productionline;
 
-import com.google.common.collect.Lists;
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectAddReqVO;
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectRespVO;
-import io.github.xiaomisum.quickclick.controller.project.management.vo.ProjectUpdateReqVO;
-import io.github.xiaomisum.quickclick.dal.dataobject.project.Project;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-import xyz.migoo.framework.common.pojo.SimpleData;
-
-import java.util.List;
+import io.github.xiaomisum.quickclick.controller.productionline.vo.ProductionLineQueryReqVO;
+import io.github.xiaomisum.quickclick.dal.dataobject.productionline.ProductionLine;
+import org.apache.ibatis.annotations.Mapper;
+import xyz.migoo.framework.common.pojo.PageResult;
+import xyz.migoo.framework.mybatis.core.BaseMapperX;
+import xyz.migoo.framework.mybatis.core.LambdaQueryWrapperX;
 
 @Mapper
-public interface ProjectConvert {
+public interface ProductionLineMapper extends BaseMapperX<ProductionLine> {
 
-    ProjectConvert INSTANCE = Mappers.getMapper(ProjectConvert.class);
-
-    Project convert(ProjectAddReqVO bean);
-
-    Project convert(ProjectUpdateReqVO bean);
-
-    ProjectRespVO convert(Project bean);
-
-    default List<SimpleData> convert(List<Project> projects) {
-        List<SimpleData> result = Lists.newArrayList();
-        projects.forEach(item -> result.add(new SimpleData(item.getId(), item.getTitle())));
-        return result;
+    default PageResult<ProductionLine> selectPage(ProductionLineQueryReqVO req) {
+        return selectPage(req, new LambdaQueryWrapperX<ProductionLine>().likeIfPresent(ProductionLine::getTitle, req.getTitle()));
     }
+
 }

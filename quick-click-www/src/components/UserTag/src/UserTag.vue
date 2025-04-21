@@ -27,12 +27,16 @@ export default defineComponent({
       type: Boolean as PropType<boolean>,
       required: false,
       default: false
+    },
+    users: {
+      type: Array,
+      required: false
     }
   },
   setup(props) {
     const dictData = ref<any>()
     const getDictObj = (value: any) => {
-      const options: any[] = globalStore.getUsers
+      const options: any[] = props.users ? props.users : globalStore.getUsers
       options.forEach((item: any) => {
         if (item.value === value) {
           dictData.value = item

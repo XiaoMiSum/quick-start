@@ -1,6 +1,6 @@
 import request from '@/config/axios'
 
-const url = '/project'
+const url = '/production-line'
 
 // 查询详细
 export const getPage = (params: any) => {
@@ -33,5 +33,12 @@ export const updateData = (data: any) => {
 export const removeData = (id: number) => {
   return request.delete({
     url: url + '/' + id
+  })
+}
+
+export const listSimple = (params?: any) => {
+  return request.get({
+    url,
+    params
   })
 }

@@ -37,5 +37,7 @@ public class Project extends BaseDO<String> {
 
     private String title;
 
+    private String productionLineId;
+
     private String memo;
 }
