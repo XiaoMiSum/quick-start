@@ -16,8 +16,8 @@
         />
       </el-form-item>
 
-      <el-form-item label="所属产线" prop="productionLine">
-        <el-select v-model="formData.productionLine" filterable placeholder="请选择">
+      <el-form-item label="所属产线" prop="productionLineId">
+        <el-select v-model="formData.productionLineId" filterable placeholder="请选择">
           <el-option
             v-for="item in productionLinelist"
             :key="item.value"
@@ -60,15 +60,15 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref<any>({
   id: undefined,
   title: '',
-  productionLine: undefined,
+  productionLineId: undefined,
   memo: ''
 })
 const formRules = reactive({
   title: [{ required: true, message: '项目名称不能为空', trigger: 'blur' }],
-  productionLine: [{ required: true, message: '所属产线不能为空', trigger: 'blur' }]
+  productionLineId: [{ required: true, message: '所属产线不能为空', trigger: 'blur' }]
 })
 
-const productionLinelist = ref([])
+const productionLinelist = ref<any>([])
 
 const formRef = ref() // 表单 Ref
 
@@ -97,7 +97,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     title: '',
-    productionLine: undefined,
+    productionLineId: undefined,
     memo: ''
   }
   formRef.value?.resetFields()

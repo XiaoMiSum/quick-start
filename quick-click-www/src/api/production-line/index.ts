@@ -38,7 +38,7 @@ export const removeData = (id: number) => {
 
 export const listSimple = (params?: any) => {
   return request.get({
-    url,
+    url: url + '/simple',
     params
   })
 }
