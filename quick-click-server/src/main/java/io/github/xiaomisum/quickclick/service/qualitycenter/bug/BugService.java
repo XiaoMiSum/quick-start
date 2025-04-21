@@ -16,6 +16,8 @@ public interface BugService {
 
     Bug get(String id);
 
+    List<Bug> get(List<String> ids);
+
     String add(Bug data);
 
     void update(Bug data);
@@ -53,6 +55,8 @@ public interface BugService {
     List<Bug> loadProjectReopenBug(String projectId, LocalDateTime startTime, LocalDateTime endTime);
 
     List<Bug> loadProjectCloseBug(String projectId, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Bug> selectUncloseList(LocalDateTime startTime, LocalDateTime endTime);
 
     List<BugExecRecord> loadProjectReopenRecords(String projectId, List<Long> testers, LocalDateTime startTime, LocalDateTime endTime);
 }

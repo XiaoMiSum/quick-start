@@ -161,7 +161,7 @@ CREATE TABLE `qc_quality_bug`  (
   `fix_duration` int 0 DEFAULT NULL COMMENT '修复时长',
   `closer` bigint NULL DEFAULT NULL COMMENT '关闭人',
   `closed_time` datetime NULL DEFAULT NULL COMMENT '关闭时间',
-  `status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'new' COMMENT '状态',
+  `status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'New' COMMENT '状态',
   `cause` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '产生原因',
   `root_cause` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '产生原因详细描述',
   `solution` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '解决方案',
@@ -195,6 +195,27 @@ CREATE TABLE `qc_quality_bug_exec_record`  (
   PRIMARY KEY (`id`),
   INDEX `inx`(`bug_id` ASC, `user_id` ASC, `operation` ASC, `create_time` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '缺陷评论表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for qc_quality_bug_unclosed_record
+-- ----------------------------
+DROP TABLE IF EXISTS `qc_quality_bug_unclosed_record`;
+CREATE TABLE `qc_quality_bug_unclosed_record`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'New' COMMENT '状态',
+  `bug_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `create_date` date  NOT NULL COMMENT '缺陷创建日期',
+  `supervisor` bigint NOT NULL COMMENT '责任人',
+  `fixer` bigint NULL DEFAULT NULL COMMENT '修复人',
+  `deleted` tinyint NULL DEFAULT 0,
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx`(`project_id` ASC,`status` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '未关闭缺陷表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for qc_quality_test_plan

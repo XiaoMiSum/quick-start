@@ -96,4 +96,17 @@ public interface BugMapper extends BaseMapperX<Bug> {
                 .ge(Bug::getCreateTime, startTime)
                 .le(Bug::getCreateTime, endTime));
     }
+
+    default List<Bug> selectUncloseList(LocalDateTime startTime, LocalDateTime endTime) {
+        return selectList(new LambdaQueryWrapperX<Bug>()
+                .ne(Bug::getStatus, Closed)
+                .ge(Bug::getCreateTime, startTime)
+                .le(Bug::getCreateTime, endTime));
+    }
+
+    default List<Bug> selectListByIds(List<String> ids) {
+        return selectList(new LambdaQueryWrapperX<Bug>()
+                .in(Bug::getId, ids));
+    }
+
 }

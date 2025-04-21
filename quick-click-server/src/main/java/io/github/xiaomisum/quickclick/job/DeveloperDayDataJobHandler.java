@@ -105,14 +105,19 @@ public class DeveloperDayDataJobHandler implements JobHandler {
 
                 // 获取关闭的Bug数量
                 data.setClosedBugTotal(getSize(supervisorClosedGrouping.get(userId)));
-                // 计算修复人的修复时长
+                // 计算修复人的修复次数、修复时长
                 var fixerBugs = fixerGrouping.get(userId);
+                data.setFixedBugTotal(CollectionUtil.isEmpty(fixerBugs) ? 0 : fixerBugs.size());
                 data.setFixedBugDuration(CollectionUtil.isEmpty(fixerBugs) ? 0 : fixerBugs.stream().mapToInt(BugExecRecord::getDuration).sum());
 
                 // 获取 激活次数：按修复人 + 拒绝人
                 var fixerReopenTotal = getSize(fixerGroupingReopenBug.get(userId));
                 data.setReopenedBugTotal(getSize(rejectGroupingReopenBug.get(userId)) + fixerReopenTotal);
-                results.add(data);
+                // 所有数据总和大于零 才写入数据库
+                if ((data.getTestcaseTotal() + data.getNewBugTotal() + data.getClosedBugTotal() +
+                        data.getFixedBugTotal() + data.getFixedBugDuration() + data.getReopenedBugTotal()) > 0) {
+                    results.add(data);
+                }
             });
         }
         if (!results.isEmpty()) {

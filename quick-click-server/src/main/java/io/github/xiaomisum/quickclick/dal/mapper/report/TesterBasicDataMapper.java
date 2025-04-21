@@ -9,6 +9,9 @@ import xyz.migoo.framework.infra.dal.dataobject.sys.User;
 import xyz.migoo.framework.mybatis.core.BaseMapperX;
 import xyz.migoo.framework.mybatis.core.MPJLambdaWrapperX;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Mapper
 public interface TesterBasicDataMapper extends BaseMapperX<TesterBasicData> {
 
@@ -21,5 +24,18 @@ public interface TesterBasicDataMapper extends BaseMapperX<TesterBasicData> {
                 .eqIfPresent(TesterBasicData::getDate, req.getDate())
                 .eqIfPresent(TesterBasicData::getUserId, req.getUserId())
                 .orderByDesc(TesterBasicData::getDate));
+    }
+
+
+    default List<TesterBasicData> selectSumList(LocalDate start, LocalDate end) {
+        return selectList(new MPJLambdaWrapperX<TesterBasicData>()
+                .selectX(TesterBasicData::getUserId)
+                .selectSum(TesterBasicData::getValidatedBugDuration)
+                .selectSum(TesterBasicData::getReopenedBugTotal)
+                .selectSum(TesterBasicData::getClosedBugTotal)
+                .ge(TesterBasicData::getDate, start)
+                .le(TesterBasicData::getDate, end)
+                .gt(TesterBasicData::getValidatedBugDuration, 0)
+                .groupBy(TesterBasicData::getUserId));
     }
 }

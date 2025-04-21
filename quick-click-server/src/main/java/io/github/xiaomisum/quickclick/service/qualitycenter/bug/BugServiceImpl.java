@@ -39,6 +39,11 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
+    public List<Bug> get(List<String> ids) {
+        return mapper.selectListByIds(ids);
+    }
+
+    @Override
     public String add(Bug data) {
         data.setId(IdUtil.getSnowflakeNextIdStr());
         mapper.insert(data);
@@ -184,6 +189,11 @@ public class BugServiceImpl implements BugService {
     @Override
     public List<Bug> loadProjectCloseBug(String projectId, LocalDateTime startTime, LocalDateTime endTime) {
         return mapper.selectListByClose(projectId, startTime, endTime);
+    }
+
+    @Override
+    public List<Bug> selectUncloseList(LocalDateTime startTime, LocalDateTime endTime) {
+        return mapper.selectUncloseList(startTime, endTime);
     }
 
     @Override

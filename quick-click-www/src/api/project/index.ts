@@ -1,6 +1,6 @@
 import request from '@/config/axios'
 
-const url = '/project'
+const url = '/product-line'
 
 // 查询详细
 export const getPage = (params: any) => {

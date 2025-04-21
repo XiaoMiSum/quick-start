@@ -44,6 +44,11 @@ public class DeveloperBasicData extends BaseDO<Long> {
     private Integer closedBugTotal;
 
     /**
+     * 修复缺陷次数
+     */
+    private Integer fixedBugTotal;
+
+    /**
      * 修复缺陷耗时
      */
     private Integer fixedBugDuration;

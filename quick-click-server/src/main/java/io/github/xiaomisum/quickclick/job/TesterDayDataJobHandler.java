@@ -106,7 +106,11 @@ public class TesterDayDataJobHandler implements JobHandler {
                         .setValidatedBugDuration(getSum(closeGrouping.get(userId)) + getSum(reopenGrouping.get(userId)));
                 // 验证Bug总数 = 关闭数量+激活数量
                 data.setValidatedBugTotal(data.getClosedBugTotal() + data.getReopenedBugTotal());
-                results.add(data);
+                // 所有数据总和大于零 才写入数据库
+                if ((data.getTestcaseTotal() + data.getExecuteTestcaseTotal() + data.getValidatedBugDuration()
+                        + data.getNewBugTotal() + data.getClosedBugTotal() + data.getReopenedBugTotal()) > 0) {
+                    results.add(data);
+                }
             });
         }
         if (!results.isEmpty()) {

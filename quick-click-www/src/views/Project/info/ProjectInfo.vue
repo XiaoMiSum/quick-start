@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import ProjectForm from '@/views/Project/table/ProjectForm.vue'
+import ProjectForm from '@/views/Project/ProjectForm.vue'
 import { Card } from '@/components/Card'
 
 defineOptions({ name: 'ProjectInfo' })
