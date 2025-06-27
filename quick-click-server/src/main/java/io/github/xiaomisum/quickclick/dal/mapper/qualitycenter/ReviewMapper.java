@@ -51,7 +51,8 @@ public interface ReviewMapper extends BaseMapperX<Review> {
     default PageResult<Review> selectPage(ReviewQueryReqVO req) {
         return selectPage(req, new LambdaQueryWrapperX<Review>()
                 .eq(Review::getProjectId, req.getProjectId())
-                .eqIfPresent(Review::getTitle, req.getTitle())
+                .eqIfPresent(Review::getStatus, req.getStatus())
+                .likeIfPresent(Review::getTitle, req.getTitle())
                 .orderByDesc(Review::getId));
     }
 
@@ -70,10 +71,6 @@ public interface ReviewMapper extends BaseMapperX<Review> {
         update(new Review().setStatus(status),
                 new LambdaUpdateWrapper<Review>()
                         .eq(Review::getId, reviewId));
-    }
-
-    default List<Review> selectByStatus(TestStatus status) {
-        return selectList(Review::getStatus, status.name());
     }
 
     default Long selectCount(Long userId, TestStatus... status) {

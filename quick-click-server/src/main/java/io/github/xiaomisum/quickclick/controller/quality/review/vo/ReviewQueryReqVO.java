@@ -25,6 +25,7 @@
 
 package io.github.xiaomisum.quickclick.controller.quality.review.vo;
 
+import io.github.xiaomisum.quickclick.enums.TestStatus;
 import lombok.Getter;
 import lombok.Setter;
 import xyz.migoo.framework.common.pojo.PageParam;
@@ -37,6 +38,8 @@ public class ReviewQueryReqVO extends PageParam {
     private String projectId;
 
     private String title;
+
+    private TestStatus status;
 
     @Override
     public String toString() {

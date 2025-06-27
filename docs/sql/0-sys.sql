@@ -314,7 +314,7 @@ CREATE TABLE `sys_user`
     `status`                        tinyint                                                       NOT NULL DEFAULT 1 COMMENT '状态0禁用、1启用',
     `gender`                        tinyint                                                       NULL     DEFAULT NULL COMMENT '性别 1男 2女',
     `dept_id`                       bigint                                                        NULL     DEFAULT NULL COMMENT '部门编号',
-    `post_ids`                      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL     DEFAULT NULL COMMENT '岗位编号',
+    `post_id`                       bigint                                                        NULL     DEFAULT NULL COMMENT '岗位编号',
     `email`                         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL     DEFAULT NULL COMMENT '邮箱地址',
     `secret_key`                    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '验证器安全码',
     `bind_authenticator`            tinyint                                                       NOT NULL DEFAULT 0 COMMENT '身份验证器绑定状态：0 -未绑定 1- 已绑定',

@@ -46,8 +46,9 @@ public interface PlanMapper extends BaseMapperX<Plan> {
     default PageResult<Plan> selectPage(PlanQueryReqVO req) {
         return selectPage(req, new LambdaQueryWrapperX<Plan>()
                 .eq(Plan::getProjectId, req.getProjectId())
+                .eqIfPresent(Plan::getStatus, req.getStatus())
                 .likeIfPresent(Plan::getTitle, req.getTitle())
-        );
+                .orderByDesc(Plan::getId));
     }
 
     default List<Plan> selectList(String projectId) {
@@ -65,10 +66,6 @@ public interface PlanMapper extends BaseMapperX<Plan> {
         update(new Plan().setStatus(status),
                 new LambdaUpdateWrapper<Plan>()
                         .eq(Plan::getId, planId));
-    }
-
-    default List<Plan> selectByStatus(TestStatus status) {
-        return selectList(Plan::getStatus, status.name());
     }
 
     @Delete("""

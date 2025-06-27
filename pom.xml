@@ -13,7 +13,7 @@
     </modules>
 
     <properties>
-        <migoo.springboot.version>1.2.7</migoo.springboot.version>
+        <migoo.springboot.version>1.2.8</migoo.springboot.version>
         <easypoi.version>4.4.0</easypoi.version>
 
         <log.dir>logs</log.dir>

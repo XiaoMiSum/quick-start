@@ -4,8 +4,80 @@
       <el-tabs v-model="active" @tab-change="tabChange">
         <el-tab-pane name="0" label="基础信息">
           <ProjectInfo ref="projectInfo" v-model="data" @save-success="getInfo" />
-          <ContentWrap> 待评审列表 </ContentWrap>
-          <ContentWrap> 待执行列表 </ContentWrap>
+          <Card>
+            <el-row>
+              <el-col :sm="12" :lg="6">
+                <div class="statistic-card">
+                  <el-statistic :value="1">
+                    <template #title>
+                      <div style="display: inline-flex; align-items: center; font-size: 18px">
+                        评审总数
+                      </div>
+                    </template>
+                  </el-statistic>
+                </div>
+              </el-col>
+              <el-col :sm="12" :lg="6">
+                <div class="statistic-card">
+                  <el-statistic :value="1">
+                    <template #title>
+                      <div style="display: inline-flex; align-items: center; font-size: 18px">
+                        待评审
+                      </div>
+                    </template>
+                  </el-statistic>
+                </div>
+              </el-col>
+              <el-col :sm="12" :lg="6">
+                <div class="statistic-card">
+                  <el-statistic :value="1">
+                    <template #title>
+                      <div style="display: inline-flex; align-items: center; font-size: 18px">
+                        评审中
+                      </div>
+                    </template>
+                  </el-statistic>
+                </div>
+              </el-col>
+            </el-row>
+          </Card>
+          <Card>
+            <el-row>
+              <el-col :sm="12" :lg="6">
+                <div class="statistic-card">
+                  <el-statistic :value="1">
+                    <template #title>
+                      <div style="display: inline-flex; align-items: center; font-size: 18px">
+                        计划总数
+                      </div>
+                    </template>
+                  </el-statistic>
+                </div>
+              </el-col>
+              <el-col :sm="12" :lg="6">
+                <div class="statistic-card">
+                  <el-statistic :value="1">
+                    <template #title>
+                      <div style="display: inline-flex; align-items: center; font-size: 18px">
+                        待执行
+                      </div>
+                    </template>
+                  </el-statistic>
+                </div>
+              </el-col>
+              <el-col :sm="12" :lg="6">
+                <div class="statistic-card">
+                  <el-statistic :value="1">
+                    <template #title>
+                      <div style="display: inline-flex; align-items: center; font-size: 18px">
+                        执行中
+                      </div>
+                    </template>
+                  </el-statistic>
+                </div>
+              </el-col>
+            </el-row>
+          </Card>
         </el-tab-pane>
         <el-tab-pane name="1" v-if="checkPermi(['project:member:query'])">
           <template #label>

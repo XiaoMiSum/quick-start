@@ -39,7 +39,7 @@ public class PlanQueryReqVO extends PageParam {
 
     private String title;
 
-    private TestStatus result;
+    private TestStatus status;
 
     @Override
     public String toString() {

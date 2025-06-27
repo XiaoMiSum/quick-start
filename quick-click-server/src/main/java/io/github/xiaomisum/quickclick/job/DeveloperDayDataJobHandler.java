@@ -113,11 +113,7 @@ public class DeveloperDayDataJobHandler implements JobHandler {
                 // 获取 激活次数：按修复人 + 拒绝人
                 var fixerReopenTotal = getSize(fixerGroupingReopenBug.get(userId));
                 data.setReopenedBugTotal(getSize(rejectGroupingReopenBug.get(userId)) + fixerReopenTotal);
-                // 所有数据总和大于零 才写入数据库
-                if ((data.getTestcaseTotal() + data.getNewBugTotal() + data.getClosedBugTotal() +
-                        data.getFixedBugTotal() + data.getFixedBugDuration() + data.getReopenedBugTotal()) > 0) {
-                    results.add(data);
-                }
+                results.add(data);
             });
         }
         if (!results.isEmpty()) {
