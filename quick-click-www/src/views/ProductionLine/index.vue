@@ -133,7 +133,7 @@ const resetQuery = async () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  formRef.value.open(type, userList.value, id)
 }
 
 const handleDelete = async (id: number) => {

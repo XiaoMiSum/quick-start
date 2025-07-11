@@ -13,7 +13,7 @@
     </modules>
 
     <properties>
-        <migoo.springboot.version>1.2.8</migoo.springboot.version>
+        <migoo.springboot.version>1.3.0</migoo.springboot.version>
         <easypoi.version>4.4.0</easypoi.version>
 
         <log.dir>logs</log.dir>
@@ -43,26 +43,13 @@
     </dependencyManagement>
 
     <repositories>
-        <!--        <repository>
-                    <id>sonatype</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                </repository>-->
         <repository>
             <id>central</id>
-            <name>aliyun maven</name>
-            <url>https://maven.aliyun.com/repository/central</url>
-            <layout>default</layout>
-            <!-- 是否开启发布版构件下载 -->
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <!-- 是否开启快照版构件下载 -->
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
         </repository>
     </repositories>
 </project>

@@ -182,7 +182,7 @@ const formData = ref<any>({
   projectId: globalStore.getCurrentProject,
   supervisor: undefined,
   handler: undefined,
-  severity: 'Medium',
+  severity: '2',
   title: '',
   priority: 'P2',
   status: 'New',
