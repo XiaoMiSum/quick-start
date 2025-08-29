@@ -133,13 +133,11 @@ CREATE TABLE `infra_error_log`  (
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '接口异常表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '接口异常表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of infra_error_log
 -- ----------------------------
-INSERT INTO `infra_error_log` VALUES (1, 'quick-click-server', 'GET', '/quick-click-server/self/profile', '{\"query\":{},\"body\":\"\"}', '0:0:0:0:0:0:0:1', '2025-06-27 10:06:26', 'org.springframework.jdbc.BadSqlGrammarException', 'org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator', 'SQLErrorCodeSQLExceptionTranslator.java', 'doTranslate', 246, 'org.springframework.jdbc.BadSqlGrammarException: \r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Table \'quick-click.sys_user_profile\' doesn\'t exist\r\n### The error may exist in io/github/xiaomisum/quickclick/dal/mapper/profile/ProfileMapper.java (best guess)\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: SELECT    id,user_id,project_id,create_time,update_time,creator,updater,deleted    FROM  sys_user_profile     WHERE deleted=0     AND (user_id = ?)\r\n### Cause: java.sql.SQLSyntaxErrorException: Table \'quick-click.sys_user_profile\' doesn\'t exist\n; bad SQL grammar []\r\n	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:246)\r\n	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)\r\n	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:92)\r\n	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:439)\r\n	at jdk.proxy2/jdk.proxy2.$Proxy112.selectList(Unknown Source)\r\n	at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:224)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.executeForMany(MybatisMapperMethod.java:164)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:77)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$PlainMethodInvoker.invoke(MybatisMapperProxy.java:152)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89)\r\n	at jdk.proxy2/jdk.proxy2.$Proxy179.selectList(Unknown Source)\r\n	at com.baomidou.mybatisplus.core.mapper.BaseMapper.selectOne(BaseMapper.java:306)\r\n	at java.base/java.lang.invoke.MethodHandle.invokeWithArguments(MethodHandle.java:733)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$DefaultMethodInvoker.invoke(MybatisMapperProxy.java:166)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89)\r\n	at jdk.proxy2/jdk.proxy2.$Proxy179.selectOne(Unknown Source)\r\n	at com.baomidou.mybatisplus.core.mapper.BaseMapper.selectOne(BaseMapper.java:295)\r\n	at java.base/java.lang.invoke.MethodHandle.invokeWithArguments(MethodHandle.java:733)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$DefaultMethodInvoker.invoke(MybatisMapperProxy.java:166)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89)\r\n	at jdk.proxy2/jdk.proxy2.$Proxy179.selectOne(Unknown Source)\r\n	at xyz.migoo.framework.mybatis.core.BaseMapperX.selectOne(BaseMapperX.java:48)\r\n	at java.base/java.lang.invoke.MethodHandle.invokeWithArguments(MethodHandle.java:733)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$DefaultMethodInvoker.invoke(MybatisMapperProxy.java:166)\r\n	at com.baomidou.mybatisplus.', 'SQLSyntaxErrorException: Table \'quick-click.sys_user_profile\' doesn\'t exist', 'BadSqlGrammarException: \r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Table \'quick-click.sys_user_profile\' doesn\'t exist\r\n### The error may exist in io/github/xiaomisum/quickclick/dal/mapper/profile/ProfileMapper.java (best guess)\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: SELECT    id,user_id,project_id,create_time,update_time,creator,updater,deleted    FROM  sys_user_profile     WHERE deleted=0     AND (user_id = ?)\r\n### Cause: java.sql.SQLSyntaxErrorException: Table \'quick-click.sys_user_profile\' doesn\'t exist\n; bad SQL grammar []', 0, 0, '超级管理员', '2025-06-27 10:06:26', '超级管理员', '2025-06-27 10:06:26');
-INSERT INTO `infra_error_log` VALUES (2, 'quick-click-server', 'GET', '/quick-click-server/self/todo', '{\"query\":{},\"body\":\"\"}', '0:0:0:0:0:0:0:1', '2025-06-27 10:10:18', 'org.springframework.jdbc.BadSqlGrammarException', 'org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator', 'SQLErrorCodeSQLExceptionTranslator.java', 'doTranslate', 246, 'org.springframework.jdbc.BadSqlGrammarException: \r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Table \'quick-click.qc_quality_test_plan\' doesn\'t exist\r\n### The error may exist in io/github/xiaomisum/quickclick/dal/mapper/qualitycenter/PlanMapper.java (best guess)\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: SELECT COUNT( * ) AS total FROM  qc_quality_test_plan     WHERE deleted=0     AND (executor = ? AND status IN (?,?))\r\n### Cause: java.sql.SQLSyntaxErrorException: Table \'quick-click.qc_quality_test_plan\' doesn\'t exist\n; bad SQL grammar []\r\n	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:246)\r\n	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)\r\n	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:92)\r\n	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:439)\r\n	at jdk.proxy2/jdk.proxy2.$Proxy112.selectOne(Unknown Source)\r\n	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:160)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:87)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$PlainMethodInvoker.invoke(MybatisMapperProxy.java:152)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89)\r\n	at jdk.proxy2/jdk.proxy2.$Proxy171.selectCount(Unknown Source)\r\n	at io.github.xiaomisum.quickclick.dal.mapper.qualitycenter.PlanMapper.selectCount(PlanMapper.java:82)\r\n	at java.base/java.lang.invoke.MethodHandle.invokeWithArguments(MethodHandle.java:733)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$DefaultMethodInvoker.invoke(MybatisMapperProxy.java:166)\r\n	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89)\r\n	at jdk.proxy2/jdk.proxy2.$Proxy171.selectCount(Unknown Source)\r\n	at io.github.xiaomisum.quickclick.service.qualitycenter.plan.PlanServiceImpl.count(PlanServiceImpl.java:90)\r\n	at io.github.xiaomisum.quickclick.controller.self.SelfController.getTodo(SelfController.java:125)\r\n	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\r\n	at java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandle', 'SQLSyntaxErrorException: Table \'quick-click.qc_quality_test_plan\' doesn\'t exist', 'BadSqlGrammarException: \r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Table \'quick-click.qc_quality_test_plan\' doesn\'t exist\r\n### The error may exist in io/github/xiaomisum/quickclick/dal/mapper/qualitycenter/PlanMapper.java (best guess)\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: SELECT COUNT( * ) AS total FROM  qc_quality_test_plan     WHERE deleted=0     AND (executor = ? AND status IN (?,?))\r\n### Cause: java.sql.SQLSyntaxErrorException: Table \'quick-click.qc_quality_test_plan\' doesn\'t exist\n; bad SQL grammar []', 0, 0, '超级管理员', '2025-06-27 10:10:18', '超级管理员', '2025-06-27 10:10:18');
 
 -- ----------------------------
 -- Table structure for infra_file
@@ -825,62 +823,6 @@ CREATE TABLE `qc_quality_testcase`  (
 
 -- ----------------------------
 -- Records of qc_quality_testcase
--- ----------------------------
-
--- ----------------------------
--- Table structure for qc_report_quality_developer_day
--- ----------------------------
-DROP TABLE IF EXISTS `qc_report_quality_developer_day`;
-CREATE TABLE `qc_report_quality_developer_day`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `date` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '日期：yyyy-mm-dd',
-  `user_id` bigint NOT NULL COMMENT '用户编号',
-  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '项目编号',
-  `testcase_total` int NOT NULL DEFAULT 0 COMMENT '归属用例数',
-  `new_bug_total` int NOT NULL DEFAULT 0 COMMENT '归属Bug数',
-  `closed_bug_total` int NOT NULL DEFAULT 0 COMMENT '关闭Bug数',
-  `fixed_bug_duration` int NULL DEFAULT 0 COMMENT '修复Bug耗时',
-  `reopened_bug_total` int NULL DEFAULT 0 COMMENT '归属Bug激活数',
-  `deleted` bit(1) NULL DEFAULT b'0',
-  `create_time` datetime NULL DEFAULT NULL,
-  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `update_time` datetime NULL DEFAULT NULL,
-  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `inx`(`user_id` ASC, `project_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '开发基础数据表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of qc_report_quality_developer_day
--- ----------------------------
-
--- ----------------------------
--- Table structure for qc_report_quality_tester_day
--- ----------------------------
-DROP TABLE IF EXISTS `qc_report_quality_tester_day`;
-CREATE TABLE `qc_report_quality_tester_day`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `date` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '日期：yyyy-mm-dd',
-  `user_id` bigint NOT NULL COMMENT '用户编号',
-  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '项目编号',
-  `testcase_total` int NOT NULL DEFAULT 0 COMMENT '新增用例数',
-  `execute_testcase_total` int NOT NULL DEFAULT 0 COMMENT '执行用例数',
-  `new_bug_total` int NOT NULL DEFAULT 0 COMMENT '归属Bug数',
-  `validated_bug_total` int NOT NULL DEFAULT 0 COMMENT '验证Bug数',
-  `validated_bug_duration` int NOT NULL DEFAULT 0 COMMENT '验证Bug耗时',
-  `closed_bug_total` int NOT NULL DEFAULT 0 COMMENT '关闭Bug数',
-  `reopened_bug_total` int NOT NULL DEFAULT 0 COMMENT '激活Bug数',
-  `deleted` bit(1) NULL DEFAULT b'0',
-  `create_time` datetime NULL DEFAULT NULL,
-  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `update_time` datetime NULL DEFAULT NULL,
-  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `inx`(`user_id` ASC, `project_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '报表基础数据表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of qc_report_quality_tester_day
 -- ----------------------------
 
 -- ----------------------------
