@@ -74,6 +74,11 @@ public class BugQueryReqVO extends PageParam {
      */
     private Long currentUser;
 
+    /**
+     * 测试用例编号
+     */
+    private String testcaseId;
+
     @Override
     public String toString() {
         return JsonUtils.toJsonString(this);

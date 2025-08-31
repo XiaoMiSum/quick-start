@@ -50,6 +50,23 @@ public interface TestcaseConvert {
 
     PageResult<TestcasePageRespVO> convert(PageResult<Testcase> beans);
 
+    default Testcase convertToVersion(Testcase original, Testcase newVersion) {
+        return new Testcase()
+                .setParentId(original.getId())
+                .setVersion(original.getVersion() != null ? original.getVersion() + 1 : 1)
+                .setProjectId(original.getProjectId())
+                .setNodeId(original.getNodeId())
+                .setTitle(newVersion.getTitle())
+                .setPriority(newVersion.getPriority())
+                .setPrerequisite(newVersion.getPrerequisite())
+                .setTags(newVersion.getTags())
+                .setSteps(newVersion.getSteps())
+                .setSupervisor(newVersion.getSupervisor())
+                .setBackendDeveloper(newVersion.getBackendDeveloper())
+                .setFrontendDeveloper(newVersion.getFrontendDeveloper())
+                .setIsBaseline(0); // 默认不是基线版本
+    }
+
     default TestcaseDTO convert(Testcase testcase) {
         return new TestcaseDTO().setOriginalId(testcase.getId())
                 .setPath(testcase.getPath())

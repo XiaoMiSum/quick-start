@@ -44,13 +44,17 @@ public interface BugService {
 
     Long count(Long id, BugStatus... status);
 
-    List<Bug> loadProjectBugByCreator(String projectId, Collection<Long> creator, LocalDateTime startTime, LocalDateTime endTime);
+    List<Bug> loadProjectBugByCreator(String projectId, Collection<Long> creator, LocalDateTime startTime,
+            LocalDateTime endTime);
 
-    List<Bug> loadProjectBugBySupervisor(String projectId, Collection<Long> Supervisor, LocalDateTime startTime, LocalDateTime endTime);
+    List<Bug> loadProjectBugBySupervisor(String projectId, Collection<Long> Supervisor, LocalDateTime startTime,
+            LocalDateTime endTime);
 
-    List<BugExecRecord> loadProjectClosedRecords(String projectId, Collection<Long> closer, LocalDateTime startTime, LocalDateTime endTime);
+    List<BugExecRecord> loadProjectClosedRecords(String projectId, Collection<Long> closer, LocalDateTime startTime,
+            LocalDateTime endTime);
 
-    List<BugExecRecord> loadProjectFixedRecords(String projectId, Collection<Long> fixer, LocalDateTime startTime, LocalDateTime endTime);
+    List<BugExecRecord> loadProjectFixedRecords(String projectId, Collection<Long> fixer, LocalDateTime startTime,
+            LocalDateTime endTime);
 
     List<Bug> loadProjectReopenBug(String projectId, LocalDateTime startTime, LocalDateTime endTime);
 
@@ -58,5 +62,19 @@ public interface BugService {
 
     List<Bug> selectUncloseList(LocalDateTime startTime, LocalDateTime endTime);
 
-    List<BugExecRecord> loadProjectReopenRecords(String projectId, List<Long> testers, LocalDateTime startTime, LocalDateTime endTime);
+    List<BugExecRecord> loadProjectReopenRecords(String projectId, List<Long> testers, LocalDateTime startTime,
+            LocalDateTime endTime);
+
+    // 根据测试用例ID查询缺陷
+    List<Bug> getByTestcaseId(String testcaseId);
+
+    /**
+     * 获取缺陷统计分析数据
+     *
+     * @param projectId 项目ID
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return 缺陷统计分析数据
+     */
+    BugStatisticsDTO getStatistics(String projectId, LocalDateTime startTime, LocalDateTime endTime);
 }

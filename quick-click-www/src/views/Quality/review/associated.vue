@@ -20,6 +20,16 @@
                 @keyup.enter="handleQuery"
               />
             </el-form-item>
+            <el-form-item label="评审结果">
+              <el-select v-model="queryParams.result" clearable placeholder="请选择评审结果">
+                <el-option
+                  v-for="item in reviewResultOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="handleQuery">
                 <Icon class="mr-5px" icon="ep:search" />
@@ -32,7 +42,7 @@
             </el-form-item>
           </el-form>
           <!-- 操作工具栏 -->
-          <el-row :gutter="10">
+          <el-row :gutter="10" class="mb-4">
             <el-col :span="1.5">
               <el-button
                 v-hasPermi="['review:case:add']"
@@ -102,48 +112,50 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="评审结果" prop="result">
+            <el-table-column align="center" label="评审结果" prop="result" width="120">
               <template #default="scope">
                 <ones-tag :type="DICT_TYPE.QUALITY_TEST_STATUS" :value="scope.row.result" />
               </template>
             </el-table-column>
-            <el-table-column align="center" label="评审人" prop="reviewer" show-overflow-tooltip>
+            <el-table-column align="center" label="评审人" prop="reviewer" show-overflow-tooltip width="120">
               <template #default="scope">
                 <user-tag :value="scope.row.reviewer" />
               </template>
             </el-table-column>
             <el-table-column align="center" label="评审时间" prop="reviewTime" width="170" />
-            <el-table-column align="center" label="前端开发" width="80">
+            <el-table-column align="center" label="前端开发" width="100">
               <template #default="scope">
                 <user-tag text :value="scope.row.frontendDeveloper" />
               </template>
             </el-table-column>
 
-            <el-table-column align="center" label="后端开发" width="80">
+            <el-table-column align="center" label="后端开发" width="100">
               <template #default="scope">
                 <user-tag text :value="scope.row.backendDeveloper" />
               </template>
             </el-table-column>
-            <el-table-column :width="150" align="center" fixed="right" label="操作">
+            <el-table-column :width="200" align="center" fixed="right" label="操作">
               <template #default="scope">
                 <el-button
                   v-hasPermi="['review:case:execute']"
-                  circle
                   plain
                   type="success"
+                  size="small"
                   @click="handleReviewCase(scope.row.id)"
                 >
                   <Icon icon="ep:caret-right" />
+                  评审
                 </el-button>
 
                 <el-button
                   v-hasPermi="['review:case:remove']"
-                  circle
                   plain
                   type="danger"
+                  size="small"
                   @click="handleBatchUnlinkCase([scope.row.id])"
                 >
                   <Icon icon="fa-solid:unlink" />
+                  取消关联
                 </el-button>
               </template>
             </el-table-column>
@@ -195,11 +207,23 @@ const message = useMessage() // 消息弹窗
 
 defineOptions({ name: 'ReviewAssociated' })
 
+// 评审结果选项
+const reviewResultOptions = ref([
+  { label: '准备中', value: 'Preparing' },
+  { label: '通过', value: 'Passed' },
+  { label: '失败', value: 'Failed' },
+  { label: '阻塞', value: 'Blocking' },
+  { label: '跳过', value: 'Skipped' },
+  { label: '进行中', value: 'Processing' },
+  { label: '完成', value: 'Finished' }
+])
+
 const queryParams = ref<any>({
   pageNo: 1,
   pageSize: 10,
   title: '',
-  nodeId: null
+  nodeId: null,
+  result: null
 })
 
 const checked = ref<any>([])

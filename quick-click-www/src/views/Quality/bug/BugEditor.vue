@@ -45,6 +45,16 @@
               </el-form-item>
             </el-col>
           </el-row>
+          
+          <el-row v-if="formData.testcaseId">
+            <el-col>
+              <el-form-item label="用例详情">
+                <el-button link type="primary" @click="handleViewTestcase(formData.testcaseId)">
+                  查看关联用例
+                </el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
           <el-row>
             <el-col>
@@ -155,7 +165,7 @@ import { useTagsViewStore } from '@/store/modules/tagsView'
 
 import { useGlobalStore } from '@/store/modules/global'
 import { useUserStore } from '@/store/modules/user'
-import { useRouter } from 'vue-router' //1.先在需要跳转的页面引入useRouter
+import { useRouter } from 'vue-router'
 
 import { defaultProps2 } from '@/utils/tree'
 import { getDictOptions, DICT_TYPE } from '@/utils/dictionary'
@@ -166,7 +176,7 @@ import { FloatingButton } from '@/components/XButton'
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
 
-const { params, query } = useRoute() //2.在跳转页面定义router变量，解构得到指定的query和params传参的参数
+const { params, query } = useRoute()
 
 const { currentRoute, push } = useRouter()
 
@@ -380,6 +390,12 @@ watch(
   },
   { immediate: true, deep: true }
 )
+
+const handleViewTestcase = async (testcaseId: string) => {
+  // 在新标签页中打开测试用例详情页面
+  const routeData = router.resolve({ path: '/quality/test-case/edit/' + testcaseId });
+  window.open(routeData.href, '_blank');
+}
 
 onMounted(async () => {
   getTree()

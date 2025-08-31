@@ -72,4 +72,14 @@ public interface PlanCaseService {
     List<PlanCaseExecRecord> getRecords(Long dataId);
 
     void addRecord(PlanCaseExecRecord data);
+
+    /**
+     * 手动同步测试用例到计划用例
+     * 
+     * @param planCaseId     计划用例ID
+     * @param originalCaseId 原始用例ID
+     * @param operatorId     操作人ID
+     * @return 同步结果
+     */
+    boolean syncCaseManually(Long planCaseId, String originalCaseId, Long operatorId);
 }

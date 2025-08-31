@@ -61,6 +61,7 @@ import java.util.Objects;
 import static cn.afterturn.easypoi.excel.entity.enmus.ExcelType.XSSF;
 import static io.github.xiaomisum.quickclick.enums.ErrorCodeConstants.TEST_CASE_BATCH_UPDATE_ERROR;
 import static io.github.xiaomisum.quickclick.enums.ErrorCodeConstants.TEST_CASE_IMPORT_ERROR;
+import static io.github.xiaomisum.quickclick.enums.ErrorCodeConstants.TEST_CASE_VERSION_CREATE_ERROR;
 
 /**
  * 测试用例
@@ -135,7 +136,8 @@ public class CaseController {
     @PutMapping("batch")
     public Result<?> batchUpdate(@RequestBody @Valid TestcaseBatchUpdateReqVO data) {
         if (Objects.isNull(data.getSupervisor()) && Objects.isNull(data.getFrontendDeveloper()) &&
-                Objects.isNull(data.getBackendDeveloper()) && StrUtil.isAllBlank(data.getPriority(), data.getNodeId())) {
+                Objects.isNull(data.getBackendDeveloper())
+                && StrUtil.isAllBlank(data.getPriority(), data.getNodeId())) {
             throw ServiceExceptionUtil.get(TEST_CASE_BATCH_UPDATE_ERROR);
         }
         service.update(TestcaseConvert.INSTANCE.convert(data));
@@ -163,8 +165,9 @@ public class CaseController {
      */
     @SneakyThrows
     @GetMapping("/download")
-    public void downloadTestcase(@RequestParam("template") boolean template, @RequestParam("projectId") String projectId,
-                                 HttpServletResponse response) {
+    public void downloadTestcase(@RequestParam("template") boolean template,
+            @RequestParam("projectId") String projectId,
+            HttpServletResponse response) {
         List<TestcaseExportVO> exports;
         if (template) {
             exports = Lists.newArrayList(new TestcaseExportVO("测试用例", "", "P0",
@@ -187,9 +190,10 @@ public class CaseController {
         params.setType(XSSF);
         String filename = projectService.get(projectId).getTitle();
         try (Workbook workbook = ExcelExportUtil.exportExcel(params, TestcaseExportVO.class, exports);
-             OutputStream os = response.getOutputStream()) {
+                OutputStream os = response.getOutputStream()) {
             workbook.write(os);
-            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8));
+            response.addHeader("Content-Disposition",
+                    "attachment;filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8));
             response.setContentType("application/vnd.ms-excel;charset=UTF-8");
         }
     }
@@ -205,14 +209,15 @@ public class CaseController {
     @SneakyThrows
     @PostMapping("/imports")
     public Result<?> importTestcase(@RequestParam("projectId") String projectId, @CurrentUser LoginUser user,
-                                    @RequestPart MultipartFile file) {
+            @RequestPart MultipartFile file) {
         // 指定单元格转换字典
         TestcaseExportVO.TestcaseExcelDictHandler handler = new TestcaseExportVO.TestcaseExcelDictHandler();
         handler.add("node", nodeService.getList(projectId));
         ImportParams params = new ImportParams();
         params.setDictHandler(handler);
         params.setHeadRows(2);
-        List<TestcaseExportVO> imports = ExcelImportUtil.importExcel(file.getInputStream(), TestcaseExportVO.class, params);
+        List<TestcaseExportVO> imports = ExcelImportUtil.importExcel(file.getInputStream(), TestcaseExportVO.class,
+                params);
         List<Testcase> testcases = TestcaseConvert.INSTANCE.convert2(imports);
         testcases.forEach(item -> item.setSupervisor(user.getId()).setProjectId(projectId));
         service.add(testcases);
@@ -241,5 +246,41 @@ public class CaseController {
     public Result<?> recover(@RequestBody TestcaseTrashReqVO req) {
         service.recover(req.getIds(), req.getProjectId());
         return Result.getSuccessful();
+    }
+
+    /**
+     * 创建新版本
+     *
+     * @param data 用例信息
+     * @return 新版本用例ID
+     */
+    @PostMapping("/version")
+    public Result<?> createNewVersion(@RequestBody @Valid TestcaseAddReqVO data) {
+        String id = service.createNewVersion(TestcaseConvert.INSTANCE.convert(data));
+        return Result.getSuccessful(id);
+    }
+
+    /**
+     * 获取用例版本列表
+     *
+     * @param parentId 父用例ID
+     * @return 用例版本列表
+     */
+    @GetMapping("/versions/{parentId}")
+    public Result<?> getVersionList(@PathVariable("parentId") String parentId) {
+        return Result.getSuccessful(service.getVersionList(parentId));
+    }
+
+    /**
+     * 对比用例版本
+     *
+     * @param version1Id 版本1ID
+     * @param version2Id 版本2ID
+     * @return 对比结果
+     */
+    @GetMapping("/compare")
+    public Result<?> compareVersions(@RequestParam("version1Id") String version1Id,
+            @RequestParam("version2Id") String version2Id) {
+        return Result.getSuccessful(service.compareVersions(version1Id, version2Id));
     }
 }

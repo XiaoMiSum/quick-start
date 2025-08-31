@@ -23,56 +23,56 @@ import static io.github.xiaomisum.quickclick.enums.BugStatus.*;
 public interface BugMapper extends BaseMapperX<Bug> {
 
     default PageResult<Bug> selectPage(BugQueryReqVO req) {
-        var query = new LambdaQueryWrapperX<Bug>()
+        return selectPage(req, new LambdaQueryWrapperX<Bug>()
                 .eq(Bug::getProjectId, req.getProjectId())
-                .likeIfPresent(Bug::getTitle, req.getTitle())
                 .eqIfPresent(Bug::getNodeId, req.getNodeId())
+                .likeIfPresent(Bug::getTitle, req.getTitle())
+                .eqIfPresent(Bug::getSupervisor, req.getSupervisor())
                 .eqIfPresent(Bug::getFixer, req.getFixer())
-                .eqIfPresent(Bug::getSupervisor, req.getSupervisor());
-        switch (req.getTab()) {
-            case ToMe -> query.eq(Bug::getHandler, req.getCurrentUser());
-            case UnClosed -> query.ne(Bug::getStatus, Closed);
-            case IsCreator -> query.eq(Bug::getCreatorId, req.getCurrentUser());
-            case IsFixer -> query.eq(Bug::getFixer, req.getCurrentUser());
-            case Fixed -> query.eq(Bug::getStatus, Fixed);
-            case UnFixed -> query.notIn(Bug::getStatus, Fixed, Closed);
-            case New -> query.eq(Bug::getStatus, New);
-            case LongTime ->
-                    query.lt(Bug::getAssignedTime, DateUtils.addTime(Duration.ofDays(-7))).ne(Bug::getStatus, Closed);
-            case null, default -> {
-                return selectPage(req, query.orderByDesc(Bug::getId));
-            }
-        }
-        return selectPage(req, query.orderByDesc(Bug::getId));
+                .eqIfPresent(Bug::getTestcaseId, req.getTestcaseId()) // 添加测试用例ID查询条件
+                .apply(req.getCurrentUser() != null, "supervisor = {0} or handler = {0} or creator_id = {0}",
+                        req.getCurrentUser())
+                .apply("tab = 'All' or tab = {0}", req.getTab()));
+    }
+
+    default List<Bug> selectList(BugQueryReqVO req) {
+        return selectList(new LambdaQueryWrapperX<Bug>()
+                .eq(Bug::getProjectId, req.getProjectId())
+                .eqIfPresent(Bug::getNodeId, req.getNodeId())
+                .likeIfPresent(Bug::getTitle, req.getTitle())
+                .eqIfPresent(Bug::getSupervisor, req.getSupervisor())
+                .eqIfPresent(Bug::getFixer, req.getFixer())
+                .eqIfPresent(Bug::getTestcaseId, req.getTestcaseId())); // 添加测试用例ID查询条件
+    }
+
+    default void updateBatch(List<Bug> bugs) {
+        bugs.forEach(this::updateById);
     }
 
     default void reopenById(String id, BugStatus status, Long handler) {
         update(new LambdaUpdateWrapper<Bug>()
                 .set(Bug::getStatus, status)
+                .set(Bug::getReopenedTimes, 1)
                 .set(Bug::getHandler, handler)
-                .set(Bug::getAssignedTime, LocalDateTime.now())
-                .setSql(true, "reopened_times = reopened_times + 1")
                 .eq(BaseDO::getId, id));
-
     }
 
-    default void closeById(String id, BugStatus status, Long closer) {
+    default void closeById(String id, BugStatus closed, Long loginUserId) {
         update(new LambdaUpdateWrapper<Bug>()
-                .set(Bug::getStatus, status)
-                .set(Bug::getHandler, null)
+                .set(Bug::getStatus, closed)
+                .set(Bug::getCloser, loginUserId)
                 .set(Bug::getClosedTime, LocalDateTime.now())
-                .set(Bug::getCloser, closer)
                 .eq(BaseDO::getId, id));
     }
 
-    default Long selectCount(Long userId, BugStatus[] status) {
+    default Long selectCount(Long userId, BugStatus... status) {
         return selectCount(new LambdaQueryWrapperX<Bug>()
-                .eq(Bug::getHandler, userId)
+                .eq(Bug::getSupervisor, userId)
                 .in(Bug::getStatus, Arrays.stream(status).toList()));
     }
 
     default List<Bug> selectListBySupervisor(String projectId, Collection<Long> supervisor,
-                                             LocalDateTime startTime, LocalDateTime endTime) {
+            LocalDateTime startTime, LocalDateTime endTime) {
         return selectList(new LambdaQueryWrapperX<Bug>()
                 .eq(Bug::getProjectId, projectId)
                 .in(Bug::getSupervisor, supervisor)
@@ -89,7 +89,7 @@ public interface BugMapper extends BaseMapperX<Bug> {
     }
 
     default List<Bug> selectListByCreator(String projectId, Collection<Long> creator,
-                                          LocalDateTime startTime, LocalDateTime endTime) {
+            LocalDateTime startTime, LocalDateTime endTime) {
         return selectList(new LambdaQueryWrapperX<Bug>()
                 .eq(Bug::getProjectId, projectId)
                 .in(Bug::getCreatorId, creator)

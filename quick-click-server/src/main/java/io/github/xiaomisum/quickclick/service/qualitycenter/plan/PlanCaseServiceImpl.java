@@ -54,6 +54,14 @@ public class PlanCaseServiceImpl implements PlanCaseService {
     private PlanMapper planMapper;
     @Resource
     private PlanCaseRecordMapper recordMapper;
+    @Resource
+    private io.github.xiaomisum.quickclick.service.qualitycenter.testcase.TestcaseService testcaseService;
+    @Resource
+    private io.github.xiaomisum.quickclick.service.qualitycenter.reuse.CaseReuseService caseReuseService;
+    @Resource
+    private io.github.xiaomisum.quickclick.convert.qualitycenter.TestcaseConvert testcaseConvert;
+    @Resource
+    private io.github.xiaomisum.quickclick.convert.qualitycenter.PlanCaseConvert planCaseConvert;
 
     @Override
     public PageResult<PlanCase> getPage(PlanCaseQueryReqVO req) {
@@ -82,8 +90,8 @@ public class PlanCaseServiceImpl implements PlanCaseService {
 
     @Override
     public List<PlanCase> getListGtId(String opt, String planId, Long id) {
-        return (Objects.equals(opt, "next")) ?
-                mapper.selectListByGtId(planId, id) : mapper.selectListByLtId(planId, id);
+        return (Objects.equals(opt, "next")) ? mapper.selectListByGtId(planId, id)
+                : mapper.selectListByLtId(planId, id);
     }
 
     @Override
@@ -127,8 +135,7 @@ public class PlanCaseServiceImpl implements PlanCaseService {
                 .setDataId(execute.getId())
                 .setUserId(execute.getExecutor())
                 .setOperation(execute.getResult())
-                .setContent("")
-        );
+                .setContent(""));
     }
 
     @Override
@@ -136,8 +143,8 @@ public class PlanCaseServiceImpl implements PlanCaseService {
         // 如果更新时间为空，则获取最近指定天数的所有数据
         maxUpdateTime = Objects.isNull(maxUpdateTime) ? LocalDateTime.now().minusDays(offset) : maxUpdateTime;
         List<PlanCase> results = mapper.selectExistsByUpdateTimeAfter(maxUpdateTime);
-        return CollectionUtil.isEmpty(results) ? null :
-                results.stream().collect(Collectors.groupingBy(PlanCase::getPlanId)).keySet().stream().toList();
+        return CollectionUtil.isEmpty(results) ? null
+                : results.stream().collect(Collectors.groupingBy(PlanCase::getPlanId)).keySet().stream().toList();
     }
 
     @Override
@@ -163,5 +170,40 @@ public class PlanCaseServiceImpl implements PlanCaseService {
     @Override
     public void addRecord(PlanCaseExecRecord data) {
         recordMapper.insert(data);
+    }
+
+    @Override
+    public boolean syncCaseManually(Long planCaseId, String originalCaseId, Long operatorId) {
+        // 从TestcaseService获取原始用例
+        io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase originalCase = testcaseService
+                .get(originalCaseId);
+        if (originalCase == null) {
+            return false;
+        }
+
+        // 转换为测试用例DTO
+        io.github.xiaomisum.quickclick.model.dto.TestcaseDTO testcaseDTO = testcaseConvert.convert(originalCase);
+
+        // 获取计划用例
+        PlanCase planCase = mapper.selectById(planCaseId);
+        if (planCase == null) {
+            return false;
+        }
+
+        // 更新计划用例
+        PlanCase updatedCase = planCaseConvert.convert(testcaseDTO);
+        updatedCase.setId(planCaseId);
+        mapper.updateById(updatedCase);
+
+        // 记录复用操作
+        io.github.xiaomisum.quickclick.dal.dataobject.quality.CaseReuseRecord reuseRecord = new io.github.xiaomisum.quickclick.dal.dataobject.quality.CaseReuseRecord();
+        reuseRecord.setOriginalCaseId(originalCaseId)
+                .setTargetType("PLAN")
+                .setTargetId(planCase.getPlanId())
+                .setOperatorId(operatorId)
+                .setDescription("用户手动同步更新");
+        caseReuseService.addRecord(reuseRecord);
+
+        return true;
     }
 }

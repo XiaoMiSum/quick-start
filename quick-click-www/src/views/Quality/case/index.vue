@@ -198,6 +198,25 @@
               <user-tag text :value="scope.row.backendDeveloper" />
             </template>
           </el-table-column>
+          
+          <el-table-column
+            v-if="activeName === 'Testcase'"
+            align="center"
+            label="关联缺陷"
+            width="100"
+          >
+            <template #default="scope">
+              <el-button 
+                v-if="scope.row.bugCount && scope.row.bugCount > 0" 
+                link 
+                type="danger" 
+                @click="handleViewRelatedBugs(scope.row.id)"
+              >
+                {{ scope.row.bugCount }} 个缺陷
+              </el-button>
+              <el-text v-else type="info">无缺陷</el-text>
+            </template>
+          </el-table-column>
 
           <el-table-column
             v-if="activeName === 'Trash'"
@@ -252,6 +271,24 @@
               >
                 删除
               </el-button>
+              <el-button
+                v-hasPermi="['quality:case:version']"
+                circle
+                text
+                type="primary"
+                @click="openVersionList(scope.row.id)"
+              >
+                版本
+              </el-button>
+              <el-button
+                v-hasPermi="['quality:case:bug']"
+                circle
+                text
+                type="warning"
+                @click="openBugAssociation(scope.row.id)"
+              >
+                缺陷
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -296,12 +333,17 @@
   />
 
   <CaseBatchEditor ref="caseBatchEditor" :nodes="modules" :users="userList" @close="getList" />
+  <CaseVersionList ref="caseVersionList" />
+  <BugAssociation ref="bugAssociationRef" />
 </template>
 
 <script lang="ts" setup>
 import { DefaultNodeTree } from '@/views/components/node'
 import CaseImports from './CaseImports.vue'
 import CaseBatchEditor from './CaseBatchEditor.vue'
+import CaseVersionList from './CaseVersionList.vue'
+import BugAssociation from './BugAssociation.vue'
+
 import download from '@/utils/download'
 import { DICT_TYPE, getDictOptions } from '@/utils/dictionary'
 
@@ -339,15 +381,44 @@ const queryFormRef = ref() // 搜索的表单
 const getList = async () => {
   loading.value = true
   try {
-    queryParams.value.trash = activeName.value === 'Testcase' ? 0 : 1
     queryParams.value.projectId = globalStore.getCurrentProject
+    queryParams.value.tab = activeName
     const data = await HTTP.getPage(queryParams.value)
+    
+    // 获取每个测试用例的关联缺陷数量
+    const testcaseIds = data.list.map((item: any) => item.id)
+    if (testcaseIds.length > 0) {
+      try {
+        const bugCounts = await getBugCountForTestcases(testcaseIds)
+        data.list.forEach((item: any) => {
+          item.bugCount = bugCounts[item.id] || 0
+        })
+      } catch (error) {
+        console.error('获取缺陷数量失败:', error)
+      }
+    }
+    
     list.value = data.list
     total.value = data.total
   } finally {
     toggleSelection()
     loading.value = false
   }
+}
+
+// 获取测试用例的关联缺陷数量
+const getBugCountForTestcases = async (testcaseIds: string[]) => {
+  const bugCounts: Record<string, number> = {}
+  for (const testcaseId of testcaseIds) {
+    try {
+      const response = await BugApi.getPage({ testcaseId })
+      bugCounts[testcaseId] = response.total || 0
+    } catch (error) {
+      console.error(`获取测试用例 ${testcaseId} 的缺陷数量失败:`, error)
+      bugCounts[testcaseId] = 0
+    }
+  }
+  return bugCounts
 }
 
 const handleQuery = async () => {
@@ -395,6 +466,11 @@ const handleNodeClick = async (row: any) => {
 const caseBatchEditor = ref()
 const openBatchUpdate = async () => {
   caseBatchEditor.value.open(checked)
+}
+
+const caseVersionList = ref()
+const openVersionList = async (id: string) => {
+  caseVersionList.value.open(id)
 }
 
 const handleSelectionChange = async (val: any[]) => {
@@ -473,4 +549,15 @@ onMounted(async () => {
   await getList()
   await getTree()
 })
-</script>
+
+const bugAssociationRef = ref()
+
+const openBugAssociation = (testcaseId: string) => {
+  bugAssociationRef.value.open(testcaseId)
+}
+
+// 查看关联的缺陷
+const handleViewRelatedBugs = async (testcaseId: string) => {
+  // 这里可以跳转到缺陷列表页面，并筛选出该测试用例的缺陷
+  push(`/quality/bug/list?testcaseId=${testcaseId}`)
+}

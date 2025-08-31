@@ -4,7 +4,7 @@
     :dict-value="status"
     :dict-code="DICT_TYPE.QUALITY_TEST_STATUS"
     :title="data.title"
-    width="80%"
+    width="85%"
     @close="close"
   >
     <InfoViewer v-model="data" :show-actual="true" v-loading="loading" />
@@ -33,12 +33,27 @@
         <Icon class="mr-5px" icon="ep:refresh" />
         同步用例
       </el-button>
+      <el-button link type="primary" @click="handleManualSyncCase">
+        <Icon class="mr-5px" icon="ep:refresh-right" />
+        手动同步
+      </el-button>
       <el-button link @click="handleComment">
         <Icon class="mr-5px" icon="ep:chat-dot-square" />
         评论
       </el-button>
       <el-divider direction="vertical" />
-      <Executer source="plan" @click="handleExecuteCase" />
+      <div class="inline-flex items-center">
+        <el-button 
+          v-for="result in testResults" 
+          :key="result.value"
+          :type="status === result.value ? 'primary' : 'default'"
+          plain
+          size="small"
+          @click="() => handleExecuteCase(result.value)"
+        >
+          {{ result.label }}
+        </el-button>
+      </div>
     </template>
   </Dialog>
 </template>
@@ -50,6 +65,14 @@ import * as PLAN from '@/api/quality/plan'
 import { DICT_TYPE } from '@/utils/dictionary'
 
 const message = useMessage() // 消息弹窗
+
+// 测试结果选项
+const testResults = ref([
+  { label: '通过', value: 'Passed' },
+  { label: '失败', value: 'Failed' },
+  { label: '阻塞', value: 'Blocking' },
+  { label: '跳过', value: 'Skipped' }
+])
 
 const visible = ref(false)
 const data = ref<any>({})
@@ -76,6 +99,23 @@ const handleSyncCase = async () => {
     originalId: params.originalId
   })
   loading.value = false
+}
+
+const handleManualSyncCase = async () => {
+  loading.value = true
+  const params = data.value
+  try {
+    await PLAN.syncCaseManually({
+      id: params.id,
+      planId: params.planId,
+      originalId: params.originalId
+    })
+    message.success('手动同步成功')
+  } catch (error) {
+    message.error('手动同步失败')
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleLastClick = async () => {
@@ -119,7 +159,7 @@ const handleExecuteCase = async (result: string) => {
   status.value = result
   const b = await handleNextClick()
   if (b) {
-    message.success('评审成功，获取下一条！')
+    message.success('执行成功，获取下一条！')
   } else {
     visible.value = false
   }

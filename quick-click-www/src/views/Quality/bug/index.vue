@@ -303,6 +303,7 @@ import download from '@/utils/download'
 import { DICT_TYPE } from '@/utils/dictionary'
 
 import * as HTTP from '@/api/quality/bug'
+import * as TestcaseApi from '@/api/quality/testcase'
 
 import { useGlobalStore } from '@/store/modules/global'
 
@@ -317,7 +318,8 @@ const queryParams = ref<any>({
   pageNo: 1,
   pageSize: 10,
   title: '',
-  nodeId: null
+  nodeId: null,
+  testcaseId: null // 添加测试用例ID参数
 })
 
 const activeName = ref('ToMe')
@@ -336,6 +338,23 @@ const getList = async () => {
   try {
     queryParams.value.projectId = globalStore.getCurrentProject
     queryParams.value.tab = activeName
+    
+    // 从URL参数中获取testcaseId
+    const route = useRoute()
+    if (route.query.testcaseId) {
+      queryParams.value.testcaseId = route.query.testcaseId
+      // 获取测试用例信息并显示在页面上
+      try {
+        const testcase = await TestcaseApi.getData(route.query.testcaseId)
+        if (testcase && testcase.title) {
+          // 可以在页面上显示当前筛选的测试用例标题
+          console.log('当前筛选的测试用例:', testcase.title)
+        }
+      } catch (error) {
+        console.error('获取测试用例信息失败:', error)
+      }
+    }
+    
     const data = await HTTP.getPage(queryParams.value)
     list.value = data.list
     total.value = data.total

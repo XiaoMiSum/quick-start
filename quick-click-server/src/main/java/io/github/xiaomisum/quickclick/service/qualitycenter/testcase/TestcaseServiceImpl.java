@@ -90,7 +90,8 @@ public class TestcaseServiceImpl implements TestcaseService {
 
     @Override
     public void add(List<Testcase> testcases) {
-        testcases.forEach(item -> item.setPath(node.get(item.getNodeId()).getPath()).setId(IdUtil.getSnowflakeNextIdStr()));
+        testcases.forEach(
+                item -> item.setPath(node.get(item.getNodeId()).getPath()).setId(IdUtil.getSnowflakeNextIdStr()));
         mapper.insertBatch(testcases);
     }
 
@@ -127,5 +128,95 @@ public class TestcaseServiceImpl implements TestcaseService {
         return mapper.selectList(startTime, endTime);
     }
 
+    @Override
+    public String createNewVersion(Testcase testcase) {
+        // 获取原用例
+        Testcase original = mapper.selectById(testcase.getParentId());
+        if (original == null) {
+            throw ServiceExceptionUtil.get(ErrorCodeConstants.ORIGINAL_CASE_NOT_EXIST);
+        }
+
+        // 转换为版本用例
+        Testcase versionTestcase = TestcaseConvert.INSTANCE.convertToVersion(original, testcase);
+        versionTestcase.setId(IdUtil.getSnowflakeNextIdStr());
+        versionTestcase.setPath(node.get(versionTestcase.getNodeId()).getPath());
+
+        // 保存新版本
+        mapper.insert(versionTestcase);
+        return versionTestcase.getId();
+    }
+
+    @Override
+    public List<Testcase> getVersionList(String parentId) {
+        return mapper.selectList(new LambdaQueryWrapperX<Testcase>()
+                .and(wrapper -> wrapper.eq(Testcase::getId, parentId)
+                        .or()
+                        .eq(Testcase::getParentId, parentId))
+                .orderByAsc(Testcase::getVersion));
+    }
+
+    @Override
+    public String compareVersions(String version1Id, String version2Id) {
+        Testcase version1 = mapper.selectById(version1Id);
+        Testcase version2 = mapper.selectById(version2Id);
+
+        if (version1 == null || version2 == null) {
+            throw new RuntimeException("用例版本不存在");
+        }
+
+        // 构建详细的对比结果
+        StringBuilder diff = new StringBuilder();
+
+        // 标题对比
+        if (!version1.getTitle().equals(version2.getTitle())) {
+            diff.append("标题不同: ").append(version1.getTitle()).append(" -> ").append(version2.getTitle()).append("\n");
+        }
+
+        // 优先级对比
+        if (!version1.getPriority().equals(version2.getPriority())) {
+            diff.append("优先级不同: ").append(version1.getPriority()).append(" -> ").append(version2.getPriority())
+                    .append("\n");
+        }
+
+        // 前置条件对比
+        if (!Objects.equals(version1.getPrerequisite(), version2.getPrerequisite())) {
+            diff.append("前置条件不同: ").append(version1.getPrerequisite()).append(" -> ").append(version2.getPrerequisite())
+                    .append("\n");
+        }
+
+        // 标签对比
+        if (!Objects.equals(version1.getTags(), version2.getTags())) {
+            diff.append("标签不同: ").append(version1.getTags()).append(" -> ").append(version2.getTags())
+                    .append("\n");
+        }
+
+        // 前端开发人员对比
+        if (!Objects.equals(version1.getFrontendDeveloper(), version2.getFrontendDeveloper())) {
+            diff.append("前端开发不同: ").append(version1.getFrontendDeveloper()).append(" -> ")
+                    .append(version2.getFrontendDeveloper())
+                    .append("\n");
+        }
+
+        // 后端开发人员对比
+        if (!Objects.equals(version1.getBackendDeveloper(), version2.getBackendDeveloper())) {
+            diff.append("后端开发不同: ").append(version1.getBackendDeveloper()).append(" -> ")
+                    .append(version2.getBackendDeveloper())
+                    .append("\n");
+        }
+
+        // 责任人对比
+        if (!Objects.equals(version1.getSupervisor(), version2.getSupervisor())) {
+            diff.append("责任人不同: ").append(version1.getSupervisor()).append(" -> ").append(version2.getSupervisor())
+                    .append("\n");
+        }
+
+        // 步骤对比
+        if (!Objects.equals(version1.getSteps(), version2.getSteps())) {
+            diff.append("执行步骤不同\n");
+            // 可以进一步详细对比步骤差异
+        }
+
+        return diff.toString();
+    }
 
 }

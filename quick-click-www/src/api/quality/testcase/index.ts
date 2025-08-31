@@ -76,3 +76,26 @@ export const recoverTestcase = (params: any) => {
     data: params
   })
 }
+
+// 创建新版本
+export const createNewVersion = (data: any) => {
+  return request.post({
+    url: url + '/version',
+    data
+  })
+}
+
+// 获取用例版本列表
+export const getVersionList = (parentId: string) => {
+  return request.get({
+    url: url + '/versions/' + parentId
+  })
+}
+
+// 对比用例版本
+export const compareVersions = (version1Id: string, version2Id: string) => {
+  return request.get({
+    url: url + '/compare',
+    params: { version1Id, version2Id }
+  })
+}

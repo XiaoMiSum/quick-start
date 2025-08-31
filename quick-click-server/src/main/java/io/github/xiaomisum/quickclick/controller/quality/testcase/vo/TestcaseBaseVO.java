@@ -56,4 +56,14 @@ public class TestcaseBaseVO {
     private Long backendDeveloper;
 
     private Long frontendDeveloper;
+
+    /**
+     * 父用例ID
+     */
+    private String parentId;
+
+    /**
+     * 是否为基线版本
+     */
+    private Integer isBaseline;
 }

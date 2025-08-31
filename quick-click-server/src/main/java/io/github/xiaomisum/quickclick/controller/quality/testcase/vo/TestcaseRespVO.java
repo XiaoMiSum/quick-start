@@ -39,6 +39,21 @@ public class TestcaseRespVO extends TestcaseBaseVO {
     private String id;
 
     private TestStatus lastReviewResult;
-    
+
     private List<CaseStep> steps;
+
+    /**
+     * 版本号
+     */
+    private Integer version;
+
+    /**
+     * 父用例ID
+     */
+    private String parentId;
+
+    /**
+     * 是否为基线版本
+     */
+    private Integer isBaseline;
 }

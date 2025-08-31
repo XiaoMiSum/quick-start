@@ -132,8 +132,16 @@ interface UploadEmits {
 const emit = defineEmits<UploadEmits>()
 const uploadSuccess = (response, uploadFile: UploadFile) => {
   if (!response) return
-  // TODO 多图上传组件成功后只是把保存成功后的url替换掉组件选图时的文件路径，所以返回的fileList包含的是一个包含文件信息的对象列表
+  // 更新上传文件的URL为服务器返回的URL
   uploadFile.url = response.data
+  // 更新fileList，确保返回的fileList包含完整的文件信息
+  const index = fileList.value.findIndex(item => item.uid === uploadFile.uid)
+  if (index !== -1) {
+    fileList.value[index] = {
+      ...fileList.value[index],
+      url: response.data
+    }
+  }
   emit('update:modelValue', fileList.value)
   message.success('上传成功')
 }
@@ -305,4 +313,3 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
     text-align: center;
   }
 }
-</style>

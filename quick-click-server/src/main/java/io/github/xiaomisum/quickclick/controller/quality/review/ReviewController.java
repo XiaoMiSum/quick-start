@@ -163,6 +163,27 @@ public class ReviewController {
     }
 
     /**
+     * 手动同步用例
+     * <p>
+     * 用户主动触发的用例同步操作
+     *
+     * @param user 当前用户
+     * @param req  请求参数
+     * @return 处理结果
+     */
+    @PostMapping("/case/sync-manual")
+    public Result<?> syncCaseManually(@CurrentUser LoginUser user, @RequestBody @Valid ReviewCaseSyncVO req) {
+        TestcaseDTO testcase = TestcaseConvert.INSTANCE.convert(testcaseService.get(req.getOriginalId()));
+        if (Objects.isNull(testcase)) {
+            return Result.getError(ORIGINAL_CASE_NOT_EXIST);
+        }
+        ReviewCase reviewCase = ReviewConvert.INSTANCE.convert(testcase);
+        reviewCase.setReviewId(req.getReviewId()).setId(req.getId());
+        reviewCaseService.update(reviewCase);
+        return Result.getSuccessful("手动同步成功");
+    }
+
+    /**
      * 获取评审用例信息
      *
      * @param id 评审用例编号
@@ -182,7 +203,7 @@ public class ReviewController {
      */
     @PostMapping("/case/execute")
     public Result<?> reviewCase(@CurrentUser LoginUser user,
-                                @RequestBody @Valid ReviewCaseExecuteVO execute) {
+            @RequestBody @Valid ReviewCaseExecuteVO execute) {
         execute.setReviewer(user.getId());
         // 设置实际开始时间
         List<ReviewCase> total = reviewCaseService.getList(execute.getReviewId());
@@ -225,8 +246,8 @@ public class ReviewController {
      */
     @GetMapping("/case/{opt}")
     public Result<?> getReviewCase(@RequestParam("reviewId") String reviewId,
-                                   @RequestParam("id") Long id,
-                                   @PathVariable("opt") String opt) {
+            @RequestParam("id") Long id,
+            @PathVariable("opt") String opt) {
         List<ReviewCase> results = reviewCaseService.getListGtId(opt, reviewId, id);
         if (results.isEmpty()) {
             return Result.getSuccessful(null);
@@ -243,7 +264,8 @@ public class ReviewController {
      */
     @GetMapping("/case/unassociated")
     public Result<?> getUnAssociatedCasePage(ReviewCaseQueryReqVO req) {
-        List<String> ids = reviewCaseService.getList(req.getReviewId()).stream().map(ReviewCase::getOriginalId).toList();
+        List<String> ids = reviewCaseService.getList(req.getReviewId()).stream().map(ReviewCase::getOriginalId)
+                .toList();
         TestcaseQueryReqVO caseQuery = new TestcaseQueryReqVO(req.getPageNo(), req.getPageSize())
                 .setTitle(req.getTitle())
                 .setProjectId(req.getProjectId())
@@ -283,7 +305,6 @@ public class ReviewController {
     public Result<List<SimpleData>> getSimple(@RequestParam("projectId") String projectId) {
         return Result.getSuccessful(ReviewConvert.INSTANCE.convert3(service.getList(projectId)));
     }
-
 
     /**
      * 获取测试计划执行记录

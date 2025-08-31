@@ -63,4 +63,29 @@ public interface TestcaseService {
 
     List<Testcase> loadTestCase(LocalDateTime startTime, LocalDateTime endTime);
 
+    /**
+     * 创建用例的新版本
+     *
+     * @param testcase 用例信息
+     * @return 新版本用例ID
+     */
+    String createNewVersion(Testcase testcase);
+
+    /**
+     * 获取用例的所有版本
+     *
+     * @param parentId 父用例ID
+     * @return 用例版本列表
+     */
+    List<Testcase> getVersionList(String parentId);
+
+    /**
+     * 对比两个用例版本
+     *
+     * @param version1Id 版本1ID
+     * @param version2Id 版本2ID
+     * @return 对比结果
+     */
+    String compareVersions(String version1Id, String version2Id);
+
 }

@@ -145,6 +145,9 @@
     </VueDraggable>
     <div class="float-right">
       <el-button @click="handleGoCaseList">取消</el-button>
+      <el-button v-if="caseData.value.id" @click="handleCreateNewVersion">
+        创建新版本
+      </el-button>
       <el-button :loading="loading" type="primary" @click="handleSubmitAndCloseView">
         保存并关闭
       </el-button>
@@ -153,6 +156,8 @@
       </el-button>
     </div>
   </ContentWrap>
+  
+  <RelatedBugs v-if="caseData.id" ref="relatedBugsRef" :testcase-id="caseData.id" />
 </template>
 
 <script lang="ts" setup>
@@ -170,6 +175,10 @@ import { VueDraggable } from 'vue-draggable-plus'
 
 import { CaseStep, CaseVO } from '@/api/quality/testcase.data'
 import { getDictOptions, DICT_TYPE } from '@/utils/dictionary'
+
+import * as BugApi from '@/api/quality/bug'
+
+import RelatedBugs from './RelatedBugs.vue'
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
@@ -221,6 +230,12 @@ const handleSubmitAndCloseView = async () => {
       await HTTP.updateData(caseData.value)
       message.success('更新成功')
     }
+    
+    // 刷新关联缺陷信息
+    if (relatedBugsRef.value) {
+      relatedBugsRef.value.loadRelatedBugs()
+    }
+    
     await handleCloseView()
     toCaseList()
   } finally {
@@ -246,6 +261,12 @@ const handleSubmitAndAdd = async () => {
     } else {
       await HTTP.updateData(caseData.value)
       message.success('更新成功')
+      
+      // 刷新关联缺陷信息
+      if (relatedBugsRef.value) {
+        relatedBugsRef.value.loadRelatedBugs()
+      }
+      
       await handleCloseView()
       toCaseAdd()
     }
@@ -310,6 +331,20 @@ const handleDelete = async (index: number) => {
   }
 }
 
+/**
+ * 创建新版本
+ */
+const handleCreateNewVersion = async () => {
+  try {
+    // 设置父用例ID
+    const newVersionData = { ...caseData.value, parentId: caseData.value.id }
+    await HTTP.createNewVersion(newVersionData)
+    message.success('创建新版本成功')
+  } catch (error) {
+    message.error('创建新版本失败')
+  }
+}
+
 /** 监听当前项目变化，返回测试用例列表 */
 const pageInit = ref(false)
 watch(
@@ -324,11 +359,27 @@ watch(
   { immediate: true, deep: true }
 )
 
+const relatedBugsRef = ref()
+
+const handleViewBug = (bugId: string) => {
+  const routeData = router.resolve({ path: '/quality/bug/view/' + bugId });
+  window.open(routeData.href, '_blank');
+}
+
+// 在 onMounted 中添加获取关联缺陷信息的逻辑
 onMounted(async () => {
   getTree()
   getUsers()
   if (params && params.id) {
     caseData.value = await HTTP.getData(params.id)
+    
+    // 获取关联的缺陷信息
+    try {
+      const bugResponse = await BugApi.getPage({ testcaseId: params.id })
+      relatedBugs.value = bugResponse.list || []
+    } catch (error) {
+      console.error('获取关联缺陷信息失败:', error)
+    }
   }
   if (query && query.from) {
     caseData.value = await HTTP.getData(query.from)

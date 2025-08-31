@@ -131,6 +131,14 @@ export const syncCase = (data: any) => {
   })
 }
 
+// 手动同步用例
+export const syncCaseManually = (data: any) => {
+  return request.post({
+    url: url + '/case/sync-manual',
+    data
+  })
+}
+
 export const getRecords = (dataId: number) => {
   return request.get({
     url: url + '/case/record',

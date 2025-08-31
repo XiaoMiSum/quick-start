@@ -33,6 +33,10 @@
         <Icon class="mr-5px" icon="ep:refresh" />
         同步用例
       </el-button>
+      <el-button link type="primary" @click="handleManualSyncCase">
+        <Icon class="mr-5px" icon="ep:refresh-right" />
+        手动同步
+      </el-button>
       <el-button link @click="handleComment">
         <Icon class="mr-5px" icon="ep:chat-dot-square" />
         评论
@@ -76,6 +80,23 @@ const handleSyncCase = async () => {
     originalId: params.originalId
   })
   loading.value = false
+}
+
+const handleManualSyncCase = async () => {
+  loading.value = true
+  const params = data.value
+  try {
+    await REVIEW.syncCaseManually({
+      id: params.id,
+      reviewId: params.reviewId,
+      originalId: params.originalId
+    })
+    message.success('手动同步成功')
+  } catch (error) {
+    message.error('手动同步失败')
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleLastClick = async () => {

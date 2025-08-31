@@ -488,6 +488,66 @@ CREATE TABLE `qc_project_member`  (
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime NULL DEFAULT NULL,
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx_project`(`project_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目成员表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of qc_project_member
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qc_report_quality_project_week
+-- ----------------------------
+DROP TABLE IF EXISTS `qc_report_quality_project_week`;
+CREATE TABLE `qc_report_quality_project_week`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `start_date` date NOT NULL COMMENT '区间开始日期',
+  `end_date` date NOT NULL COMMENT '区间结束日期',
+  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '项目编号',
+  `manager_id` bigint NOT NULL COMMENT '项目经理',
+  `this_range_testcase_total` int NULL DEFAULT NULL COMMENT '本期执行用例',
+  `qualification_rate` decimal(5,2) NULL DEFAULT NULL COMMENT '质量合格率',
+  `this_range_bug_total` int NULL DEFAULT NULL COMMENT '本期新增缺陷',
+  `last_range_bug_total` int NULL DEFAULT NULL COMMENT '上期遗留缺陷',
+  `this_range_closed_bug_total` int NULL DEFAULT NULL COMMENT '本期关闭缺陷',
+  `unfinished_bug_handler` json NULL COMMENT 'Bug解决人',
+  `completion_date` date NULL DEFAULT NULL COMMENT '计划完成日期',
+  `deleted` tinyint NOT NULL DEFAULT 0,
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目周报数据表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for qc_report_quality_project_month
+-- ----------------------------
+DROP TABLE IF EXISTS `qc_report_quality_project_month`;
+CREATE TABLE `qc_report_quality_project_month`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `start_date` date NOT NULL COMMENT '区间开始日期',
+  `end_date` date NOT NULL COMMENT '区间结束日期',
+  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '项目编号',
+  `manager_id` bigint NOT NULL COMMENT '项目经理',
+  `this_range_testcase_total` int NULL DEFAULT NULL COMMENT '本期执行用例',
+  `qualification_rate` decimal(5,2) NULL DEFAULT NULL COMMENT '质量合格率',
+  `this_range_bug_total` int NULL DEFAULT NULL COMMENT '本期新增缺陷',
+  `last_range_bug_total` int NULL DEFAULT NULL COMMENT '上期遗留缺陷',
+  `this_range_closed_bug_total` int NULL DEFAULT NULL COMMENT '本期关闭缺陷',
+  `unfinished_bug_handler` json NULL COMMENT 'Bug解决人',
+  `completion_date` date NULL DEFAULT NULL COMMENT '计划完成日期',
+  `deleted` tinyint NOT NULL DEFAULT 0,
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目月报数据表' ROW_FORMAT = DYNAMIC;
+
+  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `inx`(`project_id` ASC) USING BTREE
@@ -519,6 +579,31 @@ CREATE TABLE `qc_project_node`  (
 
 -- ----------------------------
 -- Records of qc_project_node
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qc_project_requirement
+-- ----------------------------
+DROP TABLE IF EXISTS `qc_project_requirement`;
+CREATE TABLE `qc_project_requirement`  (
+  `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '需求标题',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '详细描述',
+  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '所属项目',
+  `module_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '所属模块',
+  `prototype_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '原型地址',
+  `deleted` bit(1) NOT NULL DEFAULT b'0',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `inx_project_id`(`project_id` ASC) USING BTREE,
+  INDEX `inx_module_id`(`module_id` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目需求表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of qc_project_requirement
 -- ----------------------------
 
 -- ----------------------------
@@ -586,6 +671,27 @@ CREATE TABLE `qc_quality_bug_exec_record`  (
 -- ----------------------------
 -- Records of qc_quality_bug_exec_record
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for qc_quality_case_reuse_record
+-- ----------------------------
+DROP TABLE IF EXISTS `qc_quality_case_reuse_record`;
+CREATE TABLE `qc_quality_case_reuse_record`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `original_case_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '原始用例ID',
+  `target_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '复用目标类型 (PLAN/REVIEW)',
+  `target_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '复用目标ID (计划ID或评审ID)',
+  `operator_id` bigint NOT NULL COMMENT '复用操作人',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '复用描述',
+  `deleted` tinyint NOT NULL DEFAULT 0,
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_original_case_id`(`original_case_id` ASC) USING BTREE,
+  INDEX `idx_target`(`target_type` ASC, `target_id` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '测试用例复用记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for qc_quality_bug_unclosed_record
@@ -811,6 +917,9 @@ CREATE TABLE `qc_quality_testcase`  (
   `steps` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '步骤',
   `last_review_result` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT 'Preparing' COMMENT '最后一次评审结果',
   `last_review_time` datetime NULL DEFAULT NULL COMMENT '最后一次评审时间',
+  `version` int NOT NULL DEFAULT 1 COMMENT '版本号',
+  `parent_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '父用例ID',
+  `is_baseline` tinyint NOT NULL DEFAULT 0 COMMENT '是否为基线版本',
   `trash` tinyint NOT NULL DEFAULT 0 COMMENT '回收站',
   `deleted` bit(1) NOT NULL DEFAULT b'0',
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -818,6 +927,8 @@ CREATE TABLE `qc_quality_testcase`  (
   `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_parent_id`(`parent_id` ASC) USING BTREE,
+  INDEX `idx_version`(`version` ASC) USING BTREE,
   INDEX `inx`(`project_id` ASC, `node_id` ASC, `title` ASC, `supervisor` ASC, `tags` ASC, `priority` ASC, `trash` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '测试用例表' ROW_FORMAT = DYNAMIC;
 
@@ -994,16 +1105,28 @@ INSERT INTO `sys_menu` VALUES (4157, '修复', 'quality:bug:fix', 3, 4, 4152, ''
 INSERT INTO `sys_menu` VALUES (4158, '激活', 'quality:bug:reopen', 3, 5, 4152, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-03-26 15:58:07', '超级管理员', '2025-03-26 15:58:07');
 INSERT INTO `sys_menu` VALUES (4159, '关闭', 'quality:bug:close', 3, 6, 4152, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-03-26 15:58:30', '超级管理员', '2025-03-26 15:58:30');
 INSERT INTO `sys_menu` VALUES (4160, '新增缺陷', '', 2, 99, 4169, 'add', 'fa:bug', 'BugAdd', 'Quality/bug/BugEditor', 1, 0, 0, 0, 0, '超级管理员', '2025-03-26 16:02:48', '超级管理员', '2025-04-07 11:39:15');
-INSERT INTO `sys_menu` VALUES (4161, '修改缺陷', '', 2, 99, 4169, 'edit/:id', 'fa:bug', 'BugEdit', 'Quality/bug/BugEditor', 1, 0, 0, 0, 0, '超级管理员', '2025-03-26 16:04:31', '超级管理员', '2025-04-07 11:39:12');
-INSERT INTO `sys_menu` VALUES (4162, '缺陷明细', '', 2, 99, 4169, 'view/:id', 'fa:bug', 'BugViewer', 'Quality/bug/BugViewer', 1, 0, 1, 1, 0, '超级管理员', '2025-03-31 15:59:41', '超级管理员', '2025-04-07 11:39:06');
-INSERT INTO `sys_menu` VALUES (4163, '新增', 'quality:case:add', 3, 0, 4119, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-01 09:44:41', '超级管理员', '2025-04-01 09:44:41');
-INSERT INTO `sys_menu` VALUES (4164, '修改', 'quality:case:update', 3, 1, 4119, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-01 09:44:54', '超级管理员', '2025-04-01 09:44:54');
-INSERT INTO `sys_menu` VALUES (4165, '删除', 'quality:case:remove', 3, 2, 4119, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-01 09:45:08', '超级管理员', '2025-04-01 09:45:08');
-INSERT INTO `sys_menu` VALUES (4166, '测试用例 ', '', 1, 0, 4118, 'test-case', 'ep:burger', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-07 11:19:24', '超级管理员', '2025-04-07 11:34:58');
-INSERT INTO `sys_menu` VALUES (4167, '测试评审 ', '', 1, 10, 4118, 'test-review', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-07 11:32:33', '超级管理员', '2025-04-07 11:34:25');
-INSERT INTO `sys_menu` VALUES (4168, '测试计划  ', '', 1, 20, 4118, 'test-plan', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-07 11:35:38', '超级管理员', '2025-04-07 11:35:38');
-INSERT INTO `sys_menu` VALUES (4169, '缺陷跟踪 ', '', 1, 30, 4118, 'bug', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-07 11:37:39', '超级管理员', '2025-04-07 11:37:39');
-INSERT INTO `sys_menu` VALUES (4170, '拒绝', 'quality:bug:reject', 3, 7, 4152, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-07 11:49:03', '超级管理员', '2025-04-07 11:49:03');
+INSERT INTO `sys_menu` VALUES (4161, '新增缺陷', '', 2, 99, 4169, 'add', 'fa:bug', 'BugAdd', 'Quality/bug/BugEditor', 1, 0, 0, 0, 0, '超级管理员', '2025-03-26 16:02:48', '超级管理员', '2025-04-07 11:39:15');
+INSERT INTO `sys_menu` VALUES (4162, '修改缺陷', '', 2, 99, 4169, 'edit/:id', 'fa:bug', 'BugEdit', 'Quality/bug/BugEditor', 1, 0, 0, 0, 0, '超级管理员', '2025-03-26 16:04:31', '超级管理员', '2025-04-07 11:39:12');
+INSERT INTO `sys_menu` VALUES (4163, '缺陷明细', '', 2, 99, 4169, 'view/:id', 'fa:bug', 'BugViewer', 'Quality/bug/BugViewer', 1, 0, 1, 1, 0, '超级管理员', '2025-03-31 15:59:41', '超级管理员', '2025-04-07 11:39:06');
+INSERT INTO `sys_menu` VALUES (4164, '新增', 'quality:case:add', 3, 0, 4119, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-01 09:44:41', '超级管理员', '2025-04-01 09:44:41');
+INSERT INTO `sys_menu` VALUES (4165, '修改', 'quality:case:update', 3, 1, 4119, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-01 09:44:54', '超级管理员', '2025-04-01 09:44:54');
+INSERT INTO `sys_menu` VALUES (4166, '删除', 'quality:case:remove', 3, 2, 4119, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-01 09:45:08', '超级管理员', '2025-04-01 09:45:08');
+INSERT INTO `sys_menu` VALUES (4167, '测试用例 ', '', 1, 0, 4118, 'test-case', 'ep:burger', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-07 11:19:24', '超级管理员', '2025-04-07 11:34:58');
+INSERT INTO `sys_menu` VALUES (4168, '测试评审 ', '', 1, 10, 4118, 'test-review', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-07 11:32:33', '超级管理员', '2025-04-07 11:34:25');
+INSERT INTO `sys_menu` VALUES (4169, '测试计划  ', '', 1, 20, 4118, 'test-plan', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-07 11:35:38', '超级管理员', '2025-04-07 11:35:38');
+INSERT INTO `sys_menu` VALUES (4170, '缺陷跟踪 ', '', 1, 30, 4118, 'bug', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-07 11:37:39', '超级管理员', '2025-04-07 11:37:39');
+INSERT INTO `sys_menu` VALUES (4180, '拒绝', 'quality:bug:reject', 3, 7, 4152, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-04-07 11:49:03', '超级管理员', '2025-04-07 11:49:03');
+
+-- 新增缺陷统计分析菜单项
+INSERT INTO `sys_menu` VALUES (4181, '统计分析', 'quality:bug:statistics', 2, 1, 4179, 'statistics', 'ep:data-analysis', 'BugStatistics', 'Quality/bug/statistics', 1, 1, 1, 1, 0, '超级管理员', '2025-08-30 10:00:00', '超级管理员', '2025-08-30 10:00:00');
+
+-- 新增测试报告菜单项
+INSERT INTO `sys_menu` VALUES (4182, '测试报告', 'quality:report:query', 2, 2, 4118, 'report', 'ep:document', 'TestReport', 'Quality/report/index', 1, 1, 1, 1, 0, '超级管理员', '2025-08-30 10:00:00', '超级管理员', '2025-08-30 10:00:00');
+
+-- 新增需求管理按钮权限
+INSERT INTO `sys_menu` VALUES (4183, '新增', 'project:requirement:add', 3, 0, 4115, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-08-30 10:00:00', '超级管理员', '2025-08-30 10:00:00');
+INSERT INTO `sys_menu` VALUES (4184, '修改', 'project:requirement:update', 3, 1, 4115, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-08-30 10:00:00', '超级管理员', '2025-08-30 10:00:00');
+INSERT INTO `sys_menu` VALUES (4185, '删除', 'project:requirement:remove', 3, 2, 4115, '', '', '', '', 1, 1, 1, 1, 0, '超级管理员', '2025-08-30 10:00:00', '超级管理员', '2025-08-30 10:00:00');
 
 -- ----------------------------
 -- Table structure for sys_page_configurer
@@ -1178,5 +1301,55 @@ CREATE TABLE `sys_user_role`  (
 INSERT INTO `sys_user_role` VALUES (1, 1, 1, 0, '系统', '2022-04-29 20:54:56', '系统', '2022-04-29 20:55:01');
 INSERT INTO `sys_user_role` VALUES (2, 2, 2, 0, '系统', '2022-05-14 13:21:55', '系统', '2022-05-14 13:22:01');
 INSERT INTO `sys_user_role` VALUES (3, 3, 3, 0, '超级管理员', '2022-07-16 22:32:22', '超级管理员', '2022-07-16 22:32:22');
+
+-- ----------------------------
+-- Table structure for qc_report_quality_project_week
+-- ----------------------------
+DROP TABLE IF EXISTS `qc_report_quality_project_week`;
+CREATE TABLE `qc_report_quality_project_week`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `start_date` date NOT NULL COMMENT '区间开始日期',
+  `end_date` date NOT NULL COMMENT '区间结束日期',
+  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '项目编号',
+  `manager_id` bigint NOT NULL COMMENT '项目经理',
+  `this_range_testcase_total` int NULL DEFAULT NULL COMMENT '本期执行用例',
+  `qualification_rate` decimal(5,2) NULL DEFAULT NULL COMMENT '质量合格率',
+  `this_range_bug_total` int NULL DEFAULT NULL COMMENT '本期新增缺陷',
+  `last_range_bug_total` int NULL DEFAULT NULL COMMENT '上期遗留缺陷',
+  `this_range_closed_bug_total` int NULL DEFAULT NULL COMMENT '本期关闭缺陷',
+  `unfinished_bug_handler` json NULL COMMENT 'Bug解决人',
+  `completion_date` date NULL DEFAULT NULL COMMENT '计划完成日期',
+  `deleted` tinyint NOT NULL DEFAULT 0,
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目周报数据表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for qc_report_quality_project_month
+-- ----------------------------
+DROP TABLE IF EXISTS `qc_report_quality_project_month`;
+CREATE TABLE `qc_report_quality_project_month`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `start_date` date NOT NULL COMMENT '区间开始日期',
+  `end_date` date NOT NULL COMMENT '区间结束日期',
+  `project_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '项目编号',
+  `manager_id` bigint NOT NULL COMMENT '项目经理',
+  `this_range_testcase_total` int NULL DEFAULT NULL COMMENT '本期执行用例',
+  `qualification_rate` decimal(5,2) NULL DEFAULT NULL COMMENT '质量合格率',
+  `this_range_bug_total` int NULL DEFAULT NULL COMMENT '本期新增缺陷',
+  `last_range_bug_total` int NULL DEFAULT NULL COMMENT '上期遗留缺陷',
+  `this_range_closed_bug_total` int NULL DEFAULT NULL COMMENT '本期关闭缺陷',
+  `unfinished_bug_handler` json NULL COMMENT 'Bug解决人',
+  `completion_date` date NULL DEFAULT NULL COMMENT '计划完成日期',
+  `deleted` tinyint NOT NULL DEFAULT 0,
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '项目月报数据表' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

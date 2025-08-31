@@ -72,4 +72,14 @@ public interface ReviewCaseService {
     List<ReviewCaseExecRecord> getRecords(Long dataId);
 
     void addRecord(ReviewCaseExecRecord convert);
+
+    /**
+     * 手动同步测试用例到评审用例
+     * 
+     * @param reviewCaseId   评审用例ID
+     * @param originalCaseId 原始用例ID
+     * @param operatorId     操作人ID
+     * @return 同步结果
+     */
+    boolean syncCaseManually(Long reviewCaseId, String originalCaseId, Long operatorId);
 }

@@ -27,6 +27,7 @@ package io.github.xiaomisum.quickclick.controller.quality.bug;
 
 import io.github.xiaomisum.quickclick.controller.quality.bug.vo.*;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.BugConvert;
+import io.github.xiaomisum.quickclick.model.dto.BugStatisticsDTO;
 import io.github.xiaomisum.quickclick.service.qualitycenter.bug.BugService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -37,6 +38,8 @@ import xyz.migoo.framework.security.core.LoginUser;
 import xyz.migoo.framework.security.core.annotation.CurrentUser;
 import xyz.migoo.framework.security.core.util.SecurityFrameworkUtils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -60,6 +63,20 @@ public class BugController {
         // 获得测试缺陷分页列表
         req.setCurrentUser(SecurityFrameworkUtils.getLoginUserId());
         PageResult<BugPageRespVO> result = BugConvert.INSTANCE.convert(service.getPage(req));
+        return Result.getSuccessful(result);
+    }
+
+    /**
+     * 根据测试用例ID查询缺陷列表
+     *
+     * @param testcaseId 测试用例ID
+     * @return 缺陷列表
+     */
+    @GetMapping("/by-testcase")
+    public Result<?> getByTestcaseId(@RequestParam("testcaseId") String testcaseId) {
+        List<Bug> bugs = service.getByTestcaseId(testcaseId);
+        List<BugPageRespVO> result = BugConvert.INSTANCE
+                .convert(service.get(bugs.stream().map(Bug::getId).collect(Collectors.toList())));
         return Result.getSuccessful(result);
     }
 
@@ -218,5 +235,33 @@ public class BugController {
         data.setUserId(SecurityFrameworkUtils.getLoginUserId());
         service.addRecord(BugConvert.INSTANCE.convert(data));
         return Result.getSuccessful();
+    }
+
+    /**
+     * 获取缺陷统计分析数据
+     *
+     * @param projectId 项目ID
+     * @param startDate 开始日期
+     * @param endDate   结束日期
+     * @return 缺陷统计分析数据
+     */
+    @GetMapping("/statistics")
+    public Result<?> getStatistics(@RequestParam("projectId") String projectId,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate) {
+        // 如果没有指定日期范围，默认为最近30天
+        LocalDateTime start = LocalDateTime.now().minusDays(30);
+        LocalDateTime end = LocalDateTime.now();
+
+        if (startDate != null && !startDate.isEmpty()) {
+            start = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+        }
+
+        if (endDate != null && !endDate.isEmpty()) {
+            end = LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(23, 59, 59);
+        }
+
+        BugStatisticsDTO statistics = service.getStatistics(projectId, start, end);
+        return Result.getSuccessful(statistics);
     }
 }

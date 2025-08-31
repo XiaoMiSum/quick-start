@@ -8,6 +8,7 @@ public interface ErrorCodeConstants {
     ErrorCode ORIGINAL_CASE_NOT_EXIST = ErrorCode.of(32001001, "原始用例不存在");
     ErrorCode TEST_CASE_IMPORT_ERROR = ErrorCode.of(35001001, "测试用例导入失败");
     ErrorCode TEST_CASE_BATCH_UPDATE_ERROR = ErrorCode.of(35001002, "模块、优先级、责任人不能同时为空");
+    ErrorCode TEST_CASE_VERSION_CREATE_ERROR = ErrorCode.of(35001003, "测试用例版本创建失败");
     ErrorCode BUG_STATUS_ERROR = ErrorCode.of(36001001, "缺陷状态错误");
 
 }

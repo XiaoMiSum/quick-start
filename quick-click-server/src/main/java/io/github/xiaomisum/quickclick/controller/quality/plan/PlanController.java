@@ -25,30 +25,48 @@
 
 package io.github.xiaomisum.quickclick.controller.quality.plan;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.hutool.core.util.StrUtil;
+import com.google.common.collect.Lists;
 import io.github.xiaomisum.quickclick.controller.quality.plan.vo.*;
-import io.github.xiaomisum.quickclick.controller.quality.testcase.vo.TestcaseQueryReqVO;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.PlanCaseConvert;
 import io.github.xiaomisum.quickclick.convert.qualitycenter.PlanConvert;
-import io.github.xiaomisum.quickclick.convert.qualitycenter.TestcaseConvert;
+import io.github.xiaomisum.quickclick.dal.dataobject.project.ProjectNode;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.Plan;
 import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCase;
+import io.github.xiaomisum.quickclick.dal.dataobject.quality.PlanCaseExecRecord;
+import io.github.xiaomisum.quickclick.model.dto.Statistics;
 import io.github.xiaomisum.quickclick.model.dto.TestcaseDTO;
-import io.github.xiaomisum.quickclick.model.dto.TestcasePageDTO;
+import io.github.xiaomisum.quickclick.service.project.NodeService;
+import io.github.xiaomisum.quickclick.service.project.ProjectService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.plan.PlanCaseService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.plan.PlanService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.review.ReviewCaseService;
 import io.github.xiaomisum.quickclick.service.qualitycenter.testcase.TestcaseService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.SneakyThrows;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import xyz.migoo.framework.common.exception.util.ServiceExceptionUtil;
 import xyz.migoo.framework.common.pojo.PageResult;
 import xyz.migoo.framework.common.pojo.Result;
 import xyz.migoo.framework.security.core.LoginUser;
 import xyz.migoo.framework.security.core.annotation.CurrentUser;
-import xyz.migoo.framework.security.core.util.SecurityFrameworkUtils;
 
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
+import static cn.afterturn.easypoi.excel.entity.enmus.ExcelType.XSSF;
+import static io.github.xiaomisum.quickclick.enums.ErrorCodeConstants.TEST_CASE_IMPORT_ERROR;
 import static io.github.xiaomisum.quickclick.enums.TestStatus.Failed;
 import static io.github.xiaomisum.quickclick.enums.TestStatus.Preparing;
 
@@ -105,7 +123,8 @@ public class PlanController {
      */
     @PostMapping
     public Result<?> add(@RequestBody @Valid PlanAddReqVO data) {
-        return Result.getSuccessful(service.add(PlanConvert.INSTANCE.convert(data)));
+        String id = service.add(PlanConvert.INSTANCE.convert(data));
+        return Result.getSuccessful(id);
     }
 
     /**
@@ -121,27 +140,15 @@ public class PlanController {
     }
 
     /**
-     * 删除测试计划
+     * 删除计划
      *
-     * @param id 计划编号
+     * @param planId 计划编号
      * @return 处理结果
      */
-    @DeleteMapping("/{id}")
-    public Result<?> remove(@PathVariable("id") String id) {
-        service.remove(id);
+    @DeleteMapping("/{planId}")
+    public Result<?> remove(@PathVariable("planId") String planId) {
+        service.remove(planId);
         return Result.getSuccessful();
-    }
-
-
-    /**
-     * 获取测试计划下拉
-     *
-     * @param projectId 测试计划编号
-     * @return 处理结果
-     */
-    @GetMapping("/simple")
-    public Result<?> getSimple(@RequestParam("projectId") String projectId) {
-        return Result.getSuccessful(PlanConvert.INSTANCE.convert(service.getList(projectId)));
     }
 
     /**
@@ -155,7 +162,6 @@ public class PlanController {
         PageResult<PlanCasePageRespVO> result = PlanCaseConvert.INSTANCE.convert(planCaseService.getPage(req));
         return Result.getSuccessful(result);
     }
-
 
     /**
      * 同步用例
@@ -172,6 +178,24 @@ public class PlanController {
         planCase.setPlanId(req.getPlanId()).setId(req.getId());
         planCaseService.update(planCase);
         return Result.getSuccessful(planCase);
+    }
+
+    /**
+     * 手动同步用例
+     * <p>
+     * 用户主动触发的用例同步操作
+     *
+     * @param req 请求参数
+     * @return 处理结果
+     */
+    @PostMapping("/case/sync-manual")
+    public Result<?> syncCaseManually(@CurrentUser LoginUser user, @RequestBody @Valid PlanCaseSyncVO req) {
+        boolean success = planCaseService.syncCaseManually(req.getId(), req.getOriginalId(), user.getId());
+        if (success) {
+            return Result.getSuccessful("同步成功");
+        } else {
+            return Result.getError("同步失败");
+        }
     }
 
     /**
@@ -235,8 +259,8 @@ public class PlanController {
      */
     @GetMapping("/case/{opt}")
     public Result<?> getPlanCase(@RequestParam("planId") String planId,
-                                 @RequestParam("id") Long id,
-                                 @PathVariable("opt") String opt) {
+            @RequestParam("id") Long id,
+            @PathVariable("opt") String opt) {
         List<PlanCase> results = planCaseService.getListGtId(opt, planId, id);
         if (results.isEmpty()) {
             return Result.getSuccessful(null);
@@ -289,8 +313,7 @@ public class PlanController {
                 .stream().map(PlanCase::getOriginalId)
                 .toList();
         List<PlanCase> list = PlanCaseConvert.INSTANCE.convert(
-                reviewCaseService.getListNotInOriginalIds(data.getReviewId(), caseIds), data.getPlanId()
-        );
+                reviewCaseService.getListNotInOriginalIds(data.getReviewId(), caseIds), data.getPlanId());
         list.forEach(item -> item.setPlanId(data.getPlanId()));
         planCaseService.add(list);
         return Result.getSuccessful(list.size());

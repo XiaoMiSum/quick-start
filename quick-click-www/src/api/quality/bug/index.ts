@@ -16,6 +16,20 @@ export const getData = (id: any) => {
   })
 }
 
+// 根据测试用例ID查询缺陷列表
+export const getByTestcaseId = (testcaseId: string) => {
+  return request.get({
+    url: url + '/by-testcase',
+    params: { testcaseId }
+  })
+}
+
+export const getSimple = () => {
+  return request.get({
+    url: url + '/simple'
+  })
+}
+
 export const addData = (data: any) => {
   return request.post({
     url,
@@ -26,6 +40,38 @@ export const addData = (data: any) => {
 export const updateData = (data: any) => {
   return request.put({
     url,
+    data
+  })
+}
+
+export const removeData = (id: number) => {
+  return request.delete({
+    url: url + '/' + id
+  })
+}
+
+/**
+ * 获取评论
+ *
+ * @param bugId 缺陷编号
+ * @returns
+ */
+export const getRecords = (bugId: string | string[]) => {
+  return request.get({
+    url: url + '/record',
+    params: { bugId }
+  })
+}
+
+/**
+ * 新增执行记录
+ *
+ * @param data 数据
+ * @returns
+ */
+export const addRecord = (data: any) => {
+  return request.post({
+    url: url + '/record',
     data
   })
 }
@@ -140,28 +186,10 @@ export const download = (params: any) => {
   })
 }
 
-/**
- * 获取评论
- *
- * @param bugId 缺陷编号
- * @returns
- */
-export const getRecords = (bugId: string | string[]) => {
+// 获取缺陷统计分析数据
+export const getStatistics = (params: any) => {
   return request.get({
-    url: url + '/record',
-    params: { bugId }
-  })
-}
-
-/**
- * 新增执行记录
- *
- * @param data 数据
- * @returns
- */
-export const addRecord = (data: any) => {
-  return request.post({
-    url: url + '/record',
-    data
+    url: url + '/statistics',
+    params
   })
 }

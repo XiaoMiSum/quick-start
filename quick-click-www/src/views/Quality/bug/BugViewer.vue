@@ -158,6 +158,22 @@
               </el-form-item>
             </el-col>
           </el-row>
+          
+          <el-row>
+            <el-col>
+              <el-form-item label="关联用例">
+                <el-button 
+                  v-if="formData.testcaseId" 
+                  link 
+                  type="primary" 
+                  @click="handleViewTestcase(formData.testcaseId)"
+                >
+                  {{ getTestcaseTitle(formData.testcaseId) }}
+                </el-button>
+                <el-text v-else type="info">无关联用例</el-text>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-col>
       </el-row>
     </el-form>
@@ -189,6 +205,7 @@
 
 <script lang="ts" setup>
 import * as HTTP from '@/api/quality/bug'
+import * as TestcaseApi from '@/api/quality/testcase'
 
 import { checkPermi } from '@/utils/permission'
 
@@ -449,9 +466,31 @@ const handleComment = async () => {
   bugRecord.value.open(formData.value.id, 'bugId')
 }
 
+const testcaseMap = ref<Map<string, any>>(new Map())
+
+const handleViewTestcase = async (testcaseId: string) => {
+  push('/quality/test-case/edit/' + testcaseId)
+}
+
+const getTestcaseTitle = (testcaseId: string) => {
+  const testcase = testcaseMap.value.get(testcaseId)
+  return testcase ? testcase.title : '加载中...'
+}
+
+// 在 getData 方法中添加获取关联测试用例信息的逻辑
 const getData = async () => {
   showOptionButton.value = true
   formData.value = await HTTP.getData(params.id)
+  
+  // 获取关联的测试用例信息
+  if (formData.value.testcaseId) {
+    try {
+      const testcase = await TestcaseApi.getData(formData.value.testcaseId)
+      testcaseMap.value.set(formData.value.testcaseId, testcase)
+    } catch (error) {
+      console.error('获取测试用例信息失败:', error)
+    }
+  }
 }
 
 onMounted(async () => {
