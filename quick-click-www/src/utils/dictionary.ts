@@ -132,5 +132,9 @@ export enum DICT_TYPE {
   QUALITY_TEST_STAGE = 'test_stage',
   QUALITY_BUG_SEVERITY = 'bug_severity',
   QUALITY_BUG_STATUS = 'bug_status',
-  QUALITY_BUG_FIX_CAUSE = 'bug_fix_cause'
+  QUALITY_BUG_FIX_CAUSE = 'bug_fix_cause',
+
+  // ========== AI 模块 ==========
+  AI_AGENT_STATUS = 'ai_agent_status',
+  AI_GENERATED_TESTCASE_STATUS = 'ai_generated_testcase_status'
 }

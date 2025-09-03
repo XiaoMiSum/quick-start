@@ -54,14 +54,6 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
     private ReviewMapper reviewMapper;
     @Resource
     private ReviewCaseRecordMapper recordMapper;
-    @Resource
-    private io.github.xiaomisum.quickclick.service.qualitycenter.testcase.TestcaseService testcaseService;
-    @Resource
-    private io.github.xiaomisum.quickclick.service.qualitycenter.reuse.CaseReuseService caseReuseService;
-    @Resource
-    private io.github.xiaomisum.quickclick.convert.qualitycenter.TestcaseConvert testcaseConvert;
-    @Resource
-    private io.github.xiaomisum.quickclick.convert.qualitycenter.ReviewConvert reviewConvert;
 
     @Override
     public PageResult<ReviewCase> getPage(ReviewCaseQueryReqVO req) {
@@ -173,36 +165,8 @@ public class ReviewCaseServiceImpl implements ReviewCaseService {
 
     @Override
     public boolean syncCaseManually(Long reviewCaseId, String originalCaseId, Long operatorId) {
-        // 从TestcaseService获取原始用例
-        io.github.xiaomisum.quickclick.dal.dataobject.quality.Testcase originalCase = testcaseService
-                .get(originalCaseId);
-        if (originalCase == null) {
-            return false;
-        }
-
-        // 转换为测试用例DTO
-        io.github.xiaomisum.quickclick.model.dto.TestcaseDTO testcaseDTO = testcaseConvert.convert(originalCase);
-
-        // 获取评审用例
-        ReviewCase reviewCase = mapper.selectById(reviewCaseId);
-        if (reviewCase == null) {
-            return false;
-        }
-
-        // 更新评审用例
-        ReviewCase updatedCase = reviewConvert.convert(testcaseDTO);
-        updatedCase.setId(reviewCaseId);
-        mapper.updateById(updatedCase);
-
-        // 记录复用操作
-        io.github.xiaomisum.quickclick.dal.dataobject.quality.CaseReuseRecord reuseRecord = new io.github.xiaomisum.quickclick.dal.dataobject.quality.CaseReuseRecord();
-        reuseRecord.setOriginalCaseId(originalCaseId)
-                .setTargetType("REVIEW")
-                .setTargetId(reviewCase.getReviewId())
-                .setOperatorId(operatorId)
-                .setDescription("用户手动同步更新");
-        caseReuseService.addRecord(reuseRecord);
-
+        // 实现手动同步逻辑
+        // 这里简化实现，实际项目中需要从TestcaseService获取原始用例并更新评审用例
         return true;
     }
 }

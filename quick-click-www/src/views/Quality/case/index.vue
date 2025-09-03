@@ -289,6 +289,15 @@
               >
                 缺陷
               </el-button>
+              <el-button
+                v-hasPermi="['quality:case:reuse']"
+                circle
+                text
+                type="info"
+                @click="handleViewReuseRecords(scope.row.id, scope.row.title)"
+              >
+                复用
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -335,6 +344,7 @@
   <CaseBatchEditor ref="caseBatchEditor" :nodes="modules" :users="userList" @close="getList" />
   <CaseVersionList ref="caseVersionList" />
   <BugAssociation ref="bugAssociationRef" />
+  <ReuseRecords ref="reuseRecordsRef" />
 </template>
 
 <script lang="ts" setup>
@@ -343,11 +353,13 @@ import CaseImports from './CaseImports.vue'
 import CaseBatchEditor from './CaseBatchEditor.vue'
 import CaseVersionList from './CaseVersionList.vue'
 import BugAssociation from './BugAssociation.vue'
+import ReuseRecords from './ReuseRecords.vue'
 
 import download from '@/utils/download'
 import { DICT_TYPE, getDictOptions } from '@/utils/dictionary'
 
 import * as HTTP from '@/api/quality/testcase'
+import * as BugApi from '@/api/quality/bug'
 
 import { useGlobalStore } from '@/store/modules/global'
 
@@ -551,13 +563,14 @@ onMounted(async () => {
 })
 
 const bugAssociationRef = ref()
+const reuseRecordsRef = ref()
 
-const openBugAssociation = (testcaseId: string) => {
+const handleViewRelatedBugs = (testcaseId: string) => {
   bugAssociationRef.value.open(testcaseId)
 }
 
-// 查看关联的缺陷
-const handleViewRelatedBugs = async (testcaseId: string) => {
-  // 这里可以跳转到缺陷列表页面，并筛选出该测试用例的缺陷
-  push(`/quality/bug/list?testcaseId=${testcaseId}`)
+const handleViewReuseRecords = (testcaseId: string, title: string) => {
+  reuseRecordsRef.value.open(testcaseId, title)
 }
+
+</script>

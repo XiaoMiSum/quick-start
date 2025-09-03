@@ -86,7 +86,7 @@ const handleManualSyncCase = async () => {
   loading.value = true
   const params = data.value
   try {
-    await REVIEW.syncCaseManually({
+    await REVIEW.syncCase({
       id: params.id,
       reviewId: params.reviewId,
       originalId: params.originalId

@@ -174,12 +174,7 @@
                   <el-col :span="12">
                     <div class="chart-container">
                       <h4>按严重等级统计</h4>
-                      <!-- 集成图表组件 -->
-                      <Echart 
-                        v-if="currentReport.bugStatistics && currentReport.bugStatistics.severityStatistics" 
-                        :options="getSeverityChartOptions()" 
-                        :height="300" 
-                      />
+                      <!-- 这里可以集成图表组件 -->
                       <div v-for="(value, key) in currentReport.bugStatistics.severityStatistics" :key="key">
                         {{ key }}: {{ value }}
                       </div>
@@ -188,12 +183,7 @@
                   <el-col :span="12">
                     <div class="chart-container">
                       <h4>按优先级统计</h4>
-                      <!-- 集成图表组件 -->
-                      <Echart 
-                        v-if="currentReport.bugStatistics && currentReport.bugStatistics.priorityStatistics" 
-                        :options="getPriorityChartOptions()" 
-                        :height="300" 
-                      />
+                      <!-- 这里可以集成图表组件 -->
                       <div v-for="(value, key) in currentReport.bugStatistics.priorityStatistics" :key="key">
                         {{ key }}: {{ value }}
                       </div>
@@ -294,7 +284,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { getReportList, getReportDetail, generateReport, deleteReport } from '@/api/quality/report'
 import { getList as getProjectList } from '@/api/project/project'
 import { formatDate } from '@/utils/date'
-import { Echart } from '@/components/Echart'
 
 // 查询表单
 const queryForm = reactive({
@@ -327,82 +316,6 @@ const currentReport = ref(null)
 // 表单引用
 const queryFormRef = ref()
 const generateFormRef = ref()
-
-// 获取严重等级统计图表配置
-const getSeverityChartOptions = () => {
-  if (!currentReport.value || !currentReport.value.bugStatistics || !currentReport.value.bugStatistics.severityStatistics) {
-    return {}
-  }
-  
-  const severityData = currentReport.value.bugStatistics.severityStatistics
-  const data = Object.keys(severityData).map(key => ({
-    name: key,
-    value: severityData[key]
-  }))
-  
-  return {
-    tooltip: {
-      trigger: 'item'
-    },
-    legend: {
-      orient: 'vertical',
-      left: 'left'
-    },
-    series: [
-      {
-        name: '严重等级',
-        type: 'pie',
-        radius: '50%',
-        data: data,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
-    ]
-  }
-}
-
-// 获取优先级统计图表配置
-const getPriorityChartOptions = () => {
-  if (!currentReport.value || !currentReport.value.bugStatistics || !currentReport.value.bugStatistics.priorityStatistics) {
-    return {}
-  }
-  
-  const priorityData = currentReport.value.bugStatistics.priorityStatistics
-  const data = Object.keys(priorityData).map(key => ({
-    name: key,
-    value: priorityData[key]
-  }))
-  
-  return {
-    tooltip: {
-      trigger: 'item'
-    },
-    legend: {
-      orient: 'vertical',
-      left: 'left'
-    },
-    series: [
-      {
-        name: '优先级',
-        type: 'pie',
-        radius: '50%',
-        data: data,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
-    ]
-  }
-}
 
 // 获取报告列表
 const loadReportList = async () => {
